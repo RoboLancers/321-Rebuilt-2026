@@ -1,6 +1,7 @@
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2026.1.1"
+    id "edu.wpi.first.GradleRIO" version "2026.2.1"
+    id "com.diffplug.spotless" version "8.1.0"
 }
 
 java {
@@ -96,6 +97,28 @@ jar {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
+spotless {
+  enforceCheck = false
+
+  format 'misc', {
+    // define the files to apply `misc` to
+    target '*.gradle', '.gitattributes', '.gitignore'
+  }
+  java {
+    
+    target 'src/*/java/**/*.java'
+        target fileTree('.') {
+            include '**/*.java'
+            exclude '**/build/**', '**/build-*/**', '**/.history/**'
+        }
+        toggleOffOn()
+        googleJavaFormat()
+        trimTrailingWhitespace()
+        endWithNewline()
+
+        licenseHeader '/* (C) RoboLancers 2026 */'
+    }
+}
 // Configure jar and deploy tasks
 deployArtifact.jarTask = jar
 wpi.java.configureExecutableTasks(jar)
