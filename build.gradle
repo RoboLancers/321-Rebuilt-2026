@@ -98,7 +98,7 @@ jar {
 }
 
 spotless {
-  enforceCheck = false
+  enforceCheck = true
 
   format 'misc', {
     // define the files to apply `misc` to
