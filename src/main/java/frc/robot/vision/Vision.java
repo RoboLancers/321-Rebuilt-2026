@@ -1,0 +1,131 @@
+package frc.robot.vision;
+
+import static edu.wpi.first.units.Units.Meters;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+
+import org.photonvision.EstimatedRobotPose;
+import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
+
+import edu.wpi.first.math.geometry.Translation3d;
+import frc.robot.RobotConstants;
+
+public class Vision {
+
+public Consumer<VisionEstimate> visionEstConsumer;
+   
+private PhotonCamera backLeftCamera = new PhotonCamera(VisionConstants.kBackLeftCameraName);
+
+private PhotonCamera topElevatorCamera = new PhotonCamera(VisionConstants.kTopElevatorCameraName);
+
+private PhotonCamera bottomElevatorCamera = new PhotonCamera(VisionConstants.kBottomElevatorCameraName);
+
+public List<PhotonCamera> cameras = List.of(backLeftCamera,topElevatorCamera,bottomElevatorCamera);
+
+private PhotonPoseEstimator backLeftPoseEstimator = new PhotonPoseEstimator(
+    RobotConstants.kAprilTagLayout,
+    PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+    VisionConstants.kBackLeftTransform
+);
+
+private PhotonPoseEstimator topElevatorPoseEstimator =  new PhotonPoseEstimator(
+    RobotConstants.kAprilTagLayout,
+    PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+    VisionConstants.kTopElevatorTransform
+);
+
+private PhotonPoseEstimator bottomElevatorPoseEstimator = new PhotonPoseEstimator(
+    RobotConstants.kAprilTagLayout,
+    PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+    VisionConstants.kBottomElevatorTransform
+);
+
+public List<PhotonPoseEstimator> estimators = List.of(backLeftPoseEstimator,topElevatorPoseEstimator, bottomElevatorPoseEstimator);
+
+public static Vision create(Consumer<VisionEstimate> visionEstConsumer){
+    return new Vision(visionEstConsumer);
+}
+
+public Vision(Consumer<VisionEstimate> visionEstConsumer){
+this.visionEstConsumer = visionEstConsumer;
+}
+
+private List<VisionEstimate> getVisionEstimates(){
+
+    List<VisionEstimate> visionEstimates = new ArrayList<>();
+
+    for(int i=0;i<cameras.size();i++){
+
+    if (!cameras.get(i).isConnected()) return null;
+
+    List<PhotonPipelineResult> unreadResults= cameras.get(i).getAllUnreadResults();
+
+    if (unreadResults.isEmpty()) return null;
+
+    PhotonPipelineResult latestResult = unreadResults.get(unreadResults.size()-1);
+
+    if (!latestResult.hasTargets()) return null;
+
+    EstimatedRobotPose estimatedPose = estimators.get(i)
+    .update(latestResult)
+    .filter(
+        est->VisionConstants.kAllowedFieldArea.contains(est.estimatedPose.getTranslation().toTranslation2d())
+        && est.estimatedPose.getMeasureZ().isNear(Meters.of(0),VisionConstants.kAllowedFieldHeight))
+    .orElse(null);
+
+    double standardDeviation = calculateStdDevs(estimatedPose);
+
+    VisionEstimate visionEstimate = new VisionEstimate(estimatedPose, standardDeviation);
+
+    visionEstimates.add(visionEstimate);
+
+    }
+
+    return visionEstimates;
+
+}
+
+private double calculateStdDevs(EstimatedRobotPose estimatedPose){
+
+    double distance = 0;
+
+    for (PhotonTrackedTarget target : estimatedPose.targetsUsed){
+       double targetDistance = target.getBestCameraToTarget().getTranslation().getDistance(new Translation3d());
+       distance = distance + targetDistance;
+    }
+
+    double averageDistance = distance/estimatedPose.targetsUsed.size();
+
+    double standardDeviation = averageDistance/estimatedPose.targetsUsed.size();
+
+    return standardDeviation;
+
+}
+
+public boolean areCamerasConnected;
+
+public void periodic(){
+
+List<VisionEstimate> latestEstimates = getVisionEstimates();
+
+for(VisionEstimate estimate : latestEstimates){
+    visionEstConsumer.accept(estimate);
+}
+
+for(PhotonCamera camera : cameras){
+        if (camera.isConnected()){
+            areCamerasConnected = true;
+        } else {
+            areCamerasConnected = false;
+            break;}
+    }
+
+}
+
+}
