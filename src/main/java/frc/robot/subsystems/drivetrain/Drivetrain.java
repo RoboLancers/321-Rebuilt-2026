@@ -1,4 +1,4 @@
-/* (C) Robolancers 2025 */
+/* (C) Robolancers 2026 */
 package frc.robot.subsystems.drivetrain;
 
 import com.ctre.phoenix6.Utils;
@@ -186,12 +186,6 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
                   rotation.getAsDouble(),
                   RobotConstants.kRobotLoopPeriod.in(Seconds));
 
-          // x braking
-          // if(Math.abs(newTranslationX) < DriveConstants.kDriveDeadband &&
-          // Math.abs(newTranslationY) < DriveConstants.kDriveDeadband &&
-          // Math.abs(newRotation) < DriveConstants.kRotationDeadband){
-          // setControl(new SwerveRequest.SwerveDriveBrake())};
-
           setControl(
               fieldCentricRequest
                   .withVelocityX(speeds.vxMetersPerSecond)
@@ -263,9 +257,6 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
 
   public void driveRobotCentric(
       double translationX, double translationY, double rotation, DriveFeedforwards feedforwards) {
-    // var speeds =
-    //     ChassisSpeeds.discretize(
-    //         translationX, translationY, rotation, DrivetrainConstants.kLoopDt.in(Seconds));
 
     var speeds = new ChassisSpeeds(translationX, translationY, rotation);
 
@@ -279,20 +270,6 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
 
   public void driveToFieldPose(Pose2d pose, Pose2d currentPose) {
 
-    // double distance =
-    //     currentPose.getTranslation().getDistance(alignmentSetpoint.pose().getTranslation());
-
-    // // increase weighting of velocity from PID radius (weight = 0) to velocity radius (weight = 1)
-    // double autoFfFactor =
-    //     (MathUtil.clamp(
-    //                 distance,
-    //                 DrivetrainConstants.kAlignmentPIDRadius.in(Meters),
-    //                 DrivetrainConstants.kAlignmentVelocityRadius.in(Meters))
-    //             - DrivetrainConstants.kAlignmentPIDRadius.in(Meters))
-    //         / (DrivetrainConstants.kAlignmentVelocityRadius.in(Meters)
-    //             - DrivetrainConstants.kAlignmentPIDRadius.in(Meters));
-
-    // double ffFactor = DriverStation.isAutonomous() ? autoFfFactor : 0;
     double ffFactor = 0;
 
     ChassisSpeeds targetSpeeds =
