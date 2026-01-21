@@ -1,5 +1,8 @@
 package frc.robot.subsystems.vision;
 
-public class VisionEstimate {
-    
-}
+import org.photonvision.EstimatedRobotPose;
+
+public record VisionEstimate (
+    EstimatedRobotPose estimatedPose,
+    double standardDeviation
+){}
