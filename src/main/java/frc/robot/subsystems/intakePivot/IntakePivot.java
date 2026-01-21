@@ -51,8 +51,7 @@ public class IntakePivot extends SubsystemBase {
     intakePivotMainMotor.getConfigurator().apply(slot0Configs);
     intakePivotMainMotor.getConfigurator().apply(feedbackConfigs);
 
-    Follower follower =
-        new Follower(IntakeConstants.pivotMainMotorId, MotorAlignmentValue.Aligned);
+    Follower follower = new Follower(IntakeConstants.pivotMainMotorId, MotorAlignmentValue.Aligned);
     intakePivotFollowerMotor.setControl(follower);
   }
 
