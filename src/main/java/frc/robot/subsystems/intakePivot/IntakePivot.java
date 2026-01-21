@@ -20,8 +20,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakePivot extends SubsystemBase {
 
-  private TalonFX intakePivotMotorLeft = new TalonFX(IntakeConstants.intakePivotMotorLeftId);
-  private TalonFX intakePivotMotorRight = new TalonFX(IntakeConstants.intakePivotMotorRightId);
+  private TalonFX intakePivotMainMotor = new TalonFX(IntakeConstants.pivotMainMotorId);
+  private TalonFX intakePivotFollowerMotor = new TalonFX(IntakeConstants.pivotFollowerMotorId);
   private TalonFXConfiguration talonConfigs = new TalonFXConfiguration();
   private MotorOutputConfigs motorConfigs = new MotorOutputConfigs();
   private FeedbackConfigs feedbackConfigs = new FeedbackConfigs();
@@ -46,22 +46,22 @@ public class IntakePivot extends SubsystemBase {
 
     feedbackConfigs.withSensorToMechanismRatio(IntakeConstants.sensorToMechanismRatio);
 
-    intakePivotMotorLeft.getConfigurator().apply(motorConfigs);
-    intakePivotMotorLeft.getConfigurator().apply(currentLimitsConfigs);
-    intakePivotMotorLeft.getConfigurator().apply(slot0Configs);
-    intakePivotMotorLeft.getConfigurator().apply(feedbackConfigs);
+    intakePivotMainMotor.getConfigurator().apply(motorConfigs);
+    intakePivotMainMotor.getConfigurator().apply(currentLimitsConfigs);
+    intakePivotMainMotor.getConfigurator().apply(slot0Configs);
+    intakePivotMainMotor.getConfigurator().apply(feedbackConfigs);
 
     Follower follower =
-        new Follower(IntakeConstants.intakePivotMotorLeftId, MotorAlignmentValue.Aligned);
-    intakePivotMotorRight.setControl(follower);
+        new Follower(IntakeConstants.pivotMainMotorId, MotorAlignmentValue.Aligned);
+    intakePivotFollowerMotor.setControl(follower);
   }
 
   public void goToAngle(Angle angle) {
     MotionMagicVoltage intakeVoltage = new MotionMagicVoltage(angle);
-    intakePivotMotorLeft.setControl(intakeVoltage);
+    intakePivotMainMotor.setControl(intakeVoltage);
   }
 
   public Angle getAngle() {
-    return Degrees.of(intakePivotMotorLeft.getPosition().getValueAsDouble());
+    return Degrees.of(intakePivotMainMotor.getPosition().getValueAsDouble());
   }
 }

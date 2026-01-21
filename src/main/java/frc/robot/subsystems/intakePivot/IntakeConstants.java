@@ -2,8 +2,8 @@
 package frc.robot.subsystems.intakePivot;
 
 public class IntakeConstants {
-  public static final int intakePivotMotorLeftId = 0;
-  public static final int intakePivotMotorRightId = 1;
+  public static final int pivotMainMotorId = 0;
+  public static final int pivotFollowerMotorId = 1;
   public static final double currentLimits = 0;
   public static final double currentLimit = 0;
   public static final boolean currentLimitEnable = true;
