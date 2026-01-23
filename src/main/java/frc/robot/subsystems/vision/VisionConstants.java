@@ -1,3 +1,4 @@
+/* (C) RoboLancers 2026 */
 package frc.robot.subsystems.vision;
 
 import static edu.wpi.first.units.Units.Degrees;
@@ -13,11 +14,11 @@ import frc.robot.RobotConstants;
 
 public class VisionConstants {
 
-    public static final String kBackLeftCameraName = "Back Left Swerve Module Camera";
+  public static final String kBackLeftCameraName = "Back Left Swerve Module Camera";
 
-    public static final String kTopElevatorCameraName = "Top Elevator Camera";
+  public static final String kTopElevatorCameraName = "Top Elevator Camera";
 
-    public static final String kBottomElevatorCameraName = "Bottom Elevator Camera";
+  public static final String kBottomElevatorCameraName = "Bottom Elevator Camera";
 
   public static final Transform3d kTopElevatorTransform =
       new Transform3d(
@@ -39,18 +40,13 @@ public class VisionConstants {
           Inches.of(8.7),
           Inches.of(7.82 - 1.575),
           new Rotation3d(Degrees.of(0), Degrees.of(-5.5), Degrees.of(-20)));
-    
-public static final Distance kAllowedFieldDistance =
-      Meters.of(2.5); 
-  public static final Distance kAllowedFieldHeight =
-      Meters.of(1.25); 
+
+  public static final Distance kAllowedFieldDistance = Meters.of(2.5);
+  public static final Distance kAllowedFieldHeight = Meters.of(1.25);
   public static final Rectangle2d kAllowedFieldArea =
       new Rectangle2d(
           new Translation2d(-kAllowedFieldDistance.in(Meters), -kAllowedFieldDistance.in(Meters)),
           new Translation2d(
-              RobotConstants.kAprilTagLayout.getFieldLength()
-                  + kAllowedFieldDistance.in(Meters),
-              RobotConstants.kAprilTagLayout.getFieldWidth()
-                  + kAllowedFieldDistance.in(Meters)));
-
+              RobotConstants.kAprilTagLayout.getFieldLength() + kAllowedFieldDistance.in(Meters),
+              RobotConstants.kAprilTagLayout.getFieldWidth() + kAllowedFieldDistance.in(Meters)));
 }
