@@ -8,6 +8,7 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicExpoTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -21,9 +22,15 @@ import frc.robot.commands.climbCommands.setVoltageWithFeedForward;
 
 public class Climb extends SubsystemBase{
 
+    double kP;
+
+    double kD;
+
+    double kG;
+
     private TalonFX climbMotor = new TalonFX(ClimbConstants.kClimbMotorId);
 
-    private ArmFeedforward armFeedforward = new ArmFeedforward(0, 0, 0, 0, 0);
+    private ArmFeedforward armFeedforward = new ArmFeedforward(0, kG, 0, 0, 0);
 
     public Climb create(){
         return new Climb();
@@ -31,6 +38,7 @@ public class Climb extends SubsystemBase{
 
     public Climb(){
         configureMotors();
+        setClimbPID(kP, 0.0, kD, 0.0, 0.0, 0.0, kG);
     }
 
     public void configureMotors(){
@@ -62,16 +70,16 @@ public class Climb extends SubsystemBase{
 
     }    
 
-    public void goToHeight(Distance height) {
-        climbMotor.setControl(new MotionMagicVoltage(height.in(Meters)));
+    public void goToAngle(Angle angle) {
+        climbMotor.setControl(new MotionMagicExpoTorqueCurrentFOC(angle.in(Degrees)));
     }
 
-    public Distance getHeight() {
-        Distance height = Meters.of(climbMotor.getPosition().getValueAsDouble());
-        return height;
+    public Angle getAngle() {
+        Angle angle = Degrees.of(climbMotor.getPosition().getValueAsDouble());
+        return angle;
     }
 
-    public void setPID(double kP, double kI, double kD, double kS, double kV, double kA, double kG) {
+    public void setClimbPID(double kP, double kI, double kD, double kS, double kV, double kA, double kG) {
         climbMotor.getConfigurator().apply(
             new Slot0Configs()
                 .withKP(kP)

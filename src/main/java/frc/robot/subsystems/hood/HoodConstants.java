@@ -1,4 +1,4 @@
-package frc.robot.subsystems.pivot;
+package frc.robot.subsystems.hood;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Degrees;
@@ -10,17 +10,17 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
 
-public class PivotConstants {
+public class HoodConstants {
     
-public static final int kPivotMotorId = 1;
+public static final int kHoodMotorId = 1;
 
-public static final boolean kPivotMotorInverted = false;
+public static final boolean kHoodMotorInverted = false;
 
-public static final Current kPivotMotorCurrentLimit = Amps.of(6);
+public static final Current kHoodMotorCurrentLimit = Amps.of(6);
 
-public static final LinearVelocity kPivotMotorMaxVelocity = MetersPerSecond.of(1);
+public static final LinearVelocity kHoodMotorMaxVelocity = MetersPerSecond.of(1);
 
-public static final LinearAcceleration kPivotMotorMaxAcceleration = MetersPerSecondPerSecond.of(1);
+public static final LinearAcceleration kHoodMotorMaxAcceleration = MetersPerSecondPerSecond.of(1);
 
 public static final Angle kStartingAngle = Degrees.of(60);
 

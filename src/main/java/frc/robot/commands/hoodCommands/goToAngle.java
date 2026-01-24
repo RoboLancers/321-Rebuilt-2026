@@ -1,20 +1,20 @@
-package frc.robot.commands.pivotCommands;
+package frc.robot.commands.hoodCommands;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.pivot.Pivot;
+import frc.robot.subsystems.hood.Hood;
 
 public class goToAngle extends Command{
-    private Pivot pivot;
+    private Hood hood;
 
-    public goToAngle(Pivot pivot, TalonFX pivotMotor){
-        this.pivot = pivot;
+    public goToAngle(Hood hood, TalonFX pivotMotor){
+        this.hood = hood;
     }
     
     //in progress, needs vision to get a targetAngle to the hub
     public void execute(){
-        pivot.goToAngle(null);
+        hood.goToAngle(null);
     }
 
     public boolean isFinished(){
