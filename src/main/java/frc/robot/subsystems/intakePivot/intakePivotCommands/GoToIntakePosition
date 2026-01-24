@@ -14,10 +14,10 @@ IntakePivot intakePivot;
     }
 
     public void execute(){
-        intakePivotMainMotor.goToAngle(IntakeConstants.intakePosition);
+        intakePivotMainMotor.goToAngle(IntakeConstants.kIntakePosition);
     }
 
     public void isFinished(){
-        return intakePivotMainMotor.getAngle == IntakeConstants.intakePosition;
+        return intakePivotMainMotor.getAngle == IntakeConstants.kIntakePosition;
     }
 }
