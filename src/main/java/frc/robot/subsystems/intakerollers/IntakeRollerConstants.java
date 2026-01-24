@@ -8,4 +8,8 @@ public class IntakeRollerConstants {
   public static final double kSensorToMechanismRatio = 0;
   public static final double kIntakeFuelVelocity = 0;
   public static final double kOuttakeFuelVelocity = 0;
+  public static double kP =0;
+  public static double kD = 0;
+  public static double kG = 0;
+  public static double kV = 0;
 }

@@ -4,13 +4,13 @@ package frc.robot.subsystems.intakerollers;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.VoltageConfigs;
-import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.units.measure.Voltage;
+import frc.robot.util.TunableConstant;
 
 public class IntakeRollers {
 
@@ -19,7 +19,7 @@ public class IntakeRollers {
   private MotorOutputConfigs motorConfigs = new MotorOutputConfigs();
   private VoltageConfigs voltageConfigs = new VoltageConfigs();
   private FeedbackConfigs feedbackConfigs = new FeedbackConfigs();
-  private VoltageOut voltageOut = new VoltageOut(0);
+  private Slot0Configs slot0Configs = new Slot0Configs();
 
   public IntakeRollers() {
     motorConfigurations();
@@ -29,6 +29,12 @@ public class IntakeRollers {
     motorConfigs.withInverted(InvertedValue.Clockwise_Positive);
     motorConfigs.withNeutralMode(NeutralModeValue.Brake);
     feedbackConfigs.withSensorToMechanismRatio(IntakeRollerConstants.kSensorToMechanismRatio);
+
+    slot0Configs.withKP(IntakeRollerConstants.kP);
+    slot0Configs.withKD(IntakeRollerConstants.kD);
+    slot0Configs.withKG(IntakeRollerConstants.kG);
+    slot0Configs.withKV(IntakeRollerConstants.kV);
+
 
     currentLimitsConfigs.withStatorCurrentLimitEnable(IntakeRollerConstants.kCurrentLimitsEnable);
     currentLimitsConfigs.withStatorCurrentLimit(IntakeRollerConstants.kCurrentLimit);
@@ -40,5 +46,18 @@ public class IntakeRollers {
 
   public void setVoltage(double volts){
     rollerMotor.setVoltage(volts);
+  }
+
+  public void tune(){
+
+    TunableConstant kP = new TunableConstant("IntakeRollers/kP", 0);
+    TunableConstant kD = new TunableConstant("IntakeRollers/kD", 0);
+    TunableConstant kG = new TunableConstant("IntakeRollers/kG", 0);
+    TunableConstant kV = new TunableConstant("IntakeRollers/kV", 0);
+
+    IntakeRollerConstants.kP = kP.get();
+    IntakeRollerConstants.kD = kD.get();
+    IntakeRollerConstants.kG = kG.get();
+    IntakeRollerConstants.kV = kV.get();
   }
 }
