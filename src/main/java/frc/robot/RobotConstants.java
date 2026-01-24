@@ -10,5 +10,6 @@ import edu.wpi.first.wpilibj.TimedRobot;
 
 public class RobotConstants {
   public static final Time kRobotLoopPeriod = Seconds.of(TimedRobot.kDefaultPeriod);
-   public static final AprilTagFieldLayout kAprilTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
+  public static final AprilTagFieldLayout kAprilTagLayout =
+      AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
 }

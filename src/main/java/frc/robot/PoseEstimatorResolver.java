@@ -1,67 +1,66 @@
+/* (C) RoboLancers 2026 */
 package frc.robot;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
-
 import com.ctre.phoenix6.hardware.Pigeon2;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.vision.Vision;
+import java.util.function.Supplier;
 
-public class PoseEstimatorResolver{
- 
-public Vision vision;
+public class PoseEstimatorResolver {
 
-public Drivetrain drivetrain;
+  public Vision vision;
 
-public Pigeon2 pigeon = drivetrain.getPigeon2();
+  public Drivetrain drivetrain;
 
-public Pose2d visionPose = vision.getBestPose().estimatedPose.toPose2d();
+  public Pigeon2 pigeon = drivetrain.getPigeon2();
 
-public Pose2d drivetrainPose = drivetrain.getPose();
+  public Pose2d visionPose = vision.getBestPose().estimatedPose.toPose2d();
 
-public PoseEstimatorResolver(Vision vision, Drivetrain drivetrain){
+  public Pose2d drivetrainPose = drivetrain.getPose();
+
+  public PoseEstimatorResolver(Vision vision, Drivetrain drivetrain) {
     this.vision = vision;
     this.drivetrain = drivetrain;
-}
+  }
 
-public double confidence = 1-vision.getCurrentAmbiguity();
+  public double confidence = 1 - vision.getCurrentAmbiguity();
 
-public double visionWeight = confidence;
+  public double visionWeight = confidence;
 
-public double drivetrainWeight = 0.90;
+  public double drivetrainWeight = 0.90;
 
-public Rotation2d pigeonRotation = new Rotation2d(pigeon.getYaw().getValue());
+  public Rotation2d pigeonRotation = new Rotation2d(pigeon.getYaw().getValue());
 
-public Angle resolvedYaw = 
-    Degrees.of(
-        ((visionWeight * visionPose.getRotation().getDegrees() + pigeonRotation.getDegrees()) / (visionWeight + 1))
-    )
-;
+  public Angle resolvedYaw =
+      Degrees.of(
+          ((visionWeight * visionPose.getRotation().getDegrees() + pigeonRotation.getDegrees())
+              / (visionWeight + 1)));
 
-public Distance resolvedX = 
-    Meters.of(
-       (( visionWeight * visionPose.getMeasureX().in(Meters) + drivetrainWeight * drivetrainPose.getMeasureX().in(Meters)) / (visionWeight + drivetrainWeight))
-    );
+  public Distance resolvedX =
+      Meters.of(
+          ((visionWeight * visionPose.getMeasureX().in(Meters)
+                  + drivetrainWeight * drivetrainPose.getMeasureX().in(Meters))
+              / (visionWeight + drivetrainWeight)));
 
-public Distance resolvedY = 
-    Meters.of(
-       (( visionWeight * visionPose.getMeasureY().in(Meters) + drivetrainWeight * drivetrainPose.getMeasureY().in(Meters)) / (visionWeight + drivetrainWeight))
-    );
+  public Distance resolvedY =
+      Meters.of(
+          ((visionWeight * visionPose.getMeasureY().in(Meters)
+                  + drivetrainWeight * drivetrainPose.getMeasureY().in(Meters))
+              / (visionWeight + drivetrainWeight)));
 
-public Pose2d getPoseFromSupplier(Supplier<Distance> x, Supplier<Distance> y, Supplier<Angle> yaw){
-    return new Pose2d(x.get(),y.get(),new Rotation2d(yaw.get()));
-}
+  public Pose2d getPoseFromSupplier(
+      Supplier<Distance> x, Supplier<Distance> y, Supplier<Angle> yaw) {
+    return new Pose2d(x.get(), y.get(), new Rotation2d(yaw.get()));
+  }
 
-public Pose2d getRobotPose(){
-    return getPoseFromSupplier(()->resolvedX,()->resolvedY,()->resolvedYaw);
-}
+  public Pose2d getRobotPose() {
+    return getPoseFromSupplier(() -> resolvedX, () -> resolvedY, () -> resolvedYaw);
+  }
 }

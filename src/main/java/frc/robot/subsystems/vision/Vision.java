@@ -1,15 +1,16 @@
+/* (C) RoboLancers 2026 */
 package frc.robot.subsystems.vision;
 
 import static edu.wpi.first.units.Units.Meters;
 
+import edu.wpi.first.math.geometry.Translation3d;
+import frc.robot.RobotConstants;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
-
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -17,168 +18,167 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-import edu.wpi.first.math.geometry.Translation3d;
-import frc.robot.RobotConstants;
-
 public class Vision {
 
-public double currentAmbiguity;
+  public double currentAmbiguity;
 
-public double getAmbiguityFromSupplier(DoubleSupplier ambiguity){
+  public double getAmbiguityFromSupplier(DoubleSupplier ambiguity) {
     return ambiguity.getAsDouble();
-}
+  }
 
-public double getCurrentAmbiguity(){
-    return getAmbiguityFromSupplier(()->currentAmbiguity);
-}
+  public double getCurrentAmbiguity() {
+    return getAmbiguityFromSupplier(() -> currentAmbiguity);
+  }
 
-public EstimatedRobotPose bestPose;
+  public EstimatedRobotPose bestPose;
 
-public EstimatedRobotPose getPoseFromSupplier(Supplier<EstimatedRobotPose> bestPose){
+  public EstimatedRobotPose getPoseFromSupplier(Supplier<EstimatedRobotPose> bestPose) {
     return bestPose.get();
-}
+  }
 
-public EstimatedRobotPose getBestPose(){
-    return getPoseFromSupplier(()->bestPose);
-}
+  public EstimatedRobotPose getBestPose() {
+    return getPoseFromSupplier(() -> bestPose);
+  }
 
-public Consumer<VisionEstimate> visionEstConsumer;
-   
-private PhotonCamera backLeftCamera = new PhotonCamera(VisionConstants.kBackLeftCameraName);
+  public Consumer<VisionEstimate> visionEstConsumer;
 
-private PhotonCamera topElevatorCamera = new PhotonCamera(VisionConstants.kTopElevatorCameraName);
+  private PhotonCamera backLeftCamera = new PhotonCamera(VisionConstants.kBackLeftCameraName);
 
-private PhotonCamera bottomElevatorCamera = new PhotonCamera(VisionConstants.kBottomElevatorCameraName);
+  private PhotonCamera topElevatorCamera = new PhotonCamera(VisionConstants.kTopElevatorCameraName);
 
-public List<PhotonCamera> cameras = List.of(backLeftCamera,topElevatorCamera,bottomElevatorCamera);
+  private PhotonCamera bottomElevatorCamera =
+      new PhotonCamera(VisionConstants.kBottomElevatorCameraName);
 
-private PhotonPoseEstimator backLeftPoseEstimator = new PhotonPoseEstimator(
-    RobotConstants.kAprilTagLayout,
-    PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-    VisionConstants.kBackLeftTransform
-);
+  public List<PhotonCamera> cameras =
+      List.of(backLeftCamera, topElevatorCamera, bottomElevatorCamera);
 
-private PhotonPoseEstimator topElevatorPoseEstimator =  new PhotonPoseEstimator(
-    RobotConstants.kAprilTagLayout,
-    PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-    VisionConstants.kTopElevatorTransform
-);
+  private PhotonPoseEstimator backLeftPoseEstimator =
+      new PhotonPoseEstimator(
+          RobotConstants.kAprilTagLayout,
+          PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+          VisionConstants.kBackLeftTransform);
 
-private PhotonPoseEstimator bottomElevatorPoseEstimator = new PhotonPoseEstimator(
-    RobotConstants.kAprilTagLayout,
-    PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-    VisionConstants.kBottomElevatorTransform
-);
+  private PhotonPoseEstimator topElevatorPoseEstimator =
+      new PhotonPoseEstimator(
+          RobotConstants.kAprilTagLayout,
+          PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+          VisionConstants.kTopElevatorTransform);
 
-public List<PhotonPoseEstimator> estimators = List.of(backLeftPoseEstimator,topElevatorPoseEstimator, bottomElevatorPoseEstimator);
+  private PhotonPoseEstimator bottomElevatorPoseEstimator =
+      new PhotonPoseEstimator(
+          RobotConstants.kAprilTagLayout,
+          PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+          VisionConstants.kBottomElevatorTransform);
 
-public static Vision create(Consumer<VisionEstimate> visionEstConsumer){
+  public List<PhotonPoseEstimator> estimators =
+      List.of(backLeftPoseEstimator, topElevatorPoseEstimator, bottomElevatorPoseEstimator);
+
+  public static Vision create(Consumer<VisionEstimate> visionEstConsumer) {
     return new Vision(visionEstConsumer);
-}
+  }
 
-public Vision(Consumer<VisionEstimate> visionEstConsumer){
-this.visionEstConsumer = visionEstConsumer;
-}
+  public Vision(Consumer<VisionEstimate> visionEstConsumer) {
+    this.visionEstConsumer = visionEstConsumer;
+  }
 
-private List<VisionEstimate> getVisionEstimates(){
+  private List<VisionEstimate> getVisionEstimates() {
 
     List<Double> ambiguities = new ArrayList<Double>();
 
     List<VisionEstimate> visionEstimates = new ArrayList<>();
 
-    for(int i=0;i<cameras.size();i++){
+    for (int i = 0; i < cameras.size(); i++) {
 
-    if (!cameras.get(i).isConnected()) return null;
+      if (!cameras.get(i).isConnected()) return null;
 
-    List<PhotonPipelineResult> unreadResults= cameras.get(i).getAllUnreadResults();
+      List<PhotonPipelineResult> unreadResults = cameras.get(i).getAllUnreadResults();
 
-    if (unreadResults.isEmpty()) return null;
+      if (unreadResults.isEmpty()) return null;
 
-    PhotonPipelineResult latestResult = unreadResults.get(unreadResults.size()-1);
+      PhotonPipelineResult latestResult = unreadResults.get(unreadResults.size() - 1);
 
-    if (!latestResult.hasTargets()) return null;
+      if (!latestResult.hasTargets()) return null;
 
-    EstimatedRobotPose estimatedPose = estimators.get(i)
-    .update(latestResult)
-    .filter(
-        est->VisionConstants.kAllowedFieldArea.contains(est.estimatedPose.getTranslation().toTranslation2d())
-        && est.estimatedPose.getMeasureZ().isNear(Meters.of(0),VisionConstants.kAllowedFieldHeight))
-    .orElse(null);
+      EstimatedRobotPose estimatedPose =
+          estimators
+              .get(i)
+              .update(latestResult)
+              .filter(
+                  est ->
+                      VisionConstants.kAllowedFieldArea.contains(
+                              est.estimatedPose.getTranslation().toTranslation2d())
+                          && est.estimatedPose
+                              .getMeasureZ()
+                              .isNear(Meters.of(0), VisionConstants.kAllowedFieldHeight))
+              .orElse(null);
 
-    double standardDeviation = calculateStdDevs(estimatedPose);
+      double standardDeviation = calculateStdDevs(estimatedPose);
 
-    VisionEstimate visionEstimate = new VisionEstimate(estimatedPose, standardDeviation);
+      VisionEstimate visionEstimate = new VisionEstimate(estimatedPose, standardDeviation);
 
-    visionEstimates.add(visionEstimate);
+      visionEstimates.add(visionEstimate);
 
-    ambiguities.add(calculateAmbiguity(estimatedPose));
-
+      ambiguities.add(calculateAmbiguity(estimatedPose));
     }
 
-    double highestConfidence = 1-Collections.min(ambiguities);
+    double highestConfidence = 1 - Collections.min(ambiguities);
 
-    if(VisionConstants.kMinimumConfidence<highestConfidence){
+    if (VisionConstants.kMinimumConfidence < highestConfidence) {
 
-    this.bestPose = visionEstimates.get(ambiguities.indexOf(
-        Collections.min(ambiguities)
-    )).estimatedPose();
+      this.bestPose =
+          visionEstimates.get(ambiguities.indexOf(Collections.min(ambiguities))).estimatedPose();
 
-    this.currentAmbiguity = Collections.min(ambiguities);
-
+      this.currentAmbiguity = Collections.min(ambiguities);
     }
 
     return visionEstimates;
+  }
 
-}
-
-private double calculateStdDevs(EstimatedRobotPose estimatedPose){
+  private double calculateStdDevs(EstimatedRobotPose estimatedPose) {
 
     double distance = 0;
 
-    for (PhotonTrackedTarget target : estimatedPose.targetsUsed){
-       double targetDistance = target.getBestCameraToTarget().getTranslation().getDistance(new Translation3d());
-       distance = distance + targetDistance;
+    for (PhotonTrackedTarget target : estimatedPose.targetsUsed) {
+      double targetDistance =
+          target.getBestCameraToTarget().getTranslation().getDistance(new Translation3d());
+      distance = distance + targetDistance;
     }
 
-    double averageDistance = distance/estimatedPose.targetsUsed.size();
+    double averageDistance = distance / estimatedPose.targetsUsed.size();
 
-    double standardDeviation = averageDistance/estimatedPose.targetsUsed.size();
+    double standardDeviation = averageDistance / estimatedPose.targetsUsed.size();
 
     return standardDeviation;
+  }
 
-}
-
-public double calculateAmbiguity(EstimatedRobotPose estimatedPose){
+  public double calculateAmbiguity(EstimatedRobotPose estimatedPose) {
     double totalAmbiguity = 0;
-    for (PhotonTrackedTarget target : estimatedPose.targetsUsed){
-        totalAmbiguity = totalAmbiguity+target.getPoseAmbiguity();
+    for (PhotonTrackedTarget target : estimatedPose.targetsUsed) {
+      totalAmbiguity = totalAmbiguity + target.getPoseAmbiguity();
     }
-    double averageAmbiguity = totalAmbiguity/estimatedPose.targetsUsed.size();
+    double averageAmbiguity = totalAmbiguity / estimatedPose.targetsUsed.size();
     return averageAmbiguity;
-}
+  }
 
+  public boolean areCamerasConnected;
 
+  public void periodic() {
 
-public boolean areCamerasConnected;
+    List<VisionEstimate> latestEstimates = getVisionEstimates();
 
-public void periodic(){
-
-List<VisionEstimate> latestEstimates = getVisionEstimates();
-
-for(VisionEstimate estimate : latestEstimates){
-    visionEstConsumer.accept(estimate);
-}
-
-getVisionEstimates();
-
-for(PhotonCamera camera : cameras){
-        if (camera.isConnected()){
-            areCamerasConnected = true;
-        } else {
-            areCamerasConnected = false;
-            break;}
+    for (VisionEstimate estimate : latestEstimates) {
+      visionEstConsumer.accept(estimate);
     }
 
-}
+    getVisionEstimates();
 
+    for (PhotonCamera camera : cameras) {
+      if (camera.isConnected()) {
+        areCamerasConnected = true;
+      } else {
+        areCamerasConnected = false;
+        break;
+      }
+    }
+  }
 }
