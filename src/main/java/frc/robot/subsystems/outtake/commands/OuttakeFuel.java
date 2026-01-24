@@ -38,6 +38,10 @@ public static Command scoreRegion3(Outtake outtake){
     return outtakeWithVelocity(outtake, ()-> OuttakeConstants.kRegion3ScoreRPM);
 }
 
+public static Command scoreSetPosition(Outtake outtake){
+    return outtakeWithVelocity(outtake, ()-> OuttakeConstants.kSetPositionScoreRPM);
+}
+
 public static Command releaseFuel(Outtake outtake){
     return outtakeWithVelocity(outtake, ()-> OuttakeConstants.kReleaseRPM);
 }

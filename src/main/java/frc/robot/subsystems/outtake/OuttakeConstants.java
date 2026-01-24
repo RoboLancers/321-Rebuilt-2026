@@ -26,6 +26,8 @@ public static final AngularVelocity kRegion2ScoreRPM = RPM.of(0);
 
 public static final AngularVelocity kRegion3ScoreRPM = RPM.of(0);
 
+public static final AngularVelocity kSetPositionScoreRPM = RPM.of(0);
+
 public static final AngularVelocity kReleaseRPM = RPM.of(0);
 
 }
