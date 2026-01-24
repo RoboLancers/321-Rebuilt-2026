@@ -18,15 +18,13 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.util.TunableConstant;
 
 public class Hood extends SubsystemBase{
 
-double kP=0;
-double kD=0;
-double kG=0;
-
-private DutyCycleEncoder absoluteEncoder = new DutyCycleEncoder(HoodConstants.kEncoderID);
+private DutyCycleEncoder absoluteEncoder = new DutyCycleEncoder(HoodConstants.kHoodEncoderId);
 
 private TalonFX hoodMotor = new TalonFX(HoodConstants.kHoodMotorId);
 
@@ -34,6 +32,7 @@ private TalonFX hoodMotor = new TalonFX(HoodConstants.kHoodMotorId);
     public Hood(){
         configureMotors();
         setHoodPID();
+        zeroEncoder();
     }
     
 public void configureMotors() {
@@ -69,9 +68,9 @@ public void configureMotors() {
 public void setHoodPID() {
     hoodMotor.getConfigurator().apply(
         new Slot0Configs()
-            .withKP(kP)
-            .withKD(kD)
-            .withKG(kG)
+            .withKP(HoodConstants.kP)
+            .withKD(HoodConstants.kD)
+            .withKG(HoodConstants.kG)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign)
         );
 }
@@ -85,8 +84,8 @@ public Angle getAngle() {
     return angle;
 }
 
-public void resetEncoder(){
-    hoodMotor.setPosition(absoluteEncoder.get);
+public void zeroEncoder(){
+    hoodMotor.setPosition(absoluteEncoder.get());
 }
 
 public boolean atTargetAngle(Angle targetAngle){
@@ -94,6 +93,19 @@ public boolean atTargetAngle(Angle targetAngle){
         Math.abs(getAngle().in(Degrees) - targetAngle.in(Degrees)) 
         < HoodConstants.kAngleTolerance.in(Degrees);
     return atTargetAngle;
+}
+
+public void tune(){
+    TunableConstant kG = new TunableConstant("Hood/kG/",0);
+    TunableConstant kD = new TunableConstant("Hood/kD/",0);
+    TunableConstant kP = new TunableConstant("Hood/kP/",0);
+    TunableConstant targetAngle = new TunableConstant("Hood/targetAngle/",0);
+
+    HoodConstants.kG = kG.get();
+    HoodConstants.kD = kD.get();
+    HoodConstants.kP = kP.get();
+
+    goToAngle(Degrees.of(targetAngle.get()));
 }
 
 }
