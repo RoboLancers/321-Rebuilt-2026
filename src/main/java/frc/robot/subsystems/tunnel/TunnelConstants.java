@@ -10,11 +10,11 @@ import edu.wpi.first.units.measure.AngularVelocity;
 
 public class TunnelConstants {
 
-  public static double kP = 0;
+  public static final double kP = 0;
 
-  public static double kD = 0;
+  public static final double kD = 0;
 
-  public static double kV = 0;
+  public static final double kV = 0;
 
   public static final int kTunnelMotorId = 1;
 
