@@ -13,9 +13,9 @@ import edu.wpi.first.units.measure.LinearVelocity;
 
 public class HoodConstants {
 
-  public static double kP = 0;
-  public static double kD = 0;
-  public static double kG = 0;
+  public static final double kP = 0;
+  public static final double kD = 0;
+  public static final double kG = 0;
 
   public static final int kHoodMotorId = 1;
 
