@@ -15,10 +15,12 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.pathplanner.lib.config.PIDConstants;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.climbCommands.setVoltageWithFeedForward;
+import frc.robot.subsystems.drivetrain.Drivetrain;
 
 public class Climb extends SubsystemBase{
 
@@ -30,7 +32,9 @@ public class Climb extends SubsystemBase{
 
     private TalonFX climbMotor = new TalonFX(ClimbConstants.kClimbMotorId);
 
-    private ArmFeedforward armFeedforward = new ArmFeedforward(0, kG, 0, 0, 0);
+    private ArmFeedforward climbFeedforward = new ArmFeedforward(0, kG, 0, 0, 0);
+
+    private PIDController climbController = new PIDController(kP, kG, kD);
 
     public Climb create(){
         return new Climb();
@@ -66,12 +70,13 @@ public class Climb extends SubsystemBase{
                         .withStaticFeedforwardSign(ClimbConstants.kClimbFeedForwardSign));
                         
                 climbMotor.getConfigurator().apply(climbMotorConfiguration);
-                this.setDefaultCommand(new setVoltageWithFeedForward(climbMotor, armFeedforward));
-
     }    
 
     public void goToAngle(Angle angle) {
-        climbMotor.setControl(new MotionMagicExpoTorqueCurrentFOC(angle.in(Degrees)));
+        double volts =
+        climbController.calculate(/*replace with yaw from gyro*/getAngle().in(Degrees), angle.in(Degrees)) + 
+        climbFeedforward.calculate(/*replace with yaw from gyro*/0,0);
+        climbMotor.setVoltage(volts);
     }
 
     public Angle getAngle() {
