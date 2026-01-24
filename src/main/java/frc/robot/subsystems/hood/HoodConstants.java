@@ -1,3 +1,4 @@
+/* (C) RoboLancers 2026 */
 package frc.robot.subsystems.hood;
 
 import static edu.wpi.first.units.Units.Amps;
@@ -12,41 +13,39 @@ import edu.wpi.first.units.measure.LinearVelocity;
 
 public class HoodConstants {
 
+  public static double kP = 0;
+  public static double kD = 0;
+  public static double kG = 0;
 
-public static double kP=0;
-public static double kD=0;
-public static double kG=0;
-    
-public static final int kHoodMotorId = 1;
+  public static final int kHoodMotorId = 1;
 
-public static final int kHoodEncoderId = 0;
+  public static final int kHoodEncoderId = 0;
 
-public static final boolean kHoodMotorInverted = false;
+  public static final boolean kHoodMotorInverted = false;
 
-public static final Current kHoodMotorCurrentLimit = Amps.of(6);
+  public static final Current kHoodMotorCurrentLimit = Amps.of(6);
 
-public static final LinearVelocity kHoodMotorMaxVelocity = MetersPerSecond.of(1);
+  public static final LinearVelocity kHoodMotorMaxVelocity = MetersPerSecond.of(1);
 
-public static final LinearAcceleration kHoodMotorMaxAcceleration = MetersPerSecondPerSecond.of(1);
+  public static final LinearAcceleration kHoodMotorMaxAcceleration = MetersPerSecondPerSecond.of(1);
 
-public static final Angle kStartingAngle = Degrees.of(60);
+  public static final Angle kStartingAngle = Degrees.of(60);
 
-public static final Angle kAngleTolerance = Degrees.of(1);
+  public static final Angle kAngleTolerance = Degrees.of(1);
 
-public static final Angle kSetScoreAngle = Degrees.of(0);
+  public static final Angle kSetScoreAngle = Degrees.of(0);
 
-public static final Angle kRegion1ScoreAngle = Degrees.of(0);
+  public static final Angle kRegion1ScoreAngle = Degrees.of(0);
 
-public static final Angle kRegion2ScoreAngle = Degrees.of(0);
+  public static final Angle kRegion2ScoreAngle = Degrees.of(0);
 
-public static final Angle kRegion3ScoreAngle = Degrees.of(0);
+  public static final Angle kRegion3ScoreAngle = Degrees.of(0);
 
-public static final Angle kNeutralFeedAngle = Degrees.of(0);
+  public static final Angle kNeutralFeedAngle = Degrees.of(0);
 
-public static final Angle kOppositeFeedAngle = Degrees.of(0);
+  public static final Angle kOppositeFeedAngle = Degrees.of(0);
 
-public static final Angle kReleaseAngle = Degrees.of(0);
+  public static final Angle kReleaseAngle = Degrees.of(0);
 
-public static final Angle kTravelAngle = Degrees.of(0);
-
+  public static final Angle kTravelAngle = Degrees.of(0);
 }
