@@ -1,4 +1,4 @@
-/* (C) Robolancers 2026 */
+/* (C) RoboLancers 2026 */
 package frc.robot.subsystems.drivetrain;
 
 import static edu.wpi.first.units.Units.Degrees;
@@ -20,7 +20,8 @@ import edu.wpi.first.wpilibj.RobotBase;
 public class DrivetrainConstants {
   public record AutoGains(double kP, double kI, double kD) {}
 
-  public static final AutoGains kTranslationGains = new AutoGains(6.328, 0, 0.01); // real (TODO: TUNE)
+  public static final AutoGains kTranslationGains =
+      new AutoGains(6.328, 0, 0.01); // real (TODO: TUNE)
 
   public static final Constraints kTranslationConstraints = new Constraints(4.5, 5);
 
