@@ -1,5 +1,4 @@
-
-/* (C) RoboLancers 2026 */
+/* (C) Robolancers 2026 */
 package frc.robot.subsystems.drivetrain;
 
 import static edu.wpi.first.units.Units.Degrees;
