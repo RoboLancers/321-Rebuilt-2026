@@ -29,7 +29,7 @@ public class Hood extends SubsystemBase {
 
   public Hood() {
     configureMotors();
-    setHoodPID(HoodConstants.kG, HoodConstants.kD, HoodConstants.kG);
+    setHoodPID(HoodConstants.kP, HoodConstants.kD, HoodConstants.kG);
     zeroEncoder();
   }
 
