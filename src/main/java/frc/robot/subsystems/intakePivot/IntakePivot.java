@@ -20,7 +20,7 @@ import frc.robot.util.TunableConstant;
 
 public class IntakePivot extends SubsystemBase {
 
-  private TalonFX intakePivotMotor = new TalonFX(IntakeConstants.kPivoMotorId);
+  private TalonFX intakePivotMotor = new TalonFX(IntakeConstants.kPivotMotorId);
   private TalonFXConfiguration talonConfigs = new TalonFXConfiguration();
   private MotorOutputConfigs motorConfigs = new MotorOutputConfigs();
   private FeedbackConfigs feedbackConfigs = new FeedbackConfigs();

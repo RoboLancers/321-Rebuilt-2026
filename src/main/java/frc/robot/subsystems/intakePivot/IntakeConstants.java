@@ -7,7 +7,7 @@ import edu.wpi.first.units.measure.Angle;
 
 public class IntakeConstants {
 
-  public static final int kPivoMotorId = 0;
+  public static final int kPivotMotorId = 0;
   public static final double kCurrentLimits = 0;
   public static final double kCurrentLimit = 0;
   public static final boolean kCurrentLimitEnable = true;
