@@ -3,8 +3,12 @@ package frc.robot.subsystems.vision;
 import static edu.wpi.first.units.Units.Meters;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
@@ -17,6 +21,26 @@ import edu.wpi.first.math.geometry.Translation3d;
 import frc.robot.RobotConstants;
 
 public class Vision {
+
+public double currentAmbiguity;
+
+public double getAmbiguityFromSupplier(DoubleSupplier ambiguity){
+    return ambiguity.getAsDouble();
+}
+
+public double getCurrentAmbiguity(){
+    return getAmbiguityFromSupplier(()->currentAmbiguity);
+}
+
+public EstimatedRobotPose bestPose;
+
+public EstimatedRobotPose getPoseFromSupplier(Supplier<EstimatedRobotPose> bestPose){
+    return bestPose.get();
+}
+
+public EstimatedRobotPose getBestPose(){
+    return getPoseFromSupplier(()->bestPose);
+}
 
 public Consumer<VisionEstimate> visionEstConsumer;
    
@@ -58,6 +82,8 @@ this.visionEstConsumer = visionEstConsumer;
 
 private List<VisionEstimate> getVisionEstimates(){
 
+    List<Double> ambiguities = new ArrayList<Double>();
+
     List<VisionEstimate> visionEstimates = new ArrayList<>();
 
     for(int i=0;i<cameras.size();i++){
@@ -85,6 +111,20 @@ private List<VisionEstimate> getVisionEstimates(){
 
     visionEstimates.add(visionEstimate);
 
+    ambiguities.add(calculateAmbiguity(estimatedPose));
+
+    }
+
+    double highestConfidence = 1-Collections.min(ambiguities);
+
+    if(VisionConstants.kMinimumConfidence<highestConfidence){
+
+    this.bestPose = visionEstimates.get(ambiguities.indexOf(
+        Collections.min(ambiguities)
+    )).estimatedPose();
+
+    this.currentAmbiguity = Collections.min(ambiguities);
+
     }
 
     return visionEstimates;
@@ -108,6 +148,17 @@ private double calculateStdDevs(EstimatedRobotPose estimatedPose){
 
 }
 
+public double calculateAmbiguity(EstimatedRobotPose estimatedPose){
+    double totalAmbiguity = 0;
+    for (PhotonTrackedTarget target : estimatedPose.targetsUsed){
+        totalAmbiguity = totalAmbiguity+target.getPoseAmbiguity();
+    }
+    double averageAmbiguity = totalAmbiguity/estimatedPose.targetsUsed.size();
+    return averageAmbiguity;
+}
+
+
+
 public boolean areCamerasConnected;
 
 public void periodic(){
@@ -117,6 +168,8 @@ List<VisionEstimate> latestEstimates = getVisionEstimates();
 for(VisionEstimate estimate : latestEstimates){
     visionEstConsumer.accept(estimate);
 }
+
+getVisionEstimates();
 
 for(PhotonCamera camera : cameras){
         if (camera.isConnected()){
