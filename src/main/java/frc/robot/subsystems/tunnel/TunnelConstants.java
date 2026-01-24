@@ -1,14 +1,20 @@
 /* (C) RoboLancers 2026 */
 package frc.robot.subsystems.tunnel;
 
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
+import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.units.measure.LinearAcceleration;
-import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.units.measure.AngularAcceleration;
+import edu.wpi.first.units.measure.AngularVelocity;
 
 public class TunnelConstants {
+
+  public static double kP = 0;
+
+  public static double kD = 0;
+
+  public static double kV = 0;
 
   public static final int kTunnelMotorId = 1;
 
@@ -20,7 +26,8 @@ public class TunnelConstants {
 
   public static final boolean kTunnelInverted = false;
 
-  public static final LinearVelocity kTunnelMaxVelocity = MetersPerSecond.of(1);
+  public static final AngularVelocity kTunnelMaxVelocity = RPM.of(1);
 
-  public static final LinearAcceleration kTunnelMaxAcceleration = MetersPerSecondPerSecond.of(1);
+  public static final AngularAcceleration kTunnelMaxAcceleration =
+      RotationsPerSecondPerSecond.of(1);
 }
