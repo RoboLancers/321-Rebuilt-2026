@@ -2,7 +2,9 @@
 package frc.robot.subsystems.outtake;
 
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 
+import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 
 public class OuttakeConstants {
@@ -30,4 +32,8 @@ public class OuttakeConstants {
   public static final AngularVelocity kSetPositionScoreRPM = RPM.of(0);
 
   public static final AngularVelocity kReleaseRPM = RPM.of(0);
+
+  public static final AngularVelocity kMaxVelocity = RPM.of(3000);
+
+  public static final AngularAcceleration kMaxAcceleration = RotationsPerSecondPerSecond.of(20);
 }
