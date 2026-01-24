@@ -20,6 +20,10 @@ public class VisionConstants {
 
   public static final String kBottomElevatorCameraName = "Bottom Elevator Camera";
 
+  public static final double kMinimumConfidence = 0.85;
+
+  public static final double kTargetConfidence = 0.95;
+
   public static final Transform3d kTopElevatorTransform =
       new Transform3d(
           Meters.of(0.2314956),
