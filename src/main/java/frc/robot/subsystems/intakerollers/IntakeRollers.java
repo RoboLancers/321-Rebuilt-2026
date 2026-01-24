@@ -9,8 +9,12 @@ import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import edu.wpi.first.epilogue.Logged;
 import frc.robot.util.TunableConstant;
 
+
+@Logged
 public class IntakeRollers {
 
   private TalonFX rollerMotor = new TalonFX(IntakeRollerConstants.kRollerMotorId);
@@ -27,6 +31,7 @@ public class IntakeRollers {
         IntakeRollerConstants.kD,
         IntakeRollerConstants.kV,
         IntakeRollerConstants.kG);
+        
   }
 
   public void motorConfigurations() {
