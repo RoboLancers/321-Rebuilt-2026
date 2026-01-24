@@ -4,8 +4,6 @@ package frc.robot.subsystems.indexer;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 
-import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 
@@ -15,9 +13,7 @@ public class IndexerConstants {
 
   public static double kCurrentLimit = 40;
 
-  public static NeutralModeValue kNeutralMode = NeutralModeValue.Brake;
-
-  public static InvertedValue kInverted = InvertedValue.Clockwise_Positive;
+  public static boolean kInverted = false;
 
   public static double kGearing = 1;
 

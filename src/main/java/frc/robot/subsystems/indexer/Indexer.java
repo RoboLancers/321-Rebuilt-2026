@@ -12,6 +12,8 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -41,8 +43,11 @@ public class Indexer extends SubsystemBase {
                     .withSupplyCurrentLimitEnable(true))
             .withMotorOutput(
                 new MotorOutputConfigs()
-                    .withNeutralMode(IndexerConstants.kNeutralMode)
-                    .withInverted(IndexerConstants.kInverted))
+                    .withNeutralMode(NeutralModeValue.Brake)
+                    .withInverted(
+                        IndexerConstants.kInverted
+                            ? InvertedValue.CounterClockwise_Positive
+                            : InvertedValue.Clockwise_Positive))
             .withFeedback(
                 new FeedbackConfigs().withSensorToMechanismRatio(IndexerConstants.kGearing))
             .withMotionMagic(
