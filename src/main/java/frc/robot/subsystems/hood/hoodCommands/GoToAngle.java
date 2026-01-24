@@ -1,14 +1,14 @@
-package frc.robot.commands.hoodCommands;
+package frc.robot.subsystems.hood.hoodCommands;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.hood.Hood;
 
-public class goToAngle extends Command{
+public class GoToAngle extends Command{
     private Hood hood;
 
-    public goToAngle(Hood hood, TalonFX pivotMotor){
+    public GoToAngle(Hood hood, TalonFX pivotMotor){
         this.hood = hood;
     }
     

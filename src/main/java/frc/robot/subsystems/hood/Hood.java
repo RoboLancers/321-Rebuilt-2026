@@ -10,6 +10,7 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicExpoTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -21,21 +22,20 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Hood extends SubsystemBase{
 
-double kP;
-double kD;
-double kG;
+double kP=0;
+double kD=0;
+double kG=0;
 
-    public Hood create(){
-        return new Hood();
-    }
+private DutyCycleEncoder absoluteEncoder = new DutyCycleEncoder(HoodConstants.kEncoderID);
+
+private TalonFX hoodMotor = new TalonFX(HoodConstants.kHoodMotorId);
+
 
     public Hood(){
         configureMotors();
-        setHoodPID(kP, 0.0, kD, 0.0, 0.0, 0.0, kG);
+        setHoodPID();
     }
     
-TalonFX hoodMotor = new TalonFX(HoodConstants.kHoodMotorId);
-
 public void configureMotors() {
 
     TalonFXConfiguration hoodMotorConfigs = new TalonFXConfiguration()
@@ -66,22 +66,18 @@ public void configureMotors() {
     hoodMotor.getConfigurator().apply(hoodMotorConfigs);
 }
 
-public void setHoodPID(double kP, double kI, double kD, double kS, double kV, double kA, double kG) {
+public void setHoodPID() {
     hoodMotor.getConfigurator().apply(
         new Slot0Configs()
             .withKP(kP)
-            .withKI(kI)
             .withKD(kD)
             .withKG(kG)
-            .withKS(kS)
-            .withKA(kA)
-            .withKV(kV)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign)
         );
 }
 
 public void goToAngle(Angle targetAngle){
-    hoodMotor.setControl(new MotionMagicExpoTorqueCurrentFOC(targetAngle).withFeedForward(kG));
+    hoodMotor.setControl(new MotionMagicVoltage(targetAngle));
 }
 
 public Angle getAngle() {
@@ -90,7 +86,7 @@ public Angle getAngle() {
 }
 
 public void resetEncoder(){
-    hoodMotor.setPosition(HoodConstants.kStartingAngle);
+    hoodMotor.setPosition(absoluteEncoder.get);
 }
 
 public boolean atTargetAngle(Angle targetAngle){
