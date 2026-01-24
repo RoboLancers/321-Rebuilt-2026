@@ -6,4 +6,6 @@ public class IntakeRollerConstants {
   public static final boolean kCurrentLimitsEnable = true;
   public static final double kCurrentLimit = 0;
   public static final double kSensorToMechanismRatio = 0;
+  public static final double kIntakeFuelVelocity = 0;
+  public static final double kOuttakeFuelVelocity = 0;
 }

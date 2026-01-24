@@ -39,5 +39,6 @@ public class IntakeRollers {
   }
 
   public void setVoltage(double volts){
+    rollerMotor.setVoltage(volts);
   }
 }
