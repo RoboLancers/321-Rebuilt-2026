@@ -1,15 +1,16 @@
+/* (C) RoboLancers 2026 */
 package frc.robot.subsystems.intakerollers.rolllercommands;
 
 import frc.robot.subsystems.intakerollers.IntakeRollers;
 
 public class IntakeRollerTune {
-    IntakeRollers intakeRollers;
+  IntakeRollers intakeRollers;
 
-    public IntakeRollerTune(IntakeRollers intakeRollers){
-        this.intakeRollers = intakeRollers;
-    }
+  public IntakeRollerTune(IntakeRollers intakeRollers) {
+    this.intakeRollers = intakeRollers;
+  }
 
-    public void execute(){
-        intakeRollers.tune();
-    }
+  public void execute() {
+    intakeRollers.tune();
+  }
 }

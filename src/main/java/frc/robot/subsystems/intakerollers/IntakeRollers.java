@@ -9,7 +9,6 @@ import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import frc.robot.util.TunableConstant;
 
 public class IntakeRollers {
@@ -35,7 +34,6 @@ public class IntakeRollers {
     slot0Configs.withKG(IntakeRollerConstants.kG);
     slot0Configs.withKV(IntakeRollerConstants.kV);
 
-
     currentLimitsConfigs.withStatorCurrentLimitEnable(IntakeRollerConstants.kCurrentLimitsEnable);
     currentLimitsConfigs.withStatorCurrentLimit(IntakeRollerConstants.kCurrentLimit);
 
@@ -44,11 +42,11 @@ public class IntakeRollers {
     rollerMotor.getConfigurator().apply(feedbackConfigs);
   }
 
-  public void setVoltage(double volts){
+  public void setVoltage(double volts) {
     rollerMotor.setVoltage(volts);
   }
 
-  public void tune(){
+  public void tune() {
 
     TunableConstant kP = new TunableConstant("IntakeRollers/kP", 0);
     TunableConstant kD = new TunableConstant("IntakeRollers/kD", 0);
