@@ -70,8 +70,8 @@ public class IntakePivot extends SubsystemBase {
 
     TunableConstant kP = new TunableConstant("/IntakePivot/kP", 0);
     TunableConstant kD = new TunableConstant("/IntakePivot/kD", 0);
-    TunableConstant kG = new TunableConstant("IntakePivot/kG", 0);
-    TunableConstant angle = new TunableConstant("/angle/", 0);
+    TunableConstant kG = new TunableConstant("/IntakePivot/kG", 0);
+    TunableConstant angle = new TunableConstant("/IntakePivot/angle", 0);
 
     IntakeConstants.kP = kP.get();
     IntakeConstants.kD = kD.get();
