@@ -1,0 +1,9 @@
+/* (C) RoboLancers 2026 */
+package frc.robot.subsystems.intakerollers;
+
+public class IntakeRollerConstants {
+  public static final int kRollerMotorId = 0;
+  public static final boolean kCurrentLimitsEnable = true;
+  public static final double kCurrentLimit = 0;
+  public static final double kSensorToMechanismRatio = 0;
+}
