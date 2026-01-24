@@ -31,10 +31,6 @@ public class Outtake extends SubsystemBase {
 
   public double kV = 0;
 
-  public static Outtake create() {
-    return new Outtake();
-  }
-
   public Outtake() {
 
     configureMotors();
