@@ -55,7 +55,11 @@ public class Indexer extends SubsystemBase {
   }
 
   public void setPID() {
-    Slot0Configs pidConfigs = new Slot0Configs().withKP(IndexerConstants.kP).withKD(IndexerConstants.kD).withKV(IndexerConstants.kV);
+    Slot0Configs pidConfigs =
+        new Slot0Configs()
+            .withKP(IndexerConstants.kP)
+            .withKD(IndexerConstants.kD)
+            .withKV(IndexerConstants.kV);
 
     motor.getConfigurator().apply(pidConfigs);
   }
