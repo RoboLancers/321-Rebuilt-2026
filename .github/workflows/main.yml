@@ -1,0 +1,77 @@
+name: CI
+
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+
+jobs:
+  spotless:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Check if project is set up
+        id: check-setup
+        run: |
+          if [ -f "gradlew" ]; then
+            echo "ready=true" >> $GITHUB_OUTPUT
+          else
+            echo "ready=false" >> $GITHUB_OUTPUT
+            echo "⚠️ Project not fully set up yet - skipping checks"
+          fi
+          
+      - uses: actions/setup-java@v4
+        if: steps.check-setup.outputs.ready == 'true'
+        with:
+          distribution: 'zulu'
+          java-version: 17
+
+      - name: Make gradlew executable
+        if: steps.check-setup.outputs.ready == 'true'
+        run: chmod +x gradlew
+        
+      - name: Checking for spotless
+        if: steps.check-setup.outputs.ready == 'true'
+        run: ./gradlew spotlessCheck
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Check if project is set up
+        id: check-setup
+        run: |
+          if [ -f "gradlew" ]; then
+            echo "ready=true" >> $GITHUB_OUTPUT
+          else
+            echo "ready=false" >> $GITHUB_OUTPUT
+            echo "⚠️ Project not fully set up yet - skipping build"
+          fi
+          
+      - uses: actions/setup-java@v4
+        if: steps.check-setup.outputs.ready == 'true'
+        with:
+          distribution: 'zulu'
+          java-version: 17
+          
+      - name: Add repository to git safe directories
+        if: steps.check-setup.outputs.ready == 'true'
+        run: git config --global --add safe.directory $GITHUB_WORKSPACE
+
+      - name: Make gradlew executable
+        if: steps.check-setup.outputs.ready == 'true'
+        run: chmod +x gradlew
+
+      - name: Check spotless
+        if: steps.check-setup.outputs.ready == 'true'
+        run: ./gradlew spotlessCheck
+
+      - name: Compile and run tests on robot code
+        if: steps.check-setup.outputs.ready == 'true'
+        run: ./gradlew build
