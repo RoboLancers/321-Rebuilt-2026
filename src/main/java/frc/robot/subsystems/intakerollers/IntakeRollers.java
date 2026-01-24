@@ -22,6 +22,11 @@ public class IntakeRollers {
 
   public IntakeRollers() {
     motorConfigurations();
+    setPID(
+        IntakeRollerConstants.kP,
+        IntakeRollerConstants.kD,
+        IntakeRollerConstants.kV,
+        IntakeRollerConstants.kG);
   }
 
   public void motorConfigurations() {
@@ -42,10 +47,10 @@ public class IntakeRollers {
   }
 
   public void setPID(double kP, double kD, double kV, double kG) {
-    slot0Configs.withKP(IntakeRollerConstants.kP);
-    slot0Configs.withKD(IntakeRollerConstants.kD);
-    slot0Configs.withKG(IntakeRollerConstants.kG);
-    slot0Configs.withKV(IntakeRollerConstants.kV);
+    slot0Configs.withKP(kP);
+    slot0Configs.withKD(kD);
+    slot0Configs.withKG(kG);
+    slot0Configs.withKV(kV);
 
     rollerMotor.getConfigurator().apply(slot0Configs);
   }
