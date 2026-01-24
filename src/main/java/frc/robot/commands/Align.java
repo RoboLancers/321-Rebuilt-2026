@@ -22,6 +22,7 @@ import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.util.AprilTagUtil;
 import frc.robot.util.MyAlliance;
 import java.util.List;
+import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 public class Align {
@@ -113,11 +114,20 @@ public class Align {
     
   }
 
+  public static Pose2d getHub(){
+    
+  }
+
   public static Command driveToHubScoringPose(Drivetrain drivetrain){
     return driveToPose(drivetrain, ()->getHubScoringPose(drivetrain));
   }
 
-  public static Command hubAlign(){}
+  public static Command hubAlign(Drivetrain drivetrain, DoubleSupplier translationX, DoubleSupplier translationY){
+    
+
+
+    return drivetrain.teleopDrive(translationX, translationY,()->rotation);
+  }
 
   public static Command hubAlignWhileDriving(){}
 
