@@ -24,4 +24,10 @@ public class IndexerConstants {
   public static AngularVelocity kIndexVelocity = RPM.of(0);
 
   public static AngularVelocity kReleaseVelocity = RPM.of(0);
+
+  
+  public static double kP = 0;
+  public static double kD = 0;
+  public static double kV = 0;
+
 }

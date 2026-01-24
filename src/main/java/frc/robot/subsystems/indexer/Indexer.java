@@ -23,10 +23,6 @@ public class Indexer extends SubsystemBase {
 
   private TalonFX motor = new TalonFX(IndexerConstants.kMotorID);
 
-  public double kP = 0;
-  public double kD = 0;
-  public double kV = 0;
-
   public Indexer() {
     configureMotors();
     setPID();
@@ -59,7 +55,7 @@ public class Indexer extends SubsystemBase {
   }
 
   public void setPID() {
-    Slot0Configs pidConfigs = new Slot0Configs().withKP(kP).withKD(kD).withKV(kV);
+    Slot0Configs pidConfigs = new Slot0Configs().withKP(IndexerConstants.kP).withKD(IndexerConstants.kD).withKV(IndexerConstants.kV);
 
     motor.getConfigurator().apply(pidConfigs);
   }
@@ -73,17 +69,17 @@ public class Indexer extends SubsystemBase {
   }
 
   public void tune() {
-    TunableConstant kP = new TunableConstant("kP/Indexer/", 0);
+    TunableConstant kP = new TunableConstant("Indexer/kP/", 0);
 
-    TunableConstant kD = new TunableConstant("kD/Indexer/", 0);
+    TunableConstant kD = new TunableConstant("Indexer/kD/", 0);
 
-    TunableConstant kV = new TunableConstant("kV/Indexer/", 0);
+    TunableConstant kV = new TunableConstant("Indexer/kV/", 0);
 
-    TunableConstant targetSpeed = new TunableConstant("targetSpeed/Indexer/", 0);
+    TunableConstant targetSpeed = new TunableConstant("Indexer/targetSpeed", 0);
 
-    this.kP = kP.get();
-    this.kV = kV.get();
-    this.kD = kD.get();
+    IndexerConstants.kP = kP.get();
+    IndexerConstants.kV = kV.get();
+    IndexerConstants.kD = kD.get();
 
     goToVelocity(RPM.of(targetSpeed.get()));
   }
