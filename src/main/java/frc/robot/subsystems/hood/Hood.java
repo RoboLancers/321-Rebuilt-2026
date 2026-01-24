@@ -29,7 +29,7 @@ public class Hood extends SubsystemBase {
 
   public Hood() {
     configureMotors();
-    setHoodPID(HoodConstants.kG,HoodConstants.kD,HoodConstants.kG);
+    setHoodPID(HoodConstants.kG, HoodConstants.kD, HoodConstants.kG);
     zeroEncoder();
   }
 
@@ -99,7 +99,7 @@ public class Hood extends SubsystemBase {
     TunableConstant kP = new TunableConstant("Hood/kP/", 0);
     TunableConstant targetAngle = new TunableConstant("Hood/targetAngle/", 0);
 
-    setHoodPID(kP.get(),kD.get(),kG.get());
+    setHoodPID(kP.get(), kD.get(), kG.get());
 
     goToAngle(Degrees.of(targetAngle.get()));
   }
