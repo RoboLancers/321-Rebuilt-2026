@@ -58,9 +58,9 @@ public class Align {
     return Commands.run(() -> drivetrain.driveToFieldPose(pose.get(), drivetrain.getPose()));
   }
 
-  public static Command driveToPosePP(Drivetrain drivetrain, Supplier<Pose2d> pose) {
-    return drivetrain.driveToPosePP(pose.get());
-  }
+  // public static Command driveToPosePP(Drivetrain drivetrain, Supplier<Pose2d> pose) {
+  //   return drivetrain.driveToPosePP(pose.get());
+  // }
 
   public static Pose2d getNearestApriltag(Drivetrain drivetrain) {
     return MyAlliance.isRed()

@@ -9,6 +9,7 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.AlignTest;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainConstants;
 import frc.robot.subsystems.vision.Vision;
@@ -55,7 +56,13 @@ public class RobotContainer {
     configureBindings();
   }
 
-  private void configureBindings() {}
+  private void configureBindings() {
+    driver.rightTrigger().whileTrue(AlignTest.alignToNearestApriltag(drivetrain));
+    driver.leftTrigger().whileTrue(AlignTest.alignToApriltag(drivetrain,()->10));
+    // driver.rightBumper().whileTrue(AlignTest.alignToNearestApriltagPP(drivetrain));
+    // driver.leftBumper().whileTrue(AlignTest.alignToApriltagPP(drivetrain,()->10));
+   } 
+
 
   public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");
