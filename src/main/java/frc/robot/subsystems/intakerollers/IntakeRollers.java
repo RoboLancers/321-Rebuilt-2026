@@ -29,11 +29,6 @@ public class IntakeRollers {
     motorConfigs.withNeutralMode(NeutralModeValue.Brake);
     feedbackConfigs.withSensorToMechanismRatio(IntakeRollerConstants.kSensorToMechanismRatio);
 
-    slot0Configs.withKP(IntakeRollerConstants.kP);
-    slot0Configs.withKD(IntakeRollerConstants.kD);
-    slot0Configs.withKG(IntakeRollerConstants.kG);
-    slot0Configs.withKV(IntakeRollerConstants.kV);
-
     currentLimitsConfigs.withStatorCurrentLimitEnable(IntakeRollerConstants.kCurrentLimitsEnable);
     currentLimitsConfigs.withStatorCurrentLimit(IntakeRollerConstants.kCurrentLimit);
 
@@ -46,6 +41,15 @@ public class IntakeRollers {
     rollerMotor.setVoltage(volts);
   }
 
+  public void setPID(double kP, double kD, double kV, double kG) {
+    slot0Configs.withKP(IntakeRollerConstants.kP);
+    slot0Configs.withKD(IntakeRollerConstants.kD);
+    slot0Configs.withKG(IntakeRollerConstants.kG);
+    slot0Configs.withKV(IntakeRollerConstants.kV);
+
+    rollerMotor.getConfigurator().apply(slot0Configs);
+  }
+
   public void tune() {
 
     TunableConstant kP = new TunableConstant("IntakeRollers/kP", 0);
@@ -53,9 +57,6 @@ public class IntakeRollers {
     TunableConstant kG = new TunableConstant("IntakeRollers/kG", 0);
     TunableConstant kV = new TunableConstant("IntakeRollers/kV", 0);
 
-    IntakeRollerConstants.kP = kP.get();
-    IntakeRollerConstants.kD = kD.get();
-    IntakeRollerConstants.kG = kG.get();
-    IntakeRollerConstants.kV = kV.get();
+    setPID(kP.get(), kD.get(), kV.get(), kG.get());
   }
 }
