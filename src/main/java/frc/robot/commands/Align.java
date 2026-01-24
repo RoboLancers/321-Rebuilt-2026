@@ -40,7 +40,7 @@ public class Align {
   private static final Distance alignmentDistance = Inches.of(18);
   private static final Rotation2d alignmentRotation = new Rotation2d(Degrees.of(180));
   private static final Transform2d alignmentTransform =
-      new Transform2d(Meters.of(-alignmentDistance.in(Meters)), Meters.zero(), alignmentRotation);
+      new Transform2d(Meters.of(-alignmentDistance.in(Meters)), Meters.zero(), alignmentRotation); //TODO: check coordinate accuracy
 
   private static final Pose2d blueHubScoringPoseLeft = new Pose2d(Meters.zero(),Meters.zero(), new Rotation2d(Degrees.zero()));
   private static final Pose2d blueHubScoringPoseRight = new Pose2d(Meters.zero(),Meters.zero(), new Rotation2d(Degrees.zero()));
@@ -49,10 +49,6 @@ public class Align {
 
   private static final Pose2d redHubPose = new Pose2d(0,0,Rotation2d.kZero);
   private static final Pose2d blueHubPose = new Pose2d(0,0,Rotation2d.kZero);
-
-  private static final Distance region1 = Meters.of(0);
-  private static final Distance region2 = Meters.of(0);
-  private static final Distance region3 = Meters.of(0);
 
   public static Command driveToPose(Drivetrain drivetrain, Supplier<Pose2d> pose) {
     return Commands.run(() -> drivetrain.driveToFieldPose(pose.get(), drivetrain.getPose()));
@@ -89,11 +85,11 @@ public class Align {
     return alignToPose(drivetrain, ()->apriltagPose);
   }
 
-  public static boolean robotOnRightSide(Supplier<Pose2d> currentPose){
+  public static boolean robotOnRightSide(Supplier<Pose2d> currentPose){ //TODO: fix
     return currentPose.get().getMeasureY().in(Meters) < 0.5 * VisionConstants.kAllowedFieldDistance.in(Meters);
   }
 
-  public static Pose2d getHubScoringPose(Drivetrain drivetrain){
+  public static Pose2d getHubScoringPose(Drivetrain drivetrain){ //TODO: fix
 
     Pose2d hubScoringPose = null;
 
@@ -121,36 +117,12 @@ public class Align {
     return driveToPose(drivetrain, ()->getHubScoringPose(drivetrain));
   }
 
-  public static Command scoreFuelFromPose(Drivetrain drivetrain, Outtake outtake){
-    return driveToHubScoringPose(drivetrain).andThen(OuttakeFuel.scoreSetPosition(outtake));
-  }
+  public static Command hubAlign(){}
 
-  public static Distance getHubDistance(Drivetrain drivetrain){
-    Pose2d hubPose = null;
+  public static Command hubAlignWhileDriving(){}
 
-    if (MyAlliance.isRed()){
-      hubPose = redHubPose;
-    } 
-    else {
-      hubPose = blueHubPose;}
-      
-      return Meters.of(drivetrain.getPose().getTranslation().getDistance(hubPose.getTranslation()));
-  }
+  public static Command alignLeftClimb(){}
 
-  public static AngularVelocity getScoreVelocity(Drivetrain drivetrain){
-    AngularVelocity velocity = RPM.of(0);
-    if(0<getHubDistance(drivetrain).in(Meters) && getHubDistance(drivetrain).in(Meters)<region1.in(Meters)){
-      velocity = OuttakeConstants.kRegion1ScoreRPM;
-    } 
-    else if (region1.in(Meters)<getHubDistance(drivetrain).in(Meters) && getHubDistance(drivetrain).in(Meters)<region2.in(Meters)){
-      velocity = OuttakeConstants.kRegion2ScoreRPM;
-    }
-    else if (region2.in(Meters)<getHubDistance(drivetrain).in(Meters)){
-      velocity = OuttakeConstants.kRegion3ScoreRPM;
-    }
-
-    return velocity;
-  }
-
+  public static Command alignRightClimb(){}
 
 }
