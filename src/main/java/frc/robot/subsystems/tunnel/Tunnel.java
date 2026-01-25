@@ -12,7 +12,6 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
-
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -60,6 +59,7 @@ public class Tunnel {
 
     tunnelMotor.getConfigurator().apply(tunnelMotorConfiguration);
   }
+
   @Logged(name = "tunnelVelocity")
   public AngularVelocity getVelocity() {
     AngularVelocity velocity = RPM.of(tunnelMotor.getVelocity().getValueAsDouble());
