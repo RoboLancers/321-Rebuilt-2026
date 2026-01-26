@@ -15,9 +15,9 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -33,6 +33,8 @@ public class Outtake extends SubsystemBase {
   public double kD = 0;
 
   public double kV = 0;
+
+  private Velocity targetVelocity;
 
   public Outtake() {
 
@@ -96,5 +98,20 @@ public class Outtake extends SubsystemBase {
     this.kV = kV.get();
 
     return run(() -> setControl(RPM.of(targetRPM.get())));
+  }
+
+  @Logged(name = "desiredRPM")
+  public Velocity targetVelocity() {
+    return this.targetVelocity = targetVelocity;
+  }
+
+  @Logged(name = "shooterRPM")
+  public double getVelocity() {
+    return motor.getVelocity().getValueAsDouble();
+  }
+
+  @Logged(name = "shooterVoltage")
+  public Voltage getVoltage() {
+    return motor.getMotorVoltage().getValue();
   }
 }

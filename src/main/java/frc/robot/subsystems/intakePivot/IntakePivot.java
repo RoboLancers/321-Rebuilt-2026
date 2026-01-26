@@ -13,14 +13,16 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Velocity;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.TunableConstant;
 
-@Logged
+@Logged(name = "Intake Pivot")
 public class IntakePivot extends SubsystemBase {
 
   private TalonFX intakePivotMotor = new TalonFX(IntakeConstants.kPivotMotorId);
@@ -30,6 +32,10 @@ public class IntakePivot extends SubsystemBase {
   private CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
   private VoltageConfigs voltageConfigs = new VoltageConfigs();
   private Slot0Configs slot0Configs = new Slot0Configs();
+
+  private Angle targetAngle;
+  private Voltage targetVoltage;
+  private Velocity targetVelocity;
 
   private DutyCycleEncoder absoluteEncoder = new DutyCycleEncoder(IntakeConstants.kEncoderID);
 
@@ -56,6 +62,7 @@ public class IntakePivot extends SubsystemBase {
     intakePivotMotor.getConfigurator().apply(feedbackConfigs);
   }
 
+  @Logged(name = "get Angle")
   public void goToAngle(Angle angle) {
     MotionMagicVoltage intakeVoltage = new MotionMagicVoltage(angle);
     intakePivotMotor.setControl(intakeVoltage);
@@ -67,6 +74,11 @@ public class IntakePivot extends SubsystemBase {
 
   public void zeroEncoder() {
     intakePivotMotor.setPosition(Degrees.of(absoluteEncoder.get()));
+  }
+
+  @Logged
+  public boolean atTargetAngle() {
+    return this.targetAngle == targetAngle;
   }
 
   public void tune() {
@@ -81,5 +93,33 @@ public class IntakePivot extends SubsystemBase {
     IntakeConstants.kG = kG.get();
 
     goToAngle(Degrees.of(angle.get()));
+  }
+
+  @Logged
+  public boolean targetAngle(Angle targetAngle) {
+    boolean atTargetAngle =
+        Math.abs(getAngle().in(Degrees) - targetAngle.in(Degrees))
+            < IntakeConstants.kAngleTolerance.in(Degrees);
+    return atTargetAngle;
+  }
+
+  @Logged
+  public Voltage currentVoltage() {
+    return intakePivotMotor.getMotorVoltage().getValue();
+  }
+
+  @Logged(name = "pivotVelocity")
+  public double getVelocity() {
+    return intakePivotMotor.getVelocity().getValueAsDouble();
+  }
+
+  @Logged
+  public Current current() {
+    return intakePivotMotor.getStatorCurrent().getValue();
+  }
+
+  @Logged
+  public boolean atTargetVelocity(Velocity targetVelocity) {
+    return intakePivotMotor.getVelocity().getValue() == targetVelocity;
   }
 }

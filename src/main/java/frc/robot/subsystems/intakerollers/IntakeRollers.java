@@ -9,10 +9,9 @@ import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.units.measure.Velocity;
 import frc.robot.util.TunableConstant;
-
 
 @Logged
 public class IntakeRollers {
@@ -24,6 +23,8 @@ public class IntakeRollers {
   private FeedbackConfigs feedbackConfigs = new FeedbackConfigs();
   private Slot0Configs slot0Configs = new Slot0Configs();
 
+  private Velocity targetVelocity;
+
   public IntakeRollers() {
     motorConfigurations();
     setPID(
@@ -31,7 +32,6 @@ public class IntakeRollers {
         IntakeRollerConstants.kD,
         IntakeRollerConstants.kV,
         IntakeRollerConstants.kG);
-        
   }
 
   public void motorConfigurations() {
@@ -68,5 +68,14 @@ public class IntakeRollers {
     TunableConstant kV = new TunableConstant("IntakeRollers/kV", 0);
 
     setPID(kP.get(), kD.get(), kV.get(), kG.get());
+  }
+
+  @Logged(name = "Current velocity")
+  public double rollerVelocity() {
+    return rollerMotor.getVelocity().getValueAsDouble();
+  }
+
+  public boolean atTargetVoltage(Velocity targetVelocity) {
+    return rollerMotor.getVelocity().getValue() == targetVelocity;
   }
 }
