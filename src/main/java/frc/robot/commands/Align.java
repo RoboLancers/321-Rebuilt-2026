@@ -61,11 +61,11 @@ public class Align {
   private static final Pose2d redHubPose = new Pose2d(0, 0, Rotation2d.kZero);
   private static final Pose2d blueHubPose = new Pose2d(0, 0, Rotation2d.kZero);
 
-  private static final int redClimbTagID = 0;
-  private static final int blueClimbTagID = 0;
+  private static final int redClimbTagID = 15;
+  private static final int blueClimbTagID = 31;
 
-  private static final int redTroughTagID = 0;
-  private static final int blueTroughTagID = 0;
+  private static final int redTroughTagID = 13;
+  private static final int blueTroughTagID = 29;
 
   private static final Transform2d leftClimbAlign =
       new Transform2d(Meters.zero(), Meters.zero(), Rotation2d.kZero);
