@@ -1,4 +1,4 @@
-/* (C) Robolancers 2026 */
+/* (C) RoboLancers 2026 */
 package frc.robot.subsystems.drivetrain;
 
 import static edu.wpi.first.units.Units.Degrees;
@@ -17,8 +17,6 @@ import com.ctre.phoenix6.swerve.SwerveModule.ModuleRequest;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.util.DriveFeedforwards;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;

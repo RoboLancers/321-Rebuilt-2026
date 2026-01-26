@@ -1,11 +1,9 @@
+/* (C) RoboLancers 2026 */
 package frc.robot.commands;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
-
-import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -21,69 +19,80 @@ import frc.robot.subsystems.outtake.Outtake;
 import frc.robot.subsystems.outtake.OuttakeConstants;
 import frc.robot.subsystems.outtake.commands.OuttakeFuel;
 import frc.robot.util.MyAlliance;
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 public class Score {
-    
-  private static final Pose2d redHubPose = new Pose2d(0,0,Rotation2d.kZero);
-  private static final Pose2d blueHubPose = new Pose2d(0,0,Rotation2d.kZero);
+
+  private static final Pose2d redHubPose = new Pose2d(0, 0, Rotation2d.kZero);
+  private static final Pose2d blueHubPose = new Pose2d(0, 0, Rotation2d.kZero);
 
   private static final Distance region1 = Meters.of(0);
   private static final Distance region2 = Meters.of(0);
   private static final Distance region3 = Meters.of(0);
- 
-    public static Command scoreFuelFromPose(Drivetrain drivetrain, Outtake outtake, Supplier<Pose2d> robotPose){
-    return Align.driveToHubScoringPose(drivetrain, robotPose).andThen(OuttakeFuel.scoreSetPosition(outtake));
+
+  public static Command scoreFuelFromPose(
+      Drivetrain drivetrain, Outtake outtake, Supplier<Pose2d> robotPose) {
+    return Align.driveToHubScoringPose(drivetrain, robotPose)
+        .andThen(OuttakeFuel.scoreSetPosition(outtake));
   }
 
-  public static Distance getHubDistance(Supplier<Pose2d> robotPose){
+  public static Distance getHubDistance(Supplier<Pose2d> robotPose) {
     Pose2d hubPose = null;
 
-    if (MyAlliance.isRed()){
+    if (MyAlliance.isRed()) {
       hubPose = redHubPose;
-    } 
-    else {
-      hubPose = blueHubPose;}
-      
-      return Meters.of(robotPose.get().getTranslation().getDistance(hubPose.getTranslation()));
+    } else {
+      hubPose = blueHubPose;
+    }
+
+    return Meters.of(robotPose.get().getTranslation().getDistance(hubPose.getTranslation()));
   }
 
-  public static AngularVelocity getScoreVelocity(Supplier<Pose2d> robotPose){
+  public static AngularVelocity getScoreVelocity(Supplier<Pose2d> robotPose) {
     AngularVelocity velocity = RPM.of(0);
-    if(0<getHubDistance(robotPose).in(Meters) && getHubDistance(robotPose).in(Meters)<region1.in(Meters)){
+    if (0 < getHubDistance(robotPose).in(Meters)
+        && getHubDistance(robotPose).in(Meters) < region1.in(Meters)) {
       velocity = OuttakeConstants.kRegion1ScoreRPM;
-    } 
-    else if (region1.in(Meters)<getHubDistance(robotPose).in(Meters) && getHubDistance(robotPose).in(Meters)<region2.in(Meters)){
+    } else if (region1.in(Meters) < getHubDistance(robotPose).in(Meters)
+        && getHubDistance(robotPose).in(Meters) < region2.in(Meters)) {
       velocity = OuttakeConstants.kRegion2ScoreRPM;
-    }
-    else if (region2.in(Meters)<getHubDistance(robotPose).in(Meters)){
+    } else if (region2.in(Meters) < getHubDistance(robotPose).in(Meters)) {
       velocity = OuttakeConstants.kRegion3ScoreRPM;
     }
 
     return velocity;
   }
-public static Angle getScoreAngle(Supplier<Pose2d> robotPose){
+
+  public static Angle getScoreAngle(Supplier<Pose2d> robotPose) {
     Angle angle = Degrees.of(0);
-    if(0<getHubDistance(robotPose).in(Meters) && getHubDistance(robotPose).in(Meters)<region1.in(Meters)){
+    if (0 < getHubDistance(robotPose).in(Meters)
+        && getHubDistance(robotPose).in(Meters) < region1.in(Meters)) {
       angle = HoodConstants.kRegion1ScoreAngle;
-    } 
-    else if (region1.in(Meters)<getHubDistance(robotPose).in(Meters) && getHubDistance(robotPose).in(Meters)<region2.in(Meters)){
+    } else if (region1.in(Meters) < getHubDistance(robotPose).in(Meters)
+        && getHubDistance(robotPose).in(Meters) < region2.in(Meters)) {
       angle = HoodConstants.kRegion2ScoreAngle;
-    }
-    else if (region2.in(Meters)<getHubDistance(robotPose).in(Meters)){
+    } else if (region2.in(Meters) < getHubDistance(robotPose).in(Meters)) {
       angle = HoodConstants.kRegion3ScoreAngle;
     }
 
     return angle;
   }
-  
-  public static Command scoreFuelFromAnywhere(Outtake outtake, Hood hood, Supplier<Pose2d> robotPose){
-    return OuttakeFuel.outtakeWithVelocity(outtake, ()->getScoreVelocity(robotPose)).alongWith(HoodCommands.goToAngle(hood, ()->getScoreAngle(robotPose)));
+
+  public static Command scoreFuelFromAnywhere(
+      Outtake outtake, Hood hood, Supplier<Pose2d> robotPose) {
+    return OuttakeFuel.outtakeWithVelocity(outtake, () -> getScoreVelocity(robotPose))
+        .alongWith(HoodCommands.goToAngle(hood, () -> getScoreAngle(robotPose)));
   }
 
-  public static Command scoreFuelWhileDriving(Drivetrain drivetrain, DoubleSupplier translationX, DoubleSupplier translationY, Outtake outtake, Hood hood, Supplier<Pose2d> robotPose){
+  public static Command scoreFuelWhileDriving(
+      Drivetrain drivetrain,
+      DoubleSupplier translationX,
+      DoubleSupplier translationY,
+      Outtake outtake,
+      Hood hood,
+      Supplier<Pose2d> robotPose) {
     return Align.rotateToHubWhileDriving(drivetrain, translationX, translationY, robotPose)
-    .alongWith(scoreFuelFromAnywhere(outtake, hood, robotPose));
+        .alongWith(scoreFuelFromAnywhere(outtake, hood, robotPose));
   }
-
-
 }

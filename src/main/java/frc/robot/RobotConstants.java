@@ -1,5 +1,4 @@
 /* (C) RoboLancers 2026 */
-/* (C) RoboLancers 2026 */
 package frc.robot;
 
 import static edu.wpi.first.units.Units.Seconds;
