@@ -70,7 +70,7 @@ public class IntakeRollers {
     setPID(kP.get(), kD.get(), kV.get(), kG.get());
   }
 
-  @Logged(name = "Current velocity")
+  @Logged(name = "getRollerVelocity")
   public double rollerVelocity() {
     return rollerMotor.getVelocity().getValueAsDouble();
   }

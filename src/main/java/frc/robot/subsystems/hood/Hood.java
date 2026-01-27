@@ -107,9 +107,9 @@ public class Hood extends SubsystemBase {
     goToAngle(Degrees.of(targetAngle.get()));
   }
 
-  @Logged
-  public Angle targetPitch() {
-    return this.desiredPitch = desiredPitch;
+  @Logged(name = "targetPitch")
+  public Angle getTargetPitch() {
+    return this.desiredPitch;
   }
 
   @Logged

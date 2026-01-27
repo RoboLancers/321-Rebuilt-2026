@@ -62,12 +62,12 @@ public class IntakePivot extends SubsystemBase {
     intakePivotMotor.getConfigurator().apply(feedbackConfigs);
   }
 
-  @Logged(name = "get Angle")
   public void goToAngle(Angle angle) {
     MotionMagicVoltage intakeVoltage = new MotionMagicVoltage(angle);
     intakePivotMotor.setControl(intakeVoltage);
   }
 
+  @Logged
   public Angle getAngle() {
     return Degrees.of(intakePivotMotor.getPosition().getValueAsDouble());
   }
@@ -78,7 +78,7 @@ public class IntakePivot extends SubsystemBase {
 
   @Logged
   public boolean atTargetAngle() {
-    return this.targetAngle == targetAngle;
+    return getAngle() == targetAngle;
   }
 
   public void tune() {
@@ -96,15 +96,7 @@ public class IntakePivot extends SubsystemBase {
   }
 
   @Logged
-  public boolean targetAngle(Angle targetAngle) {
-    boolean atTargetAngle =
-        Math.abs(getAngle().in(Degrees) - targetAngle.in(Degrees))
-            < IntakeConstants.kAngleTolerance.in(Degrees);
-    return atTargetAngle;
-  }
-
-  @Logged
-  public Voltage currentVoltage() {
+  public Voltage getVoltage() {
     return intakePivotMotor.getMotorVoltage().getValue();
   }
 

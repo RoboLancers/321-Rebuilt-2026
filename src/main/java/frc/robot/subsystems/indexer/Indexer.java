@@ -96,32 +96,32 @@ public class Indexer extends SubsystemBase {
   }
 
   @Logged
-  public Velocity targetVelocity() {
-    return this.targetVelocity = targetVelocity;
+  public Velocity getTargetVelocity() {
+    return this.targetVelocity;
   }
 
   @Logged
-  public double currentVelocity() {
+  public double getVelocity() {
     return motor.getVelocity().getValueAsDouble();
   }
 
   @Logged
-  public Voltage targetVoltage() {
-    return this.targetVoltage = targetVoltage;
+  public Voltage getTargetVoltage() {
+    return this.targetVoltage;
   }
 
   @Logged
-  public Voltage currentVoltage() {
+  public Voltage getVoltage() {
     return motor.getMotorVoltage().getValue();
   }
 
   @Logged
-  public Current indexerCurrent() {
+  public Current getIndexerCurrent() {
     return motor.getStatorCurrent().getValue();
   }
 
   @Logged
-  public Current targetCurrent() {
-    return this.targetCurrent = targetCurrent;
+  public Current getTargetCurrent() {
+    return this.targetCurrent;
   }
 }

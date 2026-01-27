@@ -100,9 +100,9 @@ public class Outtake extends SubsystemBase {
     return run(() -> setControl(RPM.of(targetRPM.get())));
   }
 
-  @Logged(name = "desiredRPM")
+  @Logged(name = "getTargetVelocity")
   public Velocity targetVelocity() {
-    return this.targetVelocity = targetVelocity;
+    return this.targetVelocity;
   }
 
   @Logged(name = "shooterRPM")
