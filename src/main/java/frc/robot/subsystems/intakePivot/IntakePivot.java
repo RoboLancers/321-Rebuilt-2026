@@ -111,7 +111,7 @@ public class IntakePivot extends SubsystemBase {
   }
 
   @Logged
-  public boolean atTargetVelocity(Velocity targetVelocity) {
+  public boolean atTargetVelocity() {
     return intakePivotMotor.getVelocity().getValue() == targetVelocity;
   }
 }
