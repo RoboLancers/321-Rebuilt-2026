@@ -11,13 +11,19 @@ public class RobotContainer {
 
   public Drivetrain drivetrain = Drivetrain.create();
 
-  public Vision vision = Vision.create(
-    est->drivetrain.addVisionMeasurement(
-      est.estimatedPose().estimatedPose.toPose2d(), est.estimatedPose().timestampSeconds, VecBuilder.fill(est.standardDeviations(),est.standardDeviations(), est.standardDeviations())
-    )
-  );
+  public Vision vision =
+      Vision.create(
+          est ->
+              drivetrain.addVisionMeasurement(
+                  est.estimatedPose().estimatedPose.toPose2d(),
+                  est.estimatedPose().timestampSeconds,
+                  VecBuilder.fill(
+                      est.standardDeviations(),
+                      est.standardDeviations(),
+                      est.standardDeviations())));
 
-  public PoseEstimatorResolver poseResolver = new PoseEstimatorResolver(vision, drivetrain, pose->drivetrain.addRobotPose(()->pose));
+  public PoseEstimatorResolver poseResolver =
+      new PoseEstimatorResolver(vision, drivetrain, pose -> drivetrain.addRobotPose(() -> pose));
 
   public RobotContainer() {
     configureBindings();

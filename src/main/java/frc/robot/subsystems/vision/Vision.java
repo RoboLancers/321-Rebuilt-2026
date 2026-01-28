@@ -19,7 +19,7 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-public class Vision extends SubsystemBase{
+public class Vision extends SubsystemBase {
 
   public double currentAmbiguity;
 

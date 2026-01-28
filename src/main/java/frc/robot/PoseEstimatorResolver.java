@@ -12,11 +12,10 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.vision.Vision;
-
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class PoseEstimatorResolver extends SubsystemBase{
+public class PoseEstimatorResolver extends SubsystemBase {
 
   public Vision vision;
 
@@ -30,7 +29,8 @@ public class PoseEstimatorResolver extends SubsystemBase{
 
   public Consumer<Pose2d> robotPoseConsumer;
 
-  public PoseEstimatorResolver(Vision vision, Drivetrain drivetrain, Consumer<Pose2d> robotPoseConsumer) {
+  public PoseEstimatorResolver(
+      Vision vision, Drivetrain drivetrain, Consumer<Pose2d> robotPoseConsumer) {
     this.vision = vision;
     this.drivetrain = drivetrain;
 
@@ -72,7 +72,7 @@ public class PoseEstimatorResolver extends SubsystemBase{
   }
 
   @Override
-  public void periodic(){
+  public void periodic() {
     robotPoseConsumer.accept(getRobotPose());
   }
 }
