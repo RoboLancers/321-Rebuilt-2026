@@ -4,6 +4,7 @@ package frc.robot.subsystems.vision;
 import static edu.wpi.first.units.Units.Meters;
 
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotConstants;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,7 +19,7 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-public class Vision {
+public class Vision extends SubsystemBase{
 
   public double currentAmbiguity;
 
@@ -162,6 +163,7 @@ public class Vision {
 
   public boolean areCamerasConnected;
 
+  @Override
   public void periodic() {
 
     List<VisionEstimate> latestEstimates = getVisionEstimates();

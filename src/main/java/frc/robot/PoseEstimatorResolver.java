@@ -9,11 +9,14 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.vision.Vision;
+
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class PoseEstimatorResolver {
+public class PoseEstimatorResolver extends SubsystemBase{
 
   public Vision vision;
 
@@ -23,11 +26,15 @@ public class PoseEstimatorResolver {
 
   public Pose2d visionPose = vision.getBestPose().estimatedPose.toPose2d();
 
-  public Pose2d drivetrainPose = drivetrain.getPose();
+  public Pose2d drivetrainPose = drivetrain.getSwerveDriveEstimatedPose();
 
-  public PoseEstimatorResolver(Vision vision, Drivetrain drivetrain) {
+  public Consumer<Pose2d> robotPoseConsumer;
+
+  public PoseEstimatorResolver(Vision vision, Drivetrain drivetrain, Consumer<Pose2d> robotPoseConsumer) {
     this.vision = vision;
     this.drivetrain = drivetrain;
+
+    this.robotPoseConsumer = robotPoseConsumer;
   }
 
   public double confidence = 1 - vision.getCurrentAmbiguity();
@@ -62,5 +69,10 @@ public class PoseEstimatorResolver {
 
   public Pose2d getRobotPose() {
     return getPoseFromSupplier(() -> resolvedX, () -> resolvedY, () -> resolvedYaw);
+  }
+
+  @Override
+  public void periodic(){
+    robotPoseConsumer.accept(getRobotPose());
   }
 }

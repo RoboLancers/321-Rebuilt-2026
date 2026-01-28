@@ -45,6 +45,8 @@ import java.util.function.Supplier;
 @Logged
 public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> implements Subsystem {
 
+  public Pose2d currentRobotPose;
+
   // driveToPose PID controllers
   ProfiledPIDController xPoseController =
       new ProfiledPIDController(
@@ -107,6 +109,11 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
     configurePoseControllers();
 
     SmartDashboard.putData("Drivetrain Pose Field", poseField);
+
+  }
+
+  public void addRobotPose(Supplier<Pose2d> robotPose){
+    currentRobotPose = robotPose.get();
   }
 
   void configurePoseControllers() {
@@ -127,7 +134,8 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
   boolean atPoseSetpoint() {
     return atPoseSetpoint(
         DrivetrainConstants.kAlignmentSetpointTranslationTolerance,
-        DrivetrainConstants.kAlignmentSetpointRotationTolerance);
+        DrivetrainConstants.kAlignmentSetpointRotationTolerance,
+        ()->currentRobotPose);
   }
 
   boolean atFinalPoseSetpoint() {
@@ -142,10 +150,6 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
         () ->
             driveFixedHeading(
                 translationX.getAsDouble(), translationY.getAsDouble(), rotation.get()));
-  }
-
-  Command driveToFieldPose(Supplier<AlignmentSetpoint> pose) {
-    return driveToFieldPose(pose, this::getPose);
   }
 
   Command driveToFieldPose(Supplier<AlignmentSetpoint> pose, Supplier<Pose2d> currentPose) {
@@ -171,6 +175,10 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
                   driveToFieldPose(pose.get().pose, currentPose.get());
                 }));
   }
+  
+  public Command driveToFieldPoseCommand(Supplier<Pose2d> pose){
+    return driveToFieldPose(()->(new AlignmentSetpoint(pose.get(),true)),()->currentRobotPose);
+  }
 
   public Command teleopDrive(
       DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier rotation) {
@@ -190,6 +198,36 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
                   .withRotationalRate(speeds.omegaRadiansPerSecond)
                   .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective));
         });
+  }
+
+  public Command teleopDriveWithHeading(
+      DoubleSupplier translationX, DoubleSupplier translationY, Supplier<Rotation2d> heading) {
+    return runOnce(
+            () -> {
+              ChassisSpeeds speeds =
+                  ChassisSpeeds.fromRobotRelativeSpeeds(
+                      getChassisSpeeds(), currentRobotPose.getRotation());
+
+              thetaController.reset(
+                  currentRobotPose.getRotation().getRadians(), speeds.omegaRadiansPerSecond);
+            })
+        .andThen(run(
+        () -> {
+          var speeds =
+              ChassisSpeeds.discretize(
+                  translationX.getAsDouble(),
+                  translationY.getAsDouble(),
+                  thetaController.calculate(
+                    currentRobotPose.getRotation().getRadians(), heading.get().getRadians()),
+                  RobotConstants.kRobotLoopPeriod.in(Seconds));
+
+          setControl(
+              fieldCentricRequest
+                  .withVelocityX(speeds.vxMetersPerSecond)
+                  .withVelocityY(speeds.vyMetersPerSecond)
+                  .withRotationalRate(speeds.omegaRadiansPerSecond)
+                  .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective));
+        }));
   }
 
   public Command teleopDriveFixedHeading(
@@ -271,12 +309,12 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
 
     ChassisSpeeds targetSpeeds =
         ChassisSpeeds.discretize(
-            xPoseController.calculate(getPose().getX(), pose.getX())
+            xPoseController.calculate(currentPose.getX(), pose.getX())
                 + xPoseController.getSetpoint().velocity * ffFactor,
-            yPoseController.calculate(getPose().getY(), pose.getY())
+            yPoseController.calculate(currentPose.getY(), pose.getY())
                 + yPoseController.getSetpoint().velocity * ffFactor,
             thetaController.calculate(
-                    getPose().getRotation().getRadians(), pose.getRotation().getRadians())
+                    currentPose.getRotation().getRadians(), pose.getRotation().getRadians())
                 + thetaController.getSetpoint().velocity * ffFactor,
             RobotConstants.kRobotLoopPeriod.in(Seconds));
 
@@ -329,12 +367,11 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
     alignmentSetpoint = setpoint;
   }
 
-  public boolean atPoseSetpoint(Distance tranTol, Angle rotTol) {
-    final var currentPose = getPose();
-    return currentPose.getTranslation().getDistance(alignmentSetpoint.pose().getTranslation())
+  public boolean atPoseSetpoint(Distance tranTol, Angle rotTol, Supplier<Pose2d> currentPose) {
+    return currentPose.get().getTranslation().getDistance(alignmentSetpoint.pose().getTranslation())
             < tranTol.in(Meters)
         && Math.abs(
-                currentPose
+                currentPose.get()
                     .getRotation()
                     .minus(alignmentSetpoint.pose().getRotation())
                     .getDegrees())
@@ -362,9 +399,14 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
     return super.getState().ModuleTargets;
   }
 
-  @Logged(name = "MeasuredRobotPose")
-  public Pose2d getPose() {
+  @Logged(name = "SwerveDriveEstimatedRobotPose")
+  public Pose2d getSwerveDriveEstimatedPose() {
     return super.getState().Pose;
+  }
+
+  @Logged(name = "CurrentRobotPose")
+  public Pose2d getCurrentRobotPose(){
+    return currentRobotPose;
   }
 
   @Logged(name = "MeasuredRobotRelativeChassisSpeeds")
@@ -402,7 +444,7 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
               });
     }
 
-    poseField.setRobotPose(getPose());
+    poseField.setRobotPose(getSwerveDriveEstimatedPose());
   }
 
   @Logged(name = "AtPoseSetpoint")
