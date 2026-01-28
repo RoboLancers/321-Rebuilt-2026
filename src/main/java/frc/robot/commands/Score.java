@@ -79,7 +79,7 @@ public class Score {
 
   public static Command scoreFuelFromAnywhere(Drivetrain drivetrain, Outtake outtake, Hood hood) {
     return Align.rotateToHub(drivetrain)
-        .alongWith(
+        .andThen(
             OuttakeFuel.outtakeWithVelocity(
                 outtake, () -> getScoreVelocity(() -> drivetrain.getCurrentRobotPose())))
         .alongWith(
