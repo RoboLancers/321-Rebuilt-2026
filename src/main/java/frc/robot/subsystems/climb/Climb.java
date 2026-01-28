@@ -19,15 +19,21 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.util.TunableConstant;
 
 public class Climb extends SubsystemBase {
 
   private TalonFX climbMotor = new TalonFX(ClimbConstants.kClimbMotorId);
 
+  private TalonFX pivotClimbMotor = new TalonFX(ClimbConstants.kPivotClimbMotor);
+
   private ArmFeedforward climbFeedforward = new ArmFeedforward(0, ClimbConstants.kG, 0, 0, 0);
 
   private PIDController climbController =
       new PIDController(ClimbConstants.kP, 0, ClimbConstants.kD);
+
+  private PIDController pivotClimbController =
+      new PIDController(ClimbConstants.kPivotP, 0, ClimbConstants.kPivotD);
 
   public Climb create() {
     return new Climb();
@@ -35,7 +41,7 @@ public class Climb extends SubsystemBase {
 
   public Climb() {
     configureClimbMotors();
-    setClimbPID(ClimbConstants.kP, 0.0, ClimbConstants.kD, 0.0, 0.0, 0.0, ClimbConstants.kG);
+    setClimbPID(ClimbConstants.kP, 0.0, ClimbConstants.kD);
   }
 
   public void configureClimbMotors() {
@@ -64,7 +70,32 @@ public class Climb extends SubsystemBase {
                     .withGravityType(ClimbConstants.kClimbGravityType)
                     .withStaticFeedforwardSign(ClimbConstants.kClimbFeedForwardSign));
 
+    TalonFXConfiguration pivotClimbMotorConfiguration =
+        new TalonFXConfiguration()
+            .withCurrentLimits(
+                new CurrentLimitsConfigs()
+                    .withStatorCurrentLimit(ClimbConstants.kPivotClimbStatorLimit)
+                    .withStatorCurrentLimitEnable(true)
+                    .withSupplyCurrentLimit(ClimbConstants.kPivotClimbSupplyLimit)
+                    .withSupplyCurrentLimitEnable(true))
+            .withMotorOutput(
+                new MotorOutputConfigs()
+                    .withNeutralMode(ClimbConstants.kPivotClimbNeutralMode)
+                    .withInverted(
+                        ClimbConstants.kPivotClimbInverted
+                            ? InvertedValue.Clockwise_Positive
+                            : InvertedValue.CounterClockwise_Positive))
+            .withMotionMagic(
+                new MotionMagicConfigs()
+                    .withMotionMagicCruiseVelocity(ClimbConstants.kPivotClimbMaxVelocity)
+                    .withMotionMagicAcceleration(ClimbConstants.kPivotClimbMaxAcceleration))
+            .withSlot0(
+                new Slot0Configs()
+                    .withGravityType(ClimbConstants.kPivotClimbGravityType)
+                    .withStaticFeedforwardSign(ClimbConstants.kPivotClimbFeedForwardSign));
+
     climbMotor.getConfigurator().apply(climbMotorConfiguration);
+    pivotClimbMotor.getConfigurator().apply(pivotClimbMotorConfiguration);
   }
 
   @Logged(name = "/climb/currentVelocity")
@@ -73,9 +104,19 @@ public class Climb extends SubsystemBase {
     return velocity;
   }
 
+  public AngularVelocity getPivotClimbVelocity() {
+    AngularVelocity velocity = pivotClimbMotor.getVelocity().getValue();
+    return velocity;
+  }
+
   @Logged(name = "/climb/currentAngle")
   public Angle getAngle() {
     Angle angle = Degrees.of(climbMotor.getPosition().getValueAsDouble());
+    return angle;
+  }
+
+  public Angle getPivotAngle() {
+    Angle angle = Degrees.of(pivotClimbMotor.getPosition().getValueAsDouble());
     return angle;
   }
 
@@ -87,6 +128,13 @@ public class Climb extends SubsystemBase {
     return atAngle;
   }
 
+  public boolean atPivotTargetAngle(Angle targetAngle) {
+    boolean atAngle =
+        Math.abs(getPivotAngle().in(Degrees) - targetAngle.in(Degrees))
+            > ClimbConstants.kPivotClimbAngleTolerance.in(Degrees);
+    return atAngle;
+  }
+
   public void goToAngle(Angle angle) {
     Voltage volts =
         Volts.of(
@@ -95,18 +143,37 @@ public class Climb extends SubsystemBase {
     climbMotor.setVoltage(volts.in(Volts));
   }
 
-  public void setClimbPID(
-      double kP, double kI, double kD, double kS, double kV, double kA, double kG) {
-    climbMotor
-        .getConfigurator()
-        .apply(
-            new Slot0Configs()
-                .withKP(kP)
-                .withKI(kI)
-                .withKD(kD)
-                .withKS(kS)
-                .withKV(kV)
-                .withKA(kA)
-                .withKG(kG));
+  public void goToPivotAngle(Angle angle) {
+    Voltage volts =
+        Volts.of(pivotClimbController.calculate(getPivotAngle().in(Degrees), angle.in(Degrees)));
+    pivotClimbMotor.setVoltage(volts.in(Volts));
+  }
+
+  public void setClimbPID(double kP, double kI, double kD) {
+    climbController.setPID(kP, kI, kD);
+  }
+
+  public void setPivotClimbPID(double kPivotP, double kPivotI, double kPivotD) {
+    pivotClimbController.setPID(kPivotP, kPivotI, kPivotD);
+  }
+
+  public void tuneClimb() {
+    TunableConstant kP = new TunableConstant("/Climb/kP", 0);
+    TunableConstant kD = new TunableConstant("/Climb/kD", 0);
+    TunableConstant kG = new TunableConstant("/Climb/kG", 0);
+    TunableConstant targetAngle = new TunableConstant("/Climb/targetAngle", 0);
+
+    climbController.setPID(kP.get(), 0, kD.get());
+    climbFeedforward.setKg(kG.get());
+    goToAngle(Degrees.of(targetAngle.get()));
+  }
+
+  public void tunePivotClimb() {
+    TunableConstant kPivotP = new TunableConstant("/Climb/kPivotP", 0);
+    TunableConstant kPivotD = new TunableConstant("/Climb/kPivotD", 0);
+    TunableConstant pivotTargetAngle = new TunableConstant("/Climb/pivotTargetAngle", 0);
+
+    pivotClimbController.setPID(kPivotP.get(), 0, kPivotD.get());
+    goToPivotAngle(Degrees.of(pivotTargetAngle.get()));
   }
 }

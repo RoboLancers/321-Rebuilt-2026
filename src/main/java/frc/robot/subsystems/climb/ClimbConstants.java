@@ -20,24 +20,50 @@ public class ClimbConstants {
 
   public static final double kG = 0;
 
+  public static final double kPivotP = 0;
+
+  public static final double kPivotD = 0;
+
   public static final int kClimbMotorId = 1;
+
+  public static final int kPivotClimbMotor = 2;
 
   public static final double kClimbStatorLimit = 1;
 
   public static final double kClimbSupplyLimit = 1;
 
+  public static final double kPivotClimbStatorLimit = 1;
+
+  public static final double kPivotClimbSupplyLimit = 1;
+
   public static final NeutralModeValue kClimbNeutralMode = NeutralModeValue.Brake;
 
   public static final boolean kClimbInverted = false;
+
+  public static final NeutralModeValue kPivotClimbNeutralMode = NeutralModeValue.Brake;
+
+  public static final boolean kPivotClimbInverted = false;
 
   public static final AngularVelocity kClimbMaxVelocity = RPM.of(0);
 
   public static final AngularAcceleration kClimbMaxAcceleration = RotationsPerSecondPerSecond.of(0);
 
-  public static final GravityTypeValue kClimbGravityType = GravityTypeValue.Elevator_Static;
+  public static final AngularVelocity kPivotClimbMaxVelocity = RPM.of(0);
+
+  public static final AngularAcceleration kPivotClimbMaxAcceleration =
+      RotationsPerSecondPerSecond.of(0);
+
+  public static final GravityTypeValue kClimbGravityType = GravityTypeValue.Arm_Cosine;
+
+  public static final GravityTypeValue kPivotClimbGravityType = GravityTypeValue.Arm_Cosine;
 
   public static final StaticFeedforwardSignValue kClimbFeedForwardSign =
       StaticFeedforwardSignValue.UseClosedLoopSign;
 
+  public static final StaticFeedforwardSignValue kPivotClimbFeedForwardSign =
+      StaticFeedforwardSignValue.UseClosedLoopSign;
+
   public static final Angle kClimbAngleTolerance = Degrees.of(1);
+
+  public static final Angle kPivotClimbAngleTolerance = Degrees.of(1);
 }

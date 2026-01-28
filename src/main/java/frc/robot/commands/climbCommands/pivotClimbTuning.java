@@ -4,15 +4,15 @@ package frc.robot.commands.climbCommands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.climb.Climb;
 
-public class climbTuning extends Command {
+public class pivotClimbTuning extends Command {
 
   Climb climb;
 
-  public climbTuning(Climb climb) {
+  public pivotClimbTuning(Climb climb) {
     this.climb = climb;
   }
 
   public void execute() {
-    climb.tuneClimb();
+    climb.tunePivotClimb();
   }
 }
