@@ -70,12 +70,13 @@ public class IntakeRollers {
     setPID(kP.get(), kD.get(), kV.get(), kG.get());
   }
 
-  @Logged(name = "getRollerVelocity")
-  public double rollerVelocity() {
+  @Logged(name = "rollerVelocity")
+  public double getRollerVelocity() {
     return rollerMotor.getVelocity().getValueAsDouble();
   }
 
-  public boolean atTargetVoltage(Velocity targetVelocity) {
+  @Logged
+  public boolean atTargetVoltage() {
     return rollerMotor.getVelocity().getValue() == targetVelocity;
   }
 }

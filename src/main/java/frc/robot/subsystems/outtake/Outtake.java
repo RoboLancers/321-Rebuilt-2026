@@ -34,7 +34,7 @@ public class Outtake extends SubsystemBase {
 
   public double kV = 0;
 
-  private Velocity targetVelocity;
+  private Velocity targetShooterVelocity;
 
   public Outtake() {
 
@@ -100,9 +100,9 @@ public class Outtake extends SubsystemBase {
     return run(() -> setControl(RPM.of(targetRPM.get())));
   }
 
-  @Logged(name = "getTargetVelocity")
-  public Velocity targetVelocity() {
-    return this.targetVelocity;
+  @Logged(name = "targetShooterVelocity")
+  public Velocity getTargetShooterVelocity() {
+    return this.targetShooterVelocity;
   }
 
   @Logged(name = "shooterRPM")

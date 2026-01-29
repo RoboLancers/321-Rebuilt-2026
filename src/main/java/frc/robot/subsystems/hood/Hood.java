@@ -80,6 +80,7 @@ public class Hood extends SubsystemBase {
     hoodMotor.setControl(new MotionMagicVoltage(targetAngle));
   }
 
+  @Logged(name = "currentPitch")
   public Angle getAngle() {
     Angle angle = Degrees.of(hoodMotor.getPosition().getValueAsDouble());
     return angle;
@@ -110,10 +111,5 @@ public class Hood extends SubsystemBase {
   @Logged(name = "targetPitch")
   public Angle getTargetPitch() {
     return this.desiredPitch;
-  }
-
-  @Logged
-  public Angle currentPitch() {
-    return getAngle();
   }
 }
