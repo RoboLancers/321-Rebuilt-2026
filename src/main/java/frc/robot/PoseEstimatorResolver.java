@@ -31,45 +31,48 @@ public class PoseEstimatorResolver extends SubsystemBase {
     this.robotPoseConsumer = robotPoseConsumer;
   }
 
-  public Pigeon2 pigeon = drivetrain.getPigeon2();
+  public Pose2d getRobotPose(){
 
-  public Pose2d visionPose = vision.getBestPose().estimatedPose.toPose2d();
+   Pigeon2 pigeon = drivetrain.getPigeon2();
 
-  public Pose2d drivetrainPose = drivetrain.getSwerveDriveEstimatedPose();
+   Pose2d visionPose = vision.getBestPose().estimatedPose.toPose2d();
 
-  public double confidence = 1 - vision.getCurrentAmbiguity();
+   Pose2d drivetrainPose = drivetrain.getSwerveDriveEstimatedPose();
 
-  public double visionWeight = confidence;
+   double confidence = 1 - vision.getCurrentAmbiguity();
 
-  public double drivetrainWeight = 0.90;
+   double visionWeight = confidence;
 
-  public Rotation2d pigeonRotation = new Rotation2d(pigeon.getYaw().getValue());
+   double drivetrainWeight = 0.90;
 
-  public Angle resolvedYaw = 
+   Rotation2d pigeonRotation = new Rotation2d(pigeon.getYaw().getValue());
+
+   Angle resolvedYaw = 
       Degrees.of(
           ((visionWeight * visionPose.getRotation().getDegrees() + pigeonRotation.getDegrees())
               / (visionWeight + 1)));
 
-  public Distance resolvedX =
+   Distance resolvedX =
       Meters.of(
           ((visionWeight * visionPose.getMeasureX().in(Meters)
                   + drivetrainWeight * drivetrainPose.getMeasureX().in(Meters))
               / (visionWeight + drivetrainWeight)));
 
-  public Distance resolvedY =
+   Distance resolvedY =
       Meters.of(
           ((visionWeight * visionPose.getMeasureY().in(Meters)
                   + drivetrainWeight * drivetrainPose.getMeasureY().in(Meters))
               / (visionWeight + drivetrainWeight)));
 
-  public Pose2d getPoseFromSupplier(
+ 
+    return getPoseFromSupplier(() -> resolvedX, () -> resolvedY, () -> resolvedYaw);
+  
+  }
+   public Pose2d getPoseFromSupplier(
       Supplier<Distance> x, Supplier<Distance> y, Supplier<Angle> yaw) {
     return new Pose2d(x.get(), y.get(), new Rotation2d(yaw.get()));
   }
 
-  public Pose2d getRobotPose() {
-    return getPoseFromSupplier(() -> resolvedX, () -> resolvedY, () -> resolvedYaw);
-  }
 
   @Override
   public void periodic() {
