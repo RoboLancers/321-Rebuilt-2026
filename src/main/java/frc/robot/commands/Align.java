@@ -53,8 +53,8 @@ public class Align {
   private static final Pose2d redHubScoringPoseRight =
       new Pose2d(Meters.zero(), Meters.zero(), new Rotation2d(Degrees.zero()));
 
-  private static final Pose2d redHubPose = RobotConstants.kAprilTagLayout.getTagPose(10).orElse(null).toPose2d().plus(new Transform2d(Inches.of(-23.5),Meters.zero(),Rotation2d.kZero));
-  private static final Pose2d blueHubPose = RobotConstants.kAprilTagLayout.getTagPose(9).orElse(null).toPose2d().plus(new Transform2d(Inches.of(-23.5),Meters.zero(),Rotation2d.kZero));
+  private static final Pose2d redHubPose = new Pose2d(Meters.of(12.52 - Inches.of(23.5).in(Meters)),	Meters.of(4.03), Rotation2d.kZero);
+  private static final Pose2d blueHubPose =  new Pose2d(Meters.of(4.02 + Inches.of(23.5).in(Meters)),	Meters.of(4.03) , new Rotation2d(Degrees.of(180)));
 
   private static final int redClimbTagID = 15;
   private static final int blueClimbTagID = 31;
@@ -91,8 +91,8 @@ public class Align {
     Pose2d targetPose =
         RobotConstants.kAprilTagLayout
             .getTagPose(ID.get())
-            .orElse(null)
-            .toPose2d()
+            .map(pose->pose.toPose2d())
+            .orElse(drivetrain.getCurrentRobotPose())
             .plus(alignmentTransform);
     return drivetrain.driveToFieldPoseCommand(() -> targetPose);
   }
@@ -115,7 +115,7 @@ public class Align {
 
   public static Pose2d getHubScoringPose(Supplier<Pose2d> robotPose) {
 
-    Pose2d hubScoringPose = null;
+    Pose2d hubScoringPose = robotPose.get();
 
     if (!MyAlliance.isRed() && robotOnRightSide(robotPose)) {
       hubScoringPose = blueHubScoringPoseRight;
@@ -183,9 +183,8 @@ public class Align {
         (MyAlliance.isRed()
                 ? RobotConstants.kAprilTagLayout.getTagPose(redClimbTagID)
                 : RobotConstants.kAprilTagLayout.getTagPose(blueClimbTagID))
-            .orElse(null)
-            .toPose2d()
-            .plus(leftClimbAlign);
+            .map(pose->pose.toPose2d().plus(leftClimbAlign))
+            .orElse(drivetrain.getCurrentRobotPose());
 
     return drivetrain.driveToFieldPoseCommand(() -> climbPose);
   }
@@ -195,8 +194,8 @@ public class Align {
         (MyAlliance.isRed()
                 ? RobotConstants.kAprilTagLayout.getTagPose(redClimbTagID)
                 : RobotConstants.kAprilTagLayout.getTagPose(blueClimbTagID))
-            .orElse(null)
-            .toPose2d()
+            .map(pose->pose.toPose2d().plus(rightClimbAlign))
+            .orElse(drivetrain.getCurrentRobotPose())
             .plus(rightClimbAlign);
 
     return drivetrain.driveToFieldPoseCommand(() -> climbPose);
@@ -207,9 +206,8 @@ public class Align {
         (MyAlliance.isRed()
                 ? RobotConstants.kAprilTagLayout.getTagPose(redTroughTagID)
                 : RobotConstants.kAprilTagLayout.getTagPose(blueTroughTagID))
-            .orElse(null)
-            .toPose2d()
-            .plus(troughAlign);
+            .map(pose->pose.toPose2d().plus(troughAlign))
+            .orElse(drivetrain.getCurrentRobotPose());
 
     return drivetrain.driveToFieldPoseCommand(() -> troughPose);
   }
