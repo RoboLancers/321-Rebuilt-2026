@@ -5,6 +5,8 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
+
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
@@ -16,16 +18,8 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class PoseEstimatorResolver extends SubsystemBase {
-
-  public Vision vision;
-
   public Drivetrain drivetrain;
-
-  public Pigeon2 pigeon = drivetrain.getPigeon2();
-
-  public Pose2d visionPose = vision.getBestPose().estimatedPose.toPose2d();
-
-  public Pose2d drivetrainPose = drivetrain.getSwerveDriveEstimatedPose();
+  public Vision vision;
 
   public Consumer<Pose2d> robotPoseConsumer;
 
@@ -37,6 +31,12 @@ public class PoseEstimatorResolver extends SubsystemBase {
     this.robotPoseConsumer = robotPoseConsumer;
   }
 
+  public Pigeon2 pigeon = drivetrain.getPigeon2();
+
+  public Pose2d visionPose = vision.getBestPose().estimatedPose.toPose2d();
+
+  public Pose2d drivetrainPose = drivetrain.getSwerveDriveEstimatedPose();
+
   public double confidence = 1 - vision.getCurrentAmbiguity();
 
   public double visionWeight = confidence;
@@ -45,7 +45,7 @@ public class PoseEstimatorResolver extends SubsystemBase {
 
   public Rotation2d pigeonRotation = new Rotation2d(pigeon.getYaw().getValue());
 
-  public Angle resolvedYaw =
+  public Angle resolvedYaw = 
       Degrees.of(
           ((visionWeight * visionPose.getRotation().getDegrees() + pigeonRotation.getDegrees())
               / (visionWeight + 1)));

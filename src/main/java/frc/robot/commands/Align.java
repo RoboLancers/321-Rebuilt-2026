@@ -57,8 +57,8 @@ public class Align {
   private static final Pose2d redHubScoringPoseRight =
       new Pose2d(Meters.zero(), Meters.zero(), new Rotation2d(Degrees.zero()));
 
-  private static final Pose2d redHubPose = new Pose2d(0, 0, Rotation2d.kZero);
-  private static final Pose2d blueHubPose = new Pose2d(0, 0, Rotation2d.kZero);
+  private static final Pose2d redHubPose = RobotConstants.kAprilTagLayout.getTagPose(10).orElse(null).toPose2d().plus(new Transform2d(Inches.of(-23.5),Meters.zero(),Rotation2d.kZero));
+  private static final Pose2d blueHubPose = RobotConstants.kAprilTagLayout.getTagPose(9).orElse(null).toPose2d().plus(new Transform2d(Inches.of(-23.5),Meters.zero(),Rotation2d.kZero));
 
   private static final int redClimbTagID = 15;
   private static final int blueClimbTagID = 31;
