@@ -3,6 +3,8 @@ package frc.robot.subsystems.vision;
 
 import static edu.wpi.first.units.Units.Meters;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotConstants;
@@ -31,13 +33,13 @@ public class Vision extends SubsystemBase {
     return getAmbiguityFromSupplier(() -> currentAmbiguity);
   }
 
-  public EstimatedRobotPose bestPose;
+  public Pose2d bestPose = new Pose2d(0,0,Rotation2d.kZero);
 
-  public EstimatedRobotPose getPoseFromSupplier(Supplier<EstimatedRobotPose> bestPose) {
+  public Pose2d getPoseFromSupplier(Supplier<Pose2d> bestPose) {
     return bestPose.get();
   }
 
-  public EstimatedRobotPose getBestPose() {
+  public Pose2d getBestPose() {
     return getPoseFromSupplier(() -> bestPose);
   }
 
@@ -127,7 +129,7 @@ public class Vision extends SubsystemBase {
     if (VisionConstants.kMinimumConfidence < highestConfidence) {
 
       this.bestPose =
-          visionEstimates.get(ambiguities.indexOf(Collections.min(ambiguities))).estimatedPose();
+          visionEstimates.get(ambiguities.indexOf(Collections.min(ambiguities))).estimatedPose().estimatedPose.toPose2d();
 
       this.currentAmbiguity = Collections.min(ambiguities);
     }
@@ -139,6 +141,8 @@ public class Vision extends SubsystemBase {
 
     double distance = 0;
 
+    if (estimatedPose == null) return 1;
+else{
     for (PhotonTrackedTarget target : estimatedPose.targetsUsed) {
       double targetDistance =
           target.getBestCameraToTarget().getTranslation().getDistance(new Translation3d());
@@ -149,17 +153,19 @@ public class Vision extends SubsystemBase {
 
     double standardDeviation = averageDistance / estimatedPose.targetsUsed.size();
 
-    return standardDeviation;
+    return standardDeviation;}
   }
 
   public double calculateAmbiguity(EstimatedRobotPose estimatedPose) {
     double totalAmbiguity = 0;
+if(estimatedPose == null) return 1;
+else{
     for (PhotonTrackedTarget target : estimatedPose.targetsUsed) {
       totalAmbiguity = totalAmbiguity + target.getPoseAmbiguity();
     }
     double averageAmbiguity = totalAmbiguity / estimatedPose.targetsUsed.size();
     return averageAmbiguity;
-  }
+  }}
 
   public boolean areCamerasConnected;
 
@@ -168,9 +174,9 @@ public class Vision extends SubsystemBase {
 
     List<VisionEstimate> latestEstimates = getVisionEstimates();
 
-    for (VisionEstimate estimate : latestEstimates) {
+    if(!(latestEstimates == null)){for (VisionEstimate estimate : latestEstimates) {
       visionEstConsumer.accept(estimate);
-    }
+    }}
 
     getVisionEstimates();
 

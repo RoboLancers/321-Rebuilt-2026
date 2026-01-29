@@ -35,7 +35,7 @@ public class PoseEstimatorResolver extends SubsystemBase {
 
    Pigeon2 pigeon = drivetrain.getPigeon2();
 
-   Pose2d visionPose = vision.getBestPose().estimatedPose.toPose2d();
+   Pose2d visionPose = vision.getBestPose();
 
    Pose2d drivetrainPose = drivetrain.getSwerveDriveEstimatedPose();
 

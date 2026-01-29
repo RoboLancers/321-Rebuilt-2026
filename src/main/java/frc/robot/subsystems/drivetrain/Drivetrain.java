@@ -45,7 +45,7 @@ import java.util.function.Supplier;
 @Logged
 public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> implements Subsystem {
 
-  public Pose2d currentRobotPose;
+  public Pose2d currentRobotPose = new Pose2d(0,0,Rotation2d.kZero);
 
   // driveToPose PID controllers
   ProfiledPIDController xPoseController =

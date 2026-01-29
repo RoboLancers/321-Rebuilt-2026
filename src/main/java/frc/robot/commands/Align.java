@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
-public class Align {
+public final class Align {
 
   private static final List<Integer> redApriltagIDs =
       List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
