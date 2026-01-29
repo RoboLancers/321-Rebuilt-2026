@@ -25,10 +25,6 @@ import java.util.function.Supplier;
 
 public class Align {
 
-  public Vision vision;
-  public Drivetrain drivetrain;
-  public PoseEstimatorResolver poseEstimatorResolver;
-
   private static final List<Integer> redApriltagIDs =
       List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
   private static final List<Integer> blueApriltagIDs =
@@ -77,9 +73,7 @@ public class Align {
 
   private static final Angle shooterFaceOffset = Degrees.of(0);
 
-  public Align(Vision vision, Drivetrain drivetrain) {
-    this.vision = vision;
-    this.drivetrain = drivetrain;
+  public Align() {
   }
 
   public Command driveToPose(Drivetrain drivetrain, Supplier<Pose2d> pose) {
