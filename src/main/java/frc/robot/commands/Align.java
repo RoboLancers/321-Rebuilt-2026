@@ -40,11 +40,11 @@ public class Align {
   private static final List<Integer> redHubTags = List.of(9, 10);
   private static final List<Integer> blueHubTags = List.of(25, 26);
 
-  private static final Distance alignmentDistance = Inches.of(18);
+  private static final Distance alignmentDistance = Inches.of(21);
   private static final Rotation2d alignmentRotation = new Rotation2d(Degrees.of(180));
   private static final Transform2d alignmentTransform =
       new Transform2d(
-          Meters.of(-alignmentDistance.in(Meters)),
+          Meters.of(alignmentDistance.in(Meters)),
           Meters.zero(),
           alignmentRotation); // TODO: check coordinate accuracy
 
