@@ -73,9 +73,6 @@ public class Align {
 
   private static final Angle shooterFaceOffset = Degrees.of(0);
 
-  public Align() {
-  }
-
   public Command driveToPose(Drivetrain drivetrain, Supplier<Pose2d> pose) {
     return drivetrain.driveToFieldPoseCommand(pose);
   }
