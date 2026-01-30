@@ -98,7 +98,7 @@ public class RobotContainer {
     // tunnel.setDefaultCommand(new RunAtVelocity(tunnel,RPM.of(0)));
     // intakePivot.setDefaultCommand(new GoToDefaultPosition(intakePivot));
 
-    driver.leftTrigger().whileTrue(Align.rotateToHubWhileDriving(drivetrain, driverForward, driverTurn));
+    driver.leftTrigger().whileTrue(Align.rotateToHubWhileDriving(drivetrain, driverForward, driverStrafe));
     driver.rightTrigger().whileTrue(Align.alignToApriltag(drivetrain,()->10));
     driver.rightBumper().whileTrue(Align.rotateToHub(drivetrain));
   }
