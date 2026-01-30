@@ -26,7 +26,9 @@ public class ClimbConstants {
 
   public static final int kClimbMotorId = 1;
 
-  public static final int kPivotClimbMotor = 2;
+  public static final int kPivotClimbMotorId = 2;
+
+  public static final int kMagnetId = 0;
 
   public static final double kClimbStatorLimit = 1;
 
