@@ -75,7 +75,7 @@ public class IntakeRollers {
     return rollerMotor.getVelocity().getValueAsDouble();
   }
 
-  @Logged
+  @Logged(name = "atTargetRollerVelocity")
   public boolean atTargetVoltage() {
     return rollerMotor.getVelocity().getValue() == targetVelocity;
   }

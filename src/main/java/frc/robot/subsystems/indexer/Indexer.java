@@ -95,32 +95,32 @@ public class Indexer extends SubsystemBase {
     goToVelocity(RPM.of(targetSpeed.get()));
   }
 
-  @Logged
+  @Logged(name = "indexerTargetVelocity")
   public Velocity getTargetVelocity() {
     return this.targetVelocity;
   }
 
-  @Logged
+  @Logged(name = "getVelocity")
   public double getVelocity() {
     return motor.getVelocity().getValueAsDouble();
   }
 
-  @Logged
+  @Logged(name = "IndexerTargetVoltage")
   public Voltage getTargetVoltage() {
     return this.targetVoltage;
   }
 
-  @Logged
+  @Logged(name = "IndexerVoltage")
   public Voltage getVoltage() {
     return motor.getMotorVoltage().getValue();
   }
 
-  @Logged
+  @Logged(name = "current")
   public Current getIndexerCurrent() {
     return motor.getStatorCurrent().getValue();
   }
 
-  @Logged
+  @Logged(name = "indexerTargetCurrent")
   public Current getTargetCurrent() {
     return this.targetCurrent;
   }

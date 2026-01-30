@@ -67,7 +67,7 @@ public class IntakePivot extends SubsystemBase {
     intakePivotMotor.setControl(intakeVoltage);
   }
 
-  @Logged
+  @Logged(name = "getAngle")
   public Angle getAngle() {
     return Degrees.of(intakePivotMotor.getPosition().getValueAsDouble());
   }
@@ -76,7 +76,7 @@ public class IntakePivot extends SubsystemBase {
     intakePivotMotor.setPosition(Degrees.of(absoluteEncoder.get()));
   }
 
-  @Logged
+  @Logged(name = "atTargetAngle")
   public boolean atTargetAngle() {
     return getAngle() == targetAngle;
   }
@@ -95,7 +95,7 @@ public class IntakePivot extends SubsystemBase {
     goToAngle(Degrees.of(angle.get()));
   }
 
-  @Logged
+  @Logged(name = "getVoltage")
   public Voltage getVoltage() {
     return intakePivotMotor.getMotorVoltage().getValue();
   }
@@ -105,12 +105,12 @@ public class IntakePivot extends SubsystemBase {
     return intakePivotMotor.getVelocity().getValueAsDouble();
   }
 
-  @Logged
+  @Logged(name = "IntakePivotCurrent")
   public Current current() {
     return intakePivotMotor.getStatorCurrent().getValue();
   }
 
-  @Logged
+  @Logged(name = "AtTargetVelocity")
   public boolean atTargetVelocity() {
     return intakePivotMotor.getVelocity().getValue() == targetVelocity;
   }
