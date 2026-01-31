@@ -24,10 +24,8 @@ import edu.wpi.first.wpilibj.Relay.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.TunableConstant;
 
-@Logged(name = "Climb")
+@Logged
 public class Climb extends SubsystemBase {
-
-  private Angle targetAngle;
 
   private TalonFX climbMotor = new TalonFX(ClimbConstants.kClimbMotorId);
 
@@ -138,7 +136,7 @@ public class Climb extends SubsystemBase {
   @Logged
   public boolean atTargetAngle() {
     boolean atAngle =
-        Math.abs(getAngle().in(Degrees) - targetAngle.in(Degrees))
+        Math.abs(getAngle().in(Degrees) - ClimbConstants.targetAngle.in(Degrees))
             > ClimbConstants.kClimbAngleTolerance.in(Degrees);
     return atAngle;
   }
@@ -146,7 +144,7 @@ public class Climb extends SubsystemBase {
   @Logged
   public boolean atPivotTargetAngle() {
     boolean atAngle =
-        Math.abs(getPivotAngle().in(Degrees) - targetAngle.in(Degrees))
+        Math.abs(getPivotAngle().in(Degrees) - ClimbConstants.targetPivotAngle.in(Degrees))
             > ClimbConstants.kPivotClimbAngleTolerance.in(Degrees);
     return atAngle;
   }
