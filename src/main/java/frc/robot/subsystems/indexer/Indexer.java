@@ -14,14 +14,21 @@ import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.TunableConstant;
 
+@Logged
 public class Indexer extends SubsystemBase {
 
   private TalonFX motor = new TalonFX(IndexerConstants.kMotorID);
+  private Velocity targetVelocity;
+  private Voltage targetVoltage;
+  private Current targetCurrent;
 
   public Indexer() {
     configureMotors();
@@ -86,5 +93,35 @@ public class Indexer extends SubsystemBase {
     IndexerConstants.kD = kD.get();
 
     goToVelocity(RPM.of(targetSpeed.get()));
+  }
+
+  @Logged
+  public Velocity getTargetVelocity() {
+    return this.targetVelocity;
+  }
+
+  @Logged
+  public double getVelocity() {
+    return motor.getVelocity().getValueAsDouble();
+  }
+
+  @Logged
+  public Voltage getTargetVoltage() {
+    return this.targetVoltage;
+  }
+
+  @Logged
+  public Voltage getVoltage() {
+    return motor.getMotorVoltage().getValue();
+  }
+
+  @Logged
+  public Current getIndexerCurrent() {
+    return motor.getStatorCurrent().getValue();
+  }
+
+  @Logged
+  public Current getTargetCurrent() {
+    return this.targetCurrent;
   }
 }
