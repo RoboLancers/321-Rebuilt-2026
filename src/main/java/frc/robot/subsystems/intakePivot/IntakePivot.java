@@ -9,25 +9,35 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.VoltageConfigs;
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Velocity;
+import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.util.TunableConstant;
 
+@Logged(name = "Intake Pivot")
 public class IntakePivot extends SubsystemBase {
 
-  private TalonFX intakePivotMainMotor = new TalonFX(IntakeConstants.pivotMainMotorId);
-  private TalonFX intakePivotFollowerMotor = new TalonFX(IntakeConstants.pivotFollowerMotorId);
+  private TalonFX intakePivotMotor = new TalonFX(IntakeConstants.kPivotMotorId);
   private TalonFXConfiguration talonConfigs = new TalonFXConfiguration();
   private MotorOutputConfigs motorConfigs = new MotorOutputConfigs();
   private FeedbackConfigs feedbackConfigs = new FeedbackConfigs();
   private CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
   private VoltageConfigs voltageConfigs = new VoltageConfigs();
   private Slot0Configs slot0Configs = new Slot0Configs();
+
+  private Angle targetAngle;
+  private Voltage targetVoltage;
+  private Velocity targetVelocity;
+
+  private DutyCycleEncoder absoluteEncoder = new DutyCycleEncoder(IntakeConstants.kEncoderID);
 
   public IntakePivot() {
     motorConfigurations();
@@ -37,30 +47,71 @@ public class IntakePivot extends SubsystemBase {
     motorConfigs.withInverted(InvertedValue.Clockwise_Positive);
     motorConfigs.withNeutralMode(NeutralModeValue.Brake);
 
-    currentLimitsConfigs.withStatorCurrentLimitEnable(IntakeConstants.currentLimitEnable);
-    currentLimitsConfigs.withStatorCurrentLimit(IntakeConstants.currentLimit);
+    currentLimitsConfigs.withStatorCurrentLimitEnable(IntakeConstants.kCurrentLimitEnable);
+    currentLimitsConfigs.withStatorCurrentLimit(IntakeConstants.kCurrentLimit);
 
     slot0Configs.withKG(IntakeConstants.kG);
     slot0Configs.withKD(IntakeConstants.kD);
     slot0Configs.withKP(IntakeConstants.kP);
 
-    feedbackConfigs.withSensorToMechanismRatio(IntakeConstants.sensorToMechanismRatio);
+    feedbackConfigs.withSensorToMechanismRatio(IntakeConstants.kSensorToMechanismRatio);
 
-    intakePivotMainMotor.getConfigurator().apply(motorConfigs);
-    intakePivotMainMotor.getConfigurator().apply(currentLimitsConfigs);
-    intakePivotMainMotor.getConfigurator().apply(slot0Configs);
-    intakePivotMainMotor.getConfigurator().apply(feedbackConfigs);
-
-    Follower follower = new Follower(IntakeConstants.pivotMainMotorId, MotorAlignmentValue.Aligned);
-    intakePivotFollowerMotor.setControl(follower);
+    intakePivotMotor.getConfigurator().apply(motorConfigs);
+    intakePivotMotor.getConfigurator().apply(currentLimitsConfigs);
+    intakePivotMotor.getConfigurator().apply(slot0Configs);
+    intakePivotMotor.getConfigurator().apply(feedbackConfigs);
   }
 
   public void goToAngle(Angle angle) {
     MotionMagicVoltage intakeVoltage = new MotionMagicVoltage(angle);
-    intakePivotMainMotor.setControl(intakeVoltage);
+    intakePivotMotor.setControl(intakeVoltage);
   }
 
+  @Logged
   public Angle getAngle() {
-    return Degrees.of(intakePivotMainMotor.getPosition().getValueAsDouble());
+    return Degrees.of(intakePivotMotor.getPosition().getValueAsDouble());
+  }
+
+  public void zeroEncoder() {
+    intakePivotMotor.setPosition(Degrees.of(absoluteEncoder.get()));
+  }
+
+  @Logged
+  public boolean atTargetAngle() {
+    return getAngle() == targetAngle;
+  }
+
+  public void tune() {
+
+    TunableConstant kP = new TunableConstant("/IntakePivot/kP", 0);
+    TunableConstant kD = new TunableConstant("/IntakePivot/kD", 0);
+    TunableConstant kG = new TunableConstant("/IntakePivot/kG", 0);
+    TunableConstant angle = new TunableConstant("/IntakePivot/angle", 0);
+
+    IntakeConstants.kP = kP.get();
+    IntakeConstants.kD = kD.get();
+    IntakeConstants.kG = kG.get();
+
+    goToAngle(Degrees.of(angle.get()));
+  }
+
+  @Logged
+  public Voltage getVoltage() {
+    return intakePivotMotor.getMotorVoltage().getValue();
+  }
+
+  @Logged(name = "pivotVelocity")
+  public double getVelocity() {
+    return intakePivotMotor.getVelocity().getValueAsDouble();
+  }
+
+  @Logged
+  public Current current() {
+    return intakePivotMotor.getStatorCurrent().getValue();
+  }
+
+  @Logged
+  public boolean atTargetVelocity() {
+    return intakePivotMotor.getVelocity().getValue() == targetVelocity;
   }
 }

@@ -10,31 +10,31 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicExpoTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.util.TunableConstant;
 
+@Logged
 public class Hood extends SubsystemBase {
 
-  double kP;
-  double kD;
-  double kG;
+  private DutyCycleEncoder absoluteEncoder = new DutyCycleEncoder(HoodConstants.kHoodEncoderId);
 
-  public Hood create() {
-    return new Hood();
-  }
+  private TalonFX hoodMotor = new TalonFX(HoodConstants.kHoodMotorId);
+  private Angle desiredPitch;
 
   public Hood() {
     configureMotors();
-    setHoodPID(kP, 0.0, kD, 0.0, 0.0, 0.0, kG);
+    setHoodPID(HoodConstants.kP, HoodConstants.kD, HoodConstants.kG);
+    zeroEncoder();
   }
-
-  TalonFX hoodMotor = new TalonFX(HoodConstants.kHoodMotorId);
 
   public void configureMotors() {
 
@@ -65,33 +65,29 @@ public class Hood extends SubsystemBase {
     hoodMotor.getConfigurator().apply(hoodMotorConfigs);
   }
 
-  public void setHoodPID(
-      double kP, double kI, double kD, double kS, double kV, double kA, double kG) {
+  public void setHoodPID(double kP, double kD, double kG) {
     hoodMotor
         .getConfigurator()
         .apply(
             new Slot0Configs()
                 .withKP(kP)
-                .withKI(kI)
                 .withKD(kD)
                 .withKG(kG)
-                .withKS(kS)
-                .withKA(kA)
-                .withKV(kV)
                 .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign));
   }
 
   public void goToAngle(Angle targetAngle) {
-    hoodMotor.setControl(new MotionMagicExpoTorqueCurrentFOC(targetAngle).withFeedForward(kG));
+    hoodMotor.setControl(new MotionMagicVoltage(targetAngle));
   }
 
+  @Logged(name = "currentPitch")
   public Angle getAngle() {
     Angle angle = Degrees.of(hoodMotor.getPosition().getValueAsDouble());
     return angle;
   }
 
-  public void resetEncoder() {
-    hoodMotor.setPosition(HoodConstants.kStartingAngle);
+  public void zeroEncoder() {
+    hoodMotor.setPosition(absoluteEncoder.get());
   }
 
   public boolean atTargetAngle(Angle targetAngle) {
@@ -99,5 +95,21 @@ public class Hood extends SubsystemBase {
         Math.abs(getAngle().in(Degrees) - targetAngle.in(Degrees))
             < HoodConstants.kAngleTolerance.in(Degrees);
     return atTargetAngle;
+  }
+
+  public void tune() {
+    TunableConstant kG = new TunableConstant("Hood/kG/", 0);
+    TunableConstant kD = new TunableConstant("Hood/kD/", 0);
+    TunableConstant kP = new TunableConstant("Hood/kP/", 0);
+    TunableConstant targetAngle = new TunableConstant("Hood/targetAngle/", 0);
+
+    setHoodPID(kP.get(), kD.get(), kG.get());
+
+    goToAngle(Degrees.of(targetAngle.get()));
+  }
+
+  @Logged(name = "targetPitch")
+  public Angle getTargetPitch() {
+    return this.desiredPitch;
   }
 }
