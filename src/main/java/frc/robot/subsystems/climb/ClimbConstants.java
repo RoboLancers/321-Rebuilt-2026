@@ -30,6 +30,8 @@ public class ClimbConstants {
 
   public static final int kMagnetId = 0;
 
+  public static final int kEncoderId = 0;
+
   public static final double kClimbStatorLimit = 1;
 
   public static final double kClimbSupplyLimit = 1;

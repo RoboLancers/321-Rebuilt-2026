@@ -10,6 +10,7 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.epilogue.Logged;
@@ -33,6 +34,8 @@ public class Climb extends SubsystemBase {
   private TalonFX pivotClimbMotor = new TalonFX(ClimbConstants.kPivotClimbMotorId);
 
   private Relay magnetRelay = new Relay(ClimbConstants.kMagnetId);
+
+  private CANcoder clawEncoder = new CANcoder(ClimbConstants.kEncoderId);
 
   private ArmFeedforward climbFeedforward = new ArmFeedforward(0, ClimbConstants.kG, 0, 0, 0);
 
@@ -111,7 +114,7 @@ public class Climb extends SubsystemBase {
     return velocity;
   }
 
-  @Logged
+  @Logged(name = "")
   public AngularVelocity getPivotClimbVelocity() {
     AngularVelocity velocity = pivotClimbMotor.getVelocity().getValue();
     return velocity;
@@ -119,7 +122,10 @@ public class Climb extends SubsystemBase {
 
   @Logged(name = "climbAngle")
   public Angle getAngle() {
-    Angle angle = Degrees.of(climbMotor.getPosition().getValueAsDouble());
+    // Angle angle = Degrees.of(climbMotor.getPosition().getValueAsDouble());
+    // return angle;
+
+    Angle angle = Degrees.of(clawEncoder.getAbsolutePosition().getValueAsDouble());
     return angle;
   }
 
