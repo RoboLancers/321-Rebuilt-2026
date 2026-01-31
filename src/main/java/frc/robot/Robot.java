@@ -5,12 +5,28 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 @Logged
 public class Robot extends TimedRobot {
+  private String autoSelected;
+  private SendableChooser<String> chooser = new SendableChooser<>();
   private Command m_autonomousCommand;
+  private static final String kCenterDepotAuto = "Center Depot Auto";
+  private static final String kTopDepotAuto = "Top Depot Auto";
+  private static final String kBottomDepotAuto = "Bottom Depot Auto";
+  private static final String kBottomAuto = "Bottom Auto";
+  private static final String kBottomBumpAuto = "Bottom Bump Auto";
+  private static final String kCenterAuto = "Center Auto";
+  private static final String kTopAuto = "Top Auto";
+  private static final String kTopBumpAuto = "Top Bump Auto";
+
+  public String getAutonomousCommand() {
+    return chooser.getSelected();
+  }
 
   private final RobotContainer m_robotContainer;
 
@@ -18,6 +34,16 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
     DataLogManager.start();
     DriverStation.startDataLog(DataLogManager.getLog());
+    chooser.addOption("Center Depot Auto", kCenterDepotAuto);
+    chooser.addOption("Top Depot Auto", kTopDepotAuto);
+    chooser.addOption("Bottom Depot Auto", kBottomDepotAuto);
+    chooser.addOption("Bottom Auto", kBottomAuto);
+    chooser.addOption("Center Auto", kCenterAuto);
+    chooser.addOption("Top Auto", kTopAuto);
+    chooser.addOption("Bottom Bump Auto", kBottomBumpAuto);
+    chooser.addOption("Top Bump Auto", kTopBumpAuto);
+
+    SmartDashboard.putData("Auto choices", chooser);
   }
 
   @Override
@@ -36,6 +62,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    autoSelected = chooser.getSelected();
+    System.out.println("Auto selected: " + autoSelected);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
@@ -44,7 +72,19 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+    switch (autoSelected) {
+      case kCenterDepotAuto:
+      case kTopDepotAuto:
+      case kBottomDepotAuto:
+      case kBottomAuto:
+      case kCenterAuto:
+      case kTopAuto:
+      case kBottomBumpAuto:
+      case kTopBumpAuto:
+        break;
+    }
+  }
 
   @Override
   public void autonomousExit() {}
