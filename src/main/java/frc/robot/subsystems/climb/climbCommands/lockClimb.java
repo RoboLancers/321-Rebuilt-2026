@@ -1,3 +1,4 @@
+/* (C) RoboLancers 2026 */
 package frc.robot.subsystems.climb.climbCommands;
 
 import com.ctre.phoenix6.hardware.TalonFX;
