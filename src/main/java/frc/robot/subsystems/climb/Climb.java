@@ -50,6 +50,7 @@ public class Climb extends SubsystemBase {
   public Climb() {
     configureClimbMotors();
     setClimbPID(ClimbConstants.kP, 0.0, ClimbConstants.kD);
+    setPivotClimbPID(ClimbConstants.kPivotP, 0.0, ClimbConstants.kPivotD);
   }
 
   public void configureClimbMotors() {
@@ -112,7 +113,7 @@ public class Climb extends SubsystemBase {
     return velocity;
   }
 
-  @Logged(name = "")
+  @Logged(name = "pivotClimbVelocity")
   public AngularVelocity getPivotClimbVelocity() {
     AngularVelocity velocity = pivotClimbMotor.getVelocity().getValue();
     return velocity;
@@ -120,9 +121,6 @@ public class Climb extends SubsystemBase {
 
   @Logged(name = "climbAngle")
   public Angle getAngle() {
-    // Angle angle = Degrees.of(climbMotor.getPosition().getValueAsDouble());
-    // return angle;
-
     Angle angle = Degrees.of(clawEncoder.getAbsolutePosition().getValueAsDouble());
     return angle;
   }
