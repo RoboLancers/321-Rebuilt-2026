@@ -23,7 +23,8 @@ public class Robot extends TimedRobot {
   private static final String kCenterAuto = "Center Auto";
   private static final String kTopAuto = "Top Auto";
   private static final String kTopBumpAuto = "Top Bump Auto";
-  public String getAutonomousCommand(){
+
+  public String getAutonomousCommand() {
     return chooser.getSelected();
   }
 
@@ -34,7 +35,7 @@ public class Robot extends TimedRobot {
     DataLogManager.start();
     DriverStation.startDataLog(DataLogManager.getLog());
     chooser.addOption("Center Depot Auto", kCenterDepotAuto);
-    chooser.addOption("Top Depot Auto",kTopDepotAuto);
+    chooser.addOption("Top Depot Auto", kTopDepotAuto);
     chooser.addOption("Bottom Depot Auto", kBottomDepotAuto);
     chooser.addOption("Bottom Auto", kBottomAuto);
     chooser.addOption("Center Auto", kCenterAuto);
@@ -72,7 +73,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
-    switch (autoSelected){
+    switch (autoSelected) {
       case kCenterDepotAuto:
       case kTopDepotAuto:
       case kBottomDepotAuto:

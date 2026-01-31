@@ -4,8 +4,8 @@ package frc.robot.subsystems.outtake.commands;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.outtake.Shooter;
 import frc.robot.subsystems.outtake.OuttakeConstants;
+import frc.robot.subsystems.outtake.Shooter;
 import java.util.function.Supplier;
 
 public class ShootFuel {
