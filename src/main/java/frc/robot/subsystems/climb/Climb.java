@@ -12,6 +12,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.Angle;
@@ -22,7 +23,10 @@ import edu.wpi.first.wpilibj.Relay.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.TunableConstant;
 
+@Logged(name = "Climb")
 public class Climb extends SubsystemBase {
+
+  private Angle targetAngle;
 
   private TalonFX climbMotor = new TalonFX(ClimbConstants.kClimbMotorId);
 
@@ -101,37 +105,40 @@ public class Climb extends SubsystemBase {
     pivotClimbMotor.getConfigurator().apply(pivotClimbMotorConfiguration);
   }
 
-  // @Logged(name = "/climb/currentVelocity")
+  @Logged(name = "climbVelocity")
   public AngularVelocity getClimbVelocity() {
     AngularVelocity velocity = climbMotor.getVelocity().getValue();
     return velocity;
   }
 
+  @Logged
   public AngularVelocity getPivotClimbVelocity() {
     AngularVelocity velocity = pivotClimbMotor.getVelocity().getValue();
     return velocity;
   }
 
-  // @Logged(name = "/climb/currentAngle")
+  @Logged(name = "climbAngle")
   public Angle getAngle() {
     Angle angle = Degrees.of(climbMotor.getPosition().getValueAsDouble());
     return angle;
   }
 
+  @Logged(name = "climbPivotAngle")
   public Angle getPivotAngle() {
     Angle angle = Degrees.of(pivotClimbMotor.getPosition().getValueAsDouble());
     return angle;
   }
 
-  // @Logged(name = "/climb/atTargetAngle")
-  public boolean atTargetAngle(Angle targetAngle) {
+  @Logged
+  public boolean atTargetAngle() {
     boolean atAngle =
         Math.abs(getAngle().in(Degrees) - targetAngle.in(Degrees))
             > ClimbConstants.kClimbAngleTolerance.in(Degrees);
     return atAngle;
   }
 
-  public boolean atPivotTargetAngle(Angle targetAngle) {
+  @Logged
+  public boolean atPivotTargetAngle() {
     boolean atAngle =
         Math.abs(getPivotAngle().in(Degrees) - targetAngle.in(Degrees))
             > ClimbConstants.kPivotClimbAngleTolerance.in(Degrees);
@@ -182,5 +189,9 @@ public class Climb extends SubsystemBase {
 
   public void turnOnMagnet() {
     magnetRelay.set(Value.kOn);
+  }
+
+  public void turnOffMagnet() {
+    magnetRelay.set(Value.kOff);
   }
 }
