@@ -11,9 +11,21 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "intakeFuel"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Bottom Depot Path 2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootFuel"
           }
         }
       ]

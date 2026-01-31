@@ -11,9 +11,21 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "IntakeFuel"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Top Depot Path 2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootFuel"
           }
         }
       ]

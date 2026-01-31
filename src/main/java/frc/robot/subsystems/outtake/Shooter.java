@@ -24,7 +24,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.TunableConstant;
 
 @Logged
-public class Outtake extends SubsystemBase {
+public class Shooter extends SubsystemBase {
 
   private TalonFX motor = new TalonFX(OuttakeConstants.kMotorID);
 
@@ -36,7 +36,7 @@ public class Outtake extends SubsystemBase {
 
   private Velocity targetShooterVelocity;
 
-  public Outtake() {
+  public Shooter() {
 
     configureMotors();
     setPID();
