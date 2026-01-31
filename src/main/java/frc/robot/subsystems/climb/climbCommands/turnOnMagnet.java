@@ -1,18 +1,18 @@
 /* (C) RoboLancers 2026 */
-package frc.robot.commands.climbCommands;
+package frc.robot.subsystems.climb.climbCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.climb.Climb;
 
-public class turnOffMagnet extends Command {
+public class turnOnMagnet extends Command {
 
   Climb climb;
 
-  public turnOffMagnet(Climb climb) {
+  public turnOnMagnet(Climb climb) {
     this.climb = climb;
   }
 
   public void execute() {
-    climb.turnOffMagnet();
+    climb.turnOnMagnet();
   }
 }

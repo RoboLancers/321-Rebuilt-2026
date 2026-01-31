@@ -1,19 +1,19 @@
 /* (C) RoboLancers 2026 */
-package frc.robot.commands.climbCommands;
+package frc.robot.subsystems.climb.climbCommands;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.climb.Climb;
 
-public class goToAngle extends Command {
+public class goToPivotAngle extends Command {
 
   Climb climb;
 
-  public goToAngle(Climb climb) {
+  public goToPivotAngle(Climb climb) {
     this.climb = climb;
   }
 
   public void execute(Angle angle) {
-    climb.goToAngle(angle);
+    climb.goToPivotAngle(angle);
   }
 }
