@@ -166,6 +166,11 @@ public class Climb extends SubsystemBase {
     return atVoltage;
   }
 
+  public boolean atPivotClimbVoltage(Voltage voltage) {
+    boolean atVoltage = pivotClimbMotor.getMotorVoltage() == voltage;
+    return atVoltage;
+  }
+
   public void setClimbPID(double kP, double kI, double kD) {
     climbController.setPID(kP, kI, kD);
   }
