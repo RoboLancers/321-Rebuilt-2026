@@ -5,7 +5,9 @@ import static edu.wpi.first.units.Units.Meters;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotConstants;
 import java.util.ArrayList;
@@ -33,14 +35,15 @@ public class Vision extends SubsystemBase {
     return getAmbiguityFromSupplier(() -> currentAmbiguity);
   }
 
-  public Pose2d bestPose = new Pose2d(0,0,Rotation2d.kZero);
+  public Pose2d latestBestPose = new Pose2d(new Translation2d(0,0), Rotation2d.kZero);
+  public EstimatedRobotPose latestEstimatedRobotPose;
 
   public Pose2d getPoseFromSupplier(Supplier<Pose2d> bestPose) {
     return bestPose.get();
   }
 
-  public Pose2d getBestPose() {
-    return getPoseFromSupplier(() -> bestPose);
+  public Pose2d getLatestBestPose() {
+    return getPoseFromSupplier(() -> latestBestPose);
   }
 
   public Consumer<VisionEstimate> visionEstConsumer;
@@ -92,15 +95,15 @@ public class Vision extends SubsystemBase {
 
     for (int i = 0; i < cameras.size(); i++) {
 
-      if (!cameras.get(i).isConnected()) return null;
+      if (cameras.get(i) == null || !cameras.get(i).isConnected()) continue;
 
       List<PhotonPipelineResult> unreadResults = cameras.get(i).getAllUnreadResults();
 
-      if (unreadResults.isEmpty()) return null;
+      if (unreadResults.isEmpty()) continue;
 
       PhotonPipelineResult latestResult = unreadResults.get(unreadResults.size() - 1);
 
-      if (!latestResult.hasTargets()) return null;
+      if (!latestResult.hasTargets()) continue;
 
       EstimatedRobotPose estimatedPose =
           estimators
@@ -115,6 +118,10 @@ public class Vision extends SubsystemBase {
                               .isNear(Meters.of(0), VisionConstants.kAllowedFieldHeight))
               .orElse(null);
 
+        if(estimatedPose == null){
+          continue;
+        }
+
       double standardDeviation = calculateStdDevs(estimatedPose);
 
       VisionEstimate visionEstimate = new VisionEstimate(estimatedPose, standardDeviation);
@@ -124,13 +131,18 @@ public class Vision extends SubsystemBase {
       ambiguities.add(calculateAmbiguity(estimatedPose));
     }
 
+    if(visionEstimates.size() == 0){
+return null;
+    }
+
     double highestConfidence = 1 - Collections.min(ambiguities);
 
     if (VisionConstants.kMinimumConfidence < highestConfidence) {
 
-      this.bestPose =
+      this.latestBestPose =
           visionEstimates.get(ambiguities.indexOf(Collections.min(ambiguities))).estimatedPose().estimatedPose.toPose2d();
-
+  
+      this.latestEstimatedRobotPose = visionEstimates.get(ambiguities.indexOf(Collections.min(ambiguities))).estimatedPose();
       this.currentAmbiguity = Collections.min(ambiguities);
     }
 
@@ -174,11 +186,13 @@ else{
 
     List<VisionEstimate> latestEstimates = getVisionEstimates();
 
-    if(!(latestEstimates == null)){for (VisionEstimate estimate : latestEstimates) {
-      visionEstConsumer.accept(estimate);
-    }}
+    if(visionEstConsumer != null && latestEstimates != null)
+    {
+      for (VisionEstimate estimate : latestEstimates) {
 
-    getVisionEstimates();
+        visionEstConsumer.accept(estimate);
+      }
+    }
 
     for (PhotonCamera camera : cameras) {
       if (camera.isConnected()) {
@@ -188,5 +202,13 @@ else{
         break;
       }
     }
+
+    SmartDashboard.putBoolean("Cameras Are Connected", areCamerasConnected);
+    
+    SmartDashboard.putNumber("Vision Pose X", getLatestBestPose().getX());
+
+    SmartDashboard.putNumber("Vision Pose Y", getLatestBestPose().getY());
+    
+    SmartDashboard.putNumber("Vision Pose Yaw", getLatestBestPose().getRotation().getDegrees());
   }
 }

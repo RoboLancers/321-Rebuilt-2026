@@ -1,15 +1,23 @@
 /* (C) RoboLancers 2026 */
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -29,6 +37,8 @@ import frc.robot.subsystems.outtake.commands.OuttakeFuel;
 import frc.robot.subsystems.tunnel.Tunnel;
 import frc.robot.subsystems.tunnel.tunnelCommands.RunAtVelocity;
 import frc.robot.subsystems.vision.Vision;
+import frc.robot.util.MyAlliance;
+import frc.robot.util.RebuiltUtil;
 
 public class RobotContainer {
 
@@ -48,8 +58,8 @@ public class RobotContainer {
                       est.standardDeviations(),
                       est.standardDeviations())));
 
-  public PoseEstimatorResolver poseEstimatorResolver =
-      new PoseEstimatorResolver(vision, drivetrain, pose -> drivetrain.addRobotPose(() -> pose));
+//   public PoseEstimatorResolver poseEstimatorResolver =
+//       new PoseEstimatorResolver(vision, drivetrain);
 
   // public Hood hood = new Hood();
   // public Outtake outtake = new Outtake();
@@ -85,12 +95,16 @@ public class RobotContainer {
           -MathUtil.applyDeadband(driver.getRightX(), DrivetrainConstants.kRotationDeadband)
               * DrivetrainConstants.kMaxAngularVelocity.in(RadiansPerSecond);
 
+  public Supplier<Pose2d> currentRobotPose = ()-> drivetrain.getPose();//poseEstimatorResolver.getRobotPose();
+
+  public Pose2d targetPose = new Pose2d(Meters.of(13.775), Meters.of(5.598), new Rotation2d(Degrees.of(-141.88)));
 
   public RobotContainer() {
     configureBindings();
   }
 
   private void configureBindings() {
+    
     drivetrain.setDefaultCommand(drivetrain.teleopDrive(driverForward, driverStrafe, driverTurn));
     // hood.setDefaultCommand(HoodCommands.goToTravelAngle(hood));
     // outtake.setDefaultCommand(OuttakeFuel.outtakeWithVelocity(outtake, ()->RPM.of(0)));
@@ -98,9 +112,13 @@ public class RobotContainer {
     // tunnel.setDefaultCommand(new RunAtVelocity(tunnel,RPM.of(0)));
     // intakePivot.setDefaultCommand(new GoToDefaultPosition(intakePivot));
 
-    driver.leftTrigger().whileTrue(Align.rotateToHubWhileDriving(drivetrain, driverForward, driverStrafe));
-    driver.rightTrigger().whileTrue(Align.alignToApriltag(drivetrain,()->10));
-    driver.rightBumper().whileTrue(Align.rotateToHub(drivetrain));
+
+    driver.leftTrigger().whileTrue(drivetrain.driveToFieldPoseCommand(()->targetPose, currentRobotPose));
+    driver.leftBumper().whileTrue(drivetrain.driveToFieldPoseCommand(()->targetPose, currentRobotPose).until(()->drivetrain.atPoseSetpoint(Meters.of(0.02),Degrees.of(2), currentRobotPose)));
+    driver.rightTrigger().whileTrue(Align.rotateToHubWhileDriving2(drivetrain, driverForward, driverStrafe, ()->RebuiltUtil.getHubHeading(currentRobotPose), currentRobotPose));
+    driver.rightBumper().whileTrue(Align.alignToApriltag(drivetrain, ()->10,currentRobotPose));
+
+    driver.y().whileTrue(drivetrain.teleopDriveWithHeading(driverForward, driverStrafe, ()->RebuiltUtil.getHubHeading(currentRobotPose), currentRobotPose));
   }
 
   public Command getAutonomousCommand() {
