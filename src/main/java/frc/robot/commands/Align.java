@@ -16,7 +16,6 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.util.AprilTagUtil;
 import frc.robot.util.MyAlliance;
-
 import java.util.List;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -48,8 +47,13 @@ public final class Align {
   private static final Pose2d redHubScoringPoseRight =
       new Pose2d(Meters.zero(), Meters.zero(), new Rotation2d(Degrees.zero()));
 
-  private static final Pose2d redHubPose = new Pose2d(Meters.of(12.52 - Inches.of(23.5).in(Meters)),	Meters.of(4.03), Rotation2d.kZero);
-  private static final Pose2d blueHubPose =  new Pose2d(Meters.of(4.02 + Inches.of(23.5).in(Meters)),	Meters.of(4.03) , new Rotation2d(Degrees.of(180)));
+  private static final Pose2d redHubPose =
+      new Pose2d(Meters.of(12.52 - Inches.of(23.5).in(Meters)), Meters.of(4.03), Rotation2d.kZero);
+  private static final Pose2d blueHubPose =
+      new Pose2d(
+          Meters.of(4.02 + Inches.of(23.5).in(Meters)),
+          Meters.of(4.03),
+          new Rotation2d(Degrees.of(180)));
 
   private static final int redClimbTagID = 15;
   private static final int blueClimbTagID = 31;
@@ -68,7 +72,8 @@ public final class Align {
 
   private static final Angle shooterFaceOffset = Degrees.of(0);
 
-  public Command driveToPose(Drivetrain drivetrain, Supplier<Pose2d> pose, Supplier<Pose2d> robotPose) {
+  public Command driveToPose(
+      Drivetrain drivetrain, Supplier<Pose2d> pose, Supplier<Pose2d> robotPose) {
     return drivetrain.driveToFieldPoseCommand(pose, robotPose);
   }
 
@@ -88,22 +93,22 @@ public final class Align {
 
     return drivetrain.driveToFieldPoseCommand(() -> apriltagPose, robotPose);
   }
-  
-  public static Command alignToApriltag(Drivetrain drivetrain, Supplier<Integer> ID, Supplier<Pose2d> robotPose) {
+
+  public static Command alignToApriltag(
+      Drivetrain drivetrain, Supplier<Integer> ID, Supplier<Pose2d> robotPose) {
     Pose2d targetPose =
         RobotConstants.kAprilTagLayout
             .getTagPose(ID.get())
-            .map(pose->pose.toPose2d())
+            .map(pose -> pose.toPose2d())
             .orElse(robotPose.get())
             .plus(alignmentTransform);
     return drivetrain.driveToFieldPoseCommand(() -> targetPose, robotPose);
   }
 
-  
-  public static Command alignToPose(Drivetrain drivetrain, Supplier<Pose2d> pose, Supplier<Pose2d> robotPose) {
+  public static Command alignToPose(
+      Drivetrain drivetrain, Supplier<Pose2d> pose, Supplier<Pose2d> robotPose) {
     return drivetrain.driveToFieldPoseCommand(() -> pose.get().plus(alignmentTransform), robotPose);
   }
-
 
   public static boolean robotOnRightSide(Supplier<Pose2d> robotPose) {
     return robotPose.get().getMeasureY().in(Meters)
@@ -132,35 +137,49 @@ public final class Align {
   }
 
   public static Command driveToHubScoringPose(Drivetrain drivetrain, Supplier<Pose2d> robotPose) {
-    return drivetrain.driveToFieldPoseCommand(
-        () -> getHubScoringPose(robotPose), robotPose);
+    return drivetrain.driveToFieldPoseCommand(() -> getHubScoringPose(robotPose), robotPose);
   }
 
-  public static Command rotateToHub(Drivetrain drivetrain, Supplier<Rotation2d> hubHeading, Supplier<Pose2d> robotPose){
-    return rotateToHubWhileDriving(drivetrain, ()->0, ()->0, hubHeading, robotPose);
+  public static Command rotateToHub(
+      Drivetrain drivetrain, Supplier<Rotation2d> hubHeading, Supplier<Pose2d> robotPose) {
+    return rotateToHubWhileDriving(drivetrain, () -> 0, () -> 0, hubHeading, robotPose);
   }
 
-  public static Command rotateToHub1(Drivetrain drivetrain, Supplier<Rotation2d> hubHeading, Supplier<Pose2d> robotPose){
-    return rotateToHubWhileDriving1(drivetrain, ()->0, ()->0, hubHeading, robotPose);
+  public static Command rotateToHub1(
+      Drivetrain drivetrain, Supplier<Rotation2d> hubHeading, Supplier<Pose2d> robotPose) {
+    return rotateToHubWhileDriving1(drivetrain, () -> 0, () -> 0, hubHeading, robotPose);
   }
 
-  public static Command rotateToHub2(Drivetrain drivetrain, Supplier<Rotation2d> hubHeading, Supplier<Pose2d> robotPose){
-    return rotateToHubWhileDriving2(drivetrain, ()->0, ()->0, hubHeading, robotPose);
+  public static Command rotateToHub2(
+      Drivetrain drivetrain, Supplier<Rotation2d> hubHeading, Supplier<Pose2d> robotPose) {
+    return rotateToHubWhileDriving2(drivetrain, () -> 0, () -> 0, hubHeading, robotPose);
   }
 
   public static Command rotateToHubWhileDriving(
-      Drivetrain drivetrain, DoubleSupplier translationX, DoubleSupplier translationY, Supplier<Rotation2d> hubHeading, Supplier<Pose2d> robotPose) {
-     return drivetrain.teleopDriveWithHeading(translationX, translationY, hubHeading, robotPose);
+      Drivetrain drivetrain,
+      DoubleSupplier translationX,
+      DoubleSupplier translationY,
+      Supplier<Rotation2d> hubHeading,
+      Supplier<Pose2d> robotPose) {
+    return drivetrain.teleopDriveWithHeading(translationX, translationY, hubHeading, robotPose);
   }
 
   public static Command rotateToHubWhileDriving1(
-      Drivetrain drivetrain, DoubleSupplier translationX, DoubleSupplier translationY, Supplier<Rotation2d> hubHeading, Supplier<Pose2d> robotPose) {
-     return drivetrain.teleopDriveWithHeading(translationX, translationY, hubHeading, robotPose);
+      Drivetrain drivetrain,
+      DoubleSupplier translationX,
+      DoubleSupplier translationY,
+      Supplier<Rotation2d> hubHeading,
+      Supplier<Pose2d> robotPose) {
+    return drivetrain.teleopDriveWithHeading(translationX, translationY, hubHeading, robotPose);
   }
 
   public static Command rotateToHubWhileDriving2(
-      Drivetrain drivetrain, DoubleSupplier translationX, DoubleSupplier translationY, Supplier<Rotation2d> hubHeading, Supplier<Pose2d> robotPose) {
-     return drivetrain.driveFixedHeading(translationX, translationY, hubHeading);
+      Drivetrain drivetrain,
+      DoubleSupplier translationX,
+      DoubleSupplier translationY,
+      Supplier<Rotation2d> hubHeading,
+      Supplier<Pose2d> robotPose) {
+    return drivetrain.driveFixedHeading(translationX, translationY, hubHeading);
   }
 
   public static Command alignLeftClimb(Drivetrain drivetrain, Supplier<Pose2d> robotPose) {
@@ -168,10 +187,10 @@ public final class Align {
         (MyAlliance.isRed()
                 ? RobotConstants.kAprilTagLayout.getTagPose(redClimbTagID)
                 : RobotConstants.kAprilTagLayout.getTagPose(blueClimbTagID))
-            .map(pose->pose.toPose2d().plus(leftClimbAlign))
+            .map(pose -> pose.toPose2d().plus(leftClimbAlign))
             .orElse(robotPose.get());
 
-    return drivetrain.driveToFieldPoseCommand(()->climbPose, robotPose);
+    return drivetrain.driveToFieldPoseCommand(() -> climbPose, robotPose);
   }
 
   public static Command alignRightClimb(Drivetrain drivetrain, Supplier<Pose2d> robotPose) {
@@ -179,7 +198,7 @@ public final class Align {
         (MyAlliance.isRed()
                 ? RobotConstants.kAprilTagLayout.getTagPose(redClimbTagID)
                 : RobotConstants.kAprilTagLayout.getTagPose(blueClimbTagID))
-            .map(pose->pose.toPose2d().plus(rightClimbAlign))
+            .map(pose -> pose.toPose2d().plus(rightClimbAlign))
             .orElse(robotPose.get())
             .plus(rightClimbAlign);
 
@@ -191,7 +210,7 @@ public final class Align {
         (MyAlliance.isRed()
                 ? RobotConstants.kAprilTagLayout.getTagPose(redTroughTagID)
                 : RobotConstants.kAprilTagLayout.getTagPose(blueTroughTagID))
-            .map(pose->pose.toPose2d().plus(troughAlign))
+            .map(pose -> pose.toPose2d().plus(troughAlign))
             .orElse(robotPose.get());
 
     return drivetrain.driveToFieldPoseCommand(() -> troughPose, robotPose);

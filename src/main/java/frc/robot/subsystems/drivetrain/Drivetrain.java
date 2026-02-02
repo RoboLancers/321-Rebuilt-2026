@@ -31,7 +31,6 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -106,7 +105,6 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
     super(TalonFX::new, TalonFX::new, CANcoder::new, drivetrainConstants, modules);
     configNeutralMode(NeutralModeValue.Brake);
     configurePoseControllers();
-
   }
 
   void configurePoseControllers() {
@@ -170,8 +168,7 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
   }
 
   public Command driveToFieldPoseCommand(Supplier<Pose2d> pose, Supplier<Pose2d> currentRobotPose) {
-    return driveToFieldPose(
-        () -> (new AlignmentSetpoint(pose.get(), true)),  currentRobotPose);
+    return driveToFieldPose(() -> (new AlignmentSetpoint(pose.get(), true)), currentRobotPose);
   }
 
   public Command teleopDrive(
@@ -195,7 +192,10 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
   }
 
   public Command teleopDriveWithHeading(
-      DoubleSupplier translationX, DoubleSupplier translationY, Supplier<Rotation2d> heading, Supplier<Pose2d> currentRobotPose) {
+      DoubleSupplier translationX,
+      DoubleSupplier translationY,
+      Supplier<Rotation2d> heading,
+      Supplier<Pose2d> currentRobotPose) {
     return runOnce(
             () -> {
               ChassisSpeeds speeds =
@@ -435,15 +435,13 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
                 lastAlliance = allianceColor;
               });
     }
-     SmartDashboard.putNumber("Drivetrain Pose X", getPose().getX());
-    
+    SmartDashboard.putNumber("Drivetrain Pose X", getPose().getX());
+
     SmartDashboard.putNumber("Drivetrain Pose Y", getPose().getY());
-    
+
     SmartDashboard.putNumber("Drivetrain Pose Yaw", getPose().getRotation().getDegrees());
 
     poseField.setRobotPose(getPose());
     SmartDashboard.putData("Robot Pose Field", poseField);
   }
-
-  }
-
+}

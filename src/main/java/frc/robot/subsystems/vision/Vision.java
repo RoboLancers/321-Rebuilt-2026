@@ -35,7 +35,7 @@ public class Vision extends SubsystemBase {
     return getAmbiguityFromSupplier(() -> currentAmbiguity);
   }
 
-  public Pose2d latestBestPose = new Pose2d(new Translation2d(0,0), Rotation2d.kZero);
+  public Pose2d latestBestPose = new Pose2d(new Translation2d(0, 0), Rotation2d.kZero);
   public EstimatedRobotPose latestEstimatedRobotPose;
 
   public Pose2d getPoseFromSupplier(Supplier<Pose2d> bestPose) {
@@ -118,9 +118,9 @@ public class Vision extends SubsystemBase {
                               .isNear(Meters.of(0), VisionConstants.kAllowedFieldHeight))
               .orElse(null);
 
-        if(estimatedPose == null){
-          continue;
-        }
+      if (estimatedPose == null) {
+        continue;
+      }
 
       double standardDeviation = calculateStdDevs(estimatedPose);
 
@@ -131,8 +131,8 @@ public class Vision extends SubsystemBase {
       ambiguities.add(calculateAmbiguity(estimatedPose));
     }
 
-    if(visionEstimates.size() == 0){
-return null;
+    if (visionEstimates.size() == 0) {
+      return null;
     }
 
     double highestConfidence = 1 - Collections.min(ambiguities);
@@ -140,9 +140,14 @@ return null;
     if (VisionConstants.kMinimumConfidence < highestConfidence) {
 
       this.latestBestPose =
-          visionEstimates.get(ambiguities.indexOf(Collections.min(ambiguities))).estimatedPose().estimatedPose.toPose2d();
-  
-      this.latestEstimatedRobotPose = visionEstimates.get(ambiguities.indexOf(Collections.min(ambiguities))).estimatedPose();
+          visionEstimates
+              .get(ambiguities.indexOf(Collections.min(ambiguities)))
+              .estimatedPose()
+              .estimatedPose
+              .toPose2d();
+
+      this.latestEstimatedRobotPose =
+          visionEstimates.get(ambiguities.indexOf(Collections.min(ambiguities))).estimatedPose();
       this.currentAmbiguity = Collections.min(ambiguities);
     }
 
@@ -154,30 +159,32 @@ return null;
     double distance = 0;
 
     if (estimatedPose == null) return 1;
-else{
-    for (PhotonTrackedTarget target : estimatedPose.targetsUsed) {
-      double targetDistance =
-          target.getBestCameraToTarget().getTranslation().getDistance(new Translation3d());
-      distance = distance + targetDistance;
+    else {
+      for (PhotonTrackedTarget target : estimatedPose.targetsUsed) {
+        double targetDistance =
+            target.getBestCameraToTarget().getTranslation().getDistance(new Translation3d());
+        distance = distance + targetDistance;
+      }
+
+      double averageDistance = distance / estimatedPose.targetsUsed.size();
+
+      double standardDeviation = averageDistance / estimatedPose.targetsUsed.size();
+
+      return standardDeviation;
     }
-
-    double averageDistance = distance / estimatedPose.targetsUsed.size();
-
-    double standardDeviation = averageDistance / estimatedPose.targetsUsed.size();
-
-    return standardDeviation;}
   }
 
   public double calculateAmbiguity(EstimatedRobotPose estimatedPose) {
     double totalAmbiguity = 0;
-if(estimatedPose == null) return 1;
-else{
-    for (PhotonTrackedTarget target : estimatedPose.targetsUsed) {
-      totalAmbiguity = totalAmbiguity + target.getPoseAmbiguity();
+    if (estimatedPose == null) return 1;
+    else {
+      for (PhotonTrackedTarget target : estimatedPose.targetsUsed) {
+        totalAmbiguity = totalAmbiguity + target.getPoseAmbiguity();
+      }
+      double averageAmbiguity = totalAmbiguity / estimatedPose.targetsUsed.size();
+      return averageAmbiguity;
     }
-    double averageAmbiguity = totalAmbiguity / estimatedPose.targetsUsed.size();
-    return averageAmbiguity;
-  }}
+  }
 
   public boolean areCamerasConnected;
 
@@ -186,8 +193,7 @@ else{
 
     List<VisionEstimate> latestEstimates = getVisionEstimates();
 
-    if(visionEstConsumer != null && latestEstimates != null)
-    {
+    if (visionEstConsumer != null && latestEstimates != null) {
       for (VisionEstimate estimate : latestEstimates) {
 
         visionEstConsumer.accept(estimate);
@@ -204,11 +210,11 @@ else{
     }
 
     SmartDashboard.putBoolean("Cameras Are Connected", areCamerasConnected);
-    
+
     SmartDashboard.putNumber("Vision Pose X", getLatestBestPose().getX());
 
     SmartDashboard.putNumber("Vision Pose Y", getLatestBestPose().getY());
-    
+
     SmartDashboard.putNumber("Vision Pose Yaw", getLatestBestPose().getRotation().getDegrees());
   }
 }
