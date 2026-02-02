@@ -21,4 +21,5 @@ public class IntakeConstants {
   public static final Angle kIntakePosition = Degrees.of(0);
   public static final Angle kDefaultPosition = Degrees.of(0);
   public static final int kEncoderID = 0;
+  public static final Angle kAngleTolerance = Degrees.of(0);
 }

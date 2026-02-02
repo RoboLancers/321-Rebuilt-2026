@@ -13,11 +13,16 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Velocity;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.TunableConstant;
 
+@Logged(name = "Intake Pivot")
 public class IntakePivot extends SubsystemBase {
 
   private TalonFX intakePivotMotor = new TalonFX(IntakeConstants.kPivotMotorId);
@@ -27,6 +32,10 @@ public class IntakePivot extends SubsystemBase {
   private CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
   private VoltageConfigs voltageConfigs = new VoltageConfigs();
   private Slot0Configs slot0Configs = new Slot0Configs();
+
+  private Angle targetAngle;
+  private Voltage targetVoltage;
+  private Velocity targetVelocity;
 
   private DutyCycleEncoder absoluteEncoder = new DutyCycleEncoder(IntakeConstants.kEncoderID);
 
@@ -58,12 +67,18 @@ public class IntakePivot extends SubsystemBase {
     intakePivotMotor.setControl(intakeVoltage);
   }
 
+  @Logged
   public Angle getAngle() {
     return Degrees.of(intakePivotMotor.getPosition().getValueAsDouble());
   }
 
   public void zeroEncoder() {
     intakePivotMotor.setPosition(Degrees.of(absoluteEncoder.get()));
+  }
+
+  @Logged
+  public boolean atTargetAngle() {
+    return getAngle() == targetAngle;
   }
 
   public void tune() {
@@ -78,5 +93,25 @@ public class IntakePivot extends SubsystemBase {
     IntakeConstants.kG = kG.get();
 
     goToAngle(Degrees.of(angle.get()));
+  }
+
+  @Logged
+  public Voltage getVoltage() {
+    return intakePivotMotor.getMotorVoltage().getValue();
+  }
+
+  @Logged(name = "pivotVelocity")
+  public double getVelocity() {
+    return intakePivotMotor.getVelocity().getValueAsDouble();
+  }
+
+  @Logged
+  public Current current() {
+    return intakePivotMotor.getStatorCurrent().getValue();
+  }
+
+  @Logged
+  public boolean atTargetVelocity() {
+    return intakePivotMotor.getVelocity().getValue() == targetVelocity;
   }
 }

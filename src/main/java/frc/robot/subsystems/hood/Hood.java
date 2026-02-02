@@ -16,16 +16,19 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.TunableConstant;
 
+@Logged
 public class Hood extends SubsystemBase {
 
   private DutyCycleEncoder absoluteEncoder = new DutyCycleEncoder(HoodConstants.kHoodEncoderId);
 
   private TalonFX hoodMotor = new TalonFX(HoodConstants.kHoodMotorId);
+  private Angle desiredPitch;
 
   public Hood() {
     configureMotors();
@@ -77,6 +80,7 @@ public class Hood extends SubsystemBase {
     hoodMotor.setControl(new MotionMagicVoltage(targetAngle));
   }
 
+  @Logged(name = "currentPitch")
   public Angle getAngle() {
     Angle angle = Degrees.of(hoodMotor.getPosition().getValueAsDouble());
     return angle;
@@ -102,5 +106,10 @@ public class Hood extends SubsystemBase {
     setHoodPID(kP.get(), kD.get(), kG.get());
 
     goToAngle(Degrees.of(targetAngle.get()));
+  }
+
+  @Logged(name = "targetPitch")
+  public Angle getTargetPitch() {
+    return this.desiredPitch;
   }
 }
