@@ -15,13 +15,16 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.TunableConstant;
 
-public class Outtake extends SubsystemBase {
+@Logged
+public class Shooter extends SubsystemBase {
 
   private TalonFX motor = new TalonFX(OuttakeConstants.kMotorID);
 
@@ -31,7 +34,9 @@ public class Outtake extends SubsystemBase {
 
   public double kV = 0;
 
-  public Outtake() {
+  private Velocity targetShooterVelocity;
+
+  public Shooter() {
 
     configureMotors();
     setPID();
@@ -93,5 +98,20 @@ public class Outtake extends SubsystemBase {
     this.kV = kV.get();
 
     return run(() -> setControl(RPM.of(targetRPM.get())));
+  }
+
+  @Logged
+  public Velocity getTargetShooterVelocity() {
+    return this.targetShooterVelocity;
+  }
+
+  @Logged(name = "shooterRPM")
+  public double getVelocity() {
+    return motor.getVelocity().getValueAsDouble();
+  }
+
+  @Logged(name = "shooterVoltage")
+  public Voltage getVoltage() {
+    return motor.getMotorVoltage().getValue();
   }
 }
