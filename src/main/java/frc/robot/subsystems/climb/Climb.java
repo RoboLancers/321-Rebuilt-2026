@@ -134,7 +134,7 @@ public class Climb extends SubsystemBase {
   @Logged
   public boolean atTargetAngle() {
     boolean atAngle =
-        Math.abs(getAngle().in(Degrees) - ClimbConstants.targetAngle.in(Degrees))
+        Math.abs(getAngle().in(Degrees) - ClimbConstants.kTargetAngle.in(Degrees))
             > ClimbConstants.kClimbAngleTolerance.in(Degrees);
     return atAngle;
   }
@@ -142,7 +142,7 @@ public class Climb extends SubsystemBase {
   @Logged
   public boolean atPivotTargetAngle() {
     boolean atAngle =
-        Math.abs(getPivotAngle().in(Degrees) - ClimbConstants.targetPivotAngle.in(Degrees))
+        Math.abs(getPivotAngle().in(Degrees) - ClimbConstants.kTargetPivotAngle.in(Degrees))
             > ClimbConstants.kPivotClimbAngleTolerance.in(Degrees);
     return atAngle;
   }
@@ -159,6 +159,11 @@ public class Climb extends SubsystemBase {
     Voltage volts =
         Volts.of(pivotClimbController.calculate(getPivotAngle().in(Degrees), angle.in(Degrees)));
     pivotClimbMotor.setVoltage(volts.in(Volts));
+  }
+
+  public boolean atClimbVoltage(Voltage voltage) {
+    boolean atVoltage = climbMotor.getMotorVoltage() == voltage;
+    return atVoltage;
   }
 
   public void setClimbPID(double kP, double kI, double kD) {

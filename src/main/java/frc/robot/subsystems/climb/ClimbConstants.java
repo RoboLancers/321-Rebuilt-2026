@@ -14,9 +14,9 @@ import edu.wpi.first.units.measure.AngularVelocity;
 
 public class ClimbConstants {
 
-  public static final Angle targetAngle = Degrees.of(360);
+  public static final Angle kTargetAngle = Degrees.of(360);
 
-  public static final Angle targetPivotAngle = Degrees.of(90);
+  public static final Angle kTargetPivotAngle = Degrees.of(90);
 
   public static final double kP = 0;
 
