@@ -87,6 +87,12 @@ public class RobotContainer {
 
   public RobotContainer() {
     configureBindings();
+
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser", autoChooser);
+
+    NamedCommands.registerCommand("IntakeFuel", intakeFuel);
+    NamedCommands.registerCommand("ShootFuel", shootFuel.releaseFuel(shooter));
   }
 
   private void configureBindings() {
@@ -102,6 +108,6 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+    return autoChooser.getSelected();
   }
 }

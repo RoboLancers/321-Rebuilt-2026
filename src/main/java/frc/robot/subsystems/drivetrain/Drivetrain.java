@@ -17,6 +17,11 @@ import com.ctre.phoenix6.swerve.SwerveModule.ModuleRequest;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.util.DriveFeedforwards;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
@@ -44,8 +49,7 @@ import java.util.function.Supplier;
 
 @Logged
 public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> implements Subsystem {
-
-  public Pose2d currentRobotPose;
+  ChassisSpeeds speeds = new ChassisSpeeds();
 
   // driveToPose PID controllers
   ProfiledPIDController xPoseController =
@@ -91,7 +95,7 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
               DrivetrainConstants.kTuneHeadingGains.kD())
           .withRotationalDeadband(0.1);
 
-  private final Field2d poseField = new Field2d();
+  public Field2d poseField = new Field2d();
 
   private AlignmentSetpoint alignmentSetpoint = new AlignmentSetpoint(Pose2d.kZero, true);
 
@@ -109,10 +113,45 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
     configurePoseControllers();
 
     SmartDashboard.putData("Drivetrain Pose Field", poseField);
-  }
 
-  public void addRobotPose(Supplier<Pose2d> robotPose) {
-    currentRobotPose = robotPose.get();
+    RobotConfig config = null;
+    try {
+      config = RobotConfig.fromGUISettings();
+    } catch (Exception e) {
+      // Handle exception as needed
+      e.printStackTrace();
+    }
+
+    // Configure AutoBuilder last
+    AutoBuilder.configure(
+        this::getPose, // Robot pose supplier
+        this::resetPose, // Method to reset odometry (will be called if your auto has a starting
+        // pose)
+        this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+        (speeds, feedforwards) ->
+            driveRobotRelative(
+                speeds, feedforwards), // Method that will drive the robot given ROBOT RELATIVE
+        // ChassisSpeeds. Also optionally outputs individual module
+        // feedforwards
+        new PPHolonomicDriveController( // PPHolonomicController is the built in path following
+            // controller for holonomic drive trains
+            new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+            new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+            ),
+        config, // The robot configuration
+        () -> {
+          // Boolean supplier that controls when the path will be mirrored for the red alliance
+          // This will flip the path being followed to the red side of the field.
+          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+          var alliance = DriverStation.getAlliance();
+          if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+          }
+          return false;
+        },
+        this // Reference to this subsystem to set requirements
+        );
   }
 
   void configurePoseControllers() {
@@ -130,20 +169,20 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
     return MyAlliance.isRed() ? rotation.plus(Rotation2d.k180deg) : rotation;
   }
 
-  boolean atPoseSetpoint() {
+  boolean atPoseSetpoint(Supplier<Pose2d> currentRobotPose) {
     return atPoseSetpoint(
         DrivetrainConstants.kAlignmentSetpointTranslationTolerance,
         DrivetrainConstants.kAlignmentSetpointRotationTolerance,
-        () -> currentRobotPose);
+        currentRobotPose);
   }
 
-  boolean atFinalPoseSetpoint() {
+  boolean atFinalPoseSetpoint(Supplier<Pose2d> currentRobotPose) {
     if (!getAlignmentSetpoint().isFinalSetpoint()) return false;
-    return atPoseSetpoint();
+    return atPoseSetpoint(currentRobotPose);
   }
 
   // drive with heading controlled by PID
-  Command driveFixedHeading(
+  public Command driveFixedHeading(
       DoubleSupplier translationX, DoubleSupplier translationY, Supplier<Rotation2d> rotation) {
     return run(
         () ->
@@ -175,9 +214,8 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
                 }));
   }
 
-  public Command driveToFieldPoseCommand(Supplier<Pose2d> pose) {
-    return driveToFieldPose(
-        () -> (new AlignmentSetpoint(pose.get(), true)), () -> currentRobotPose);
+  public Command driveToFieldPoseCommand(Supplier<Pose2d> pose, Supplier<Pose2d> currentRobotPose) {
+    return driveToFieldPose(() -> (new AlignmentSetpoint(pose.get(), true)), currentRobotPose);
   }
 
   public Command teleopDrive(
@@ -201,15 +239,18 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
   }
 
   public Command teleopDriveWithHeading(
-      DoubleSupplier translationX, DoubleSupplier translationY, Supplier<Rotation2d> heading) {
+      DoubleSupplier translationX,
+      DoubleSupplier translationY,
+      Supplier<Rotation2d> heading,
+      Supplier<Pose2d> currentRobotPose) {
     return runOnce(
             () -> {
               ChassisSpeeds speeds =
                   ChassisSpeeds.fromRobotRelativeSpeeds(
-                      getChassisSpeeds(), currentRobotPose.getRotation());
+                      getChassisSpeeds(), currentRobotPose.get().getRotation());
 
               thetaController.reset(
-                  currentRobotPose.getRotation().getRadians(), speeds.omegaRadiansPerSecond);
+                  currentRobotPose.get().getRotation().getRadians(), speeds.omegaRadiansPerSecond);
             })
         .andThen(
             run(
@@ -219,7 +260,7 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
                           translationX.getAsDouble(),
                           translationY.getAsDouble(),
                           thetaController.calculate(
-                              currentRobotPose.getRotation().getRadians(),
+                              currentRobotPose.get().getRotation().getRadians(),
                               heading.get().getRadians()),
                           RobotConstants.kRobotLoopPeriod.in(Seconds));
 
@@ -296,6 +337,16 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
       double translationX, double translationY, double rotation, DriveFeedforwards feedforwards) {
 
     var speeds = new ChassisSpeeds(translationX, translationY, rotation);
+
+    setControl(
+        robotCentricRequest
+            .withSpeeds(speeds)
+            .withDriveRequestType(DriveRequestType.Velocity)
+            .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
+            .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons()));
+  }
+
+  public void driveRobotRelative(ChassisSpeeds speeds, DriveFeedforwards feedforwards) {
 
     setControl(
         robotCentricRequest
@@ -402,14 +453,9 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
     return super.getState().ModuleTargets;
   }
 
-  @Logged(name = "SwerveDriveEstimatedRobotPose")
-  public Pose2d getSwerveDriveEstimatedPose() {
+  @Logged(name = "MeasuredRobotPose")
+  public Pose2d getPose() {
     return super.getState().Pose;
-  }
-
-  @Logged(name = "CurrentRobotPose")
-  public Pose2d getCurrentRobotPose() {
-    return currentRobotPose;
   }
 
   @Logged(name = "MeasuredRobotRelativeChassisSpeeds")
@@ -446,12 +492,13 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
                 lastAlliance = allianceColor;
               });
     }
+    SmartDashboard.putNumber("Drivetrain Pose X", getPose().getX());
 
-    poseField.setRobotPose(getSwerveDriveEstimatedPose());
-  }
+    SmartDashboard.putNumber("Drivetrain Pose Y", getPose().getY());
 
-  @Logged(name = "AtPoseSetpoint")
-  public boolean atSetpoint() {
-    return atPoseSetpoint();
+    SmartDashboard.putNumber("Drivetrain Pose Yaw", getPose().getRotation().getDegrees());
+
+    poseField.setRobotPose(getPose());
+    SmartDashboard.putData("Robot Pose Field", poseField);
   }
 }

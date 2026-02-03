@@ -31,8 +31,10 @@ public class Score {
   private static final Distance region2 = Meters.of(0);
   private static final Distance region3 = Meters.of(0);
 
-  public static Command scoreFuelFromPose(Drivetrain drivetrain, Outtake outtake) {
-    return Align.driveToHubScoringPose(drivetrain).andThen(OuttakeFuel.scoreSetPosition(outtake));
+  public static Command scoreFuelFromPose(
+      Drivetrain drivetrain, Outtake outtake, Supplier<Pose2d> robotPose) {
+    return Align.driveToHubScoringPose(drivetrain, robotPose)
+        .andThen(OuttakeFuel.scoreSetPosition(outtake));
   }
 
   public static Distance getHubDistance(Supplier<Pose2d> robotPose) {
@@ -77,22 +79,21 @@ public class Score {
     return angle;
   }
 
-  public static Command scoreFuelFromAnywhere(Drivetrain drivetrain, Outtake outtake, Hood hood) {
-    return Align.rotateToHub(drivetrain)
-        .andThen(
-            OuttakeFuel.outtakeWithVelocity(
-                outtake, () -> getScoreVelocity(() -> drivetrain.getCurrentRobotPose())))
-        .alongWith(
-            HoodCommands.goToAngle(
-                hood, () -> getScoreAngle(() -> drivetrain.getCurrentRobotPose())));
+  public static Command scoreFuelFromAnywhere(
+      Drivetrain drivetrain,
+      Outtake outtake,
+      Hood hood,
+      Supplier<Rotation2d> hubHeading,
+      Supplier<Pose2d> robotPose) {
+    return Align.rotateToHub(drivetrain, hubHeading, robotPose)
+        .andThen(OuttakeFuel.outtakeWithVelocity(outtake, () -> getScoreVelocity(robotPose)))
+        .alongWith(HoodCommands.goToAngle(hood, () -> getScoreAngle(robotPose)));
   }
 
-  public static Command shootFuelFromAnywhere(Drivetrain drivetrain, Outtake outtake, Hood hood) {
-    return OuttakeFuel.outtakeWithVelocity(
-            outtake, () -> getScoreVelocity(() -> drivetrain.getCurrentRobotPose()))
-        .alongWith(
-            HoodCommands.goToAngle(
-                hood, () -> getScoreAngle(() -> drivetrain.getCurrentRobotPose())));
+  public static Command shootFuelFromAnywhere(
+      Drivetrain drivetrain, Outtake outtake, Hood hood, Supplier<Pose2d> robotPose) {
+    return OuttakeFuel.outtakeWithVelocity(outtake, () -> getScoreVelocity(robotPose))
+        .alongWith(HoodCommands.goToAngle(hood, () -> getScoreAngle(robotPose)));
   }
 
   public static Command scoreFuelWhileDriving(
@@ -100,8 +101,11 @@ public class Score {
       DoubleSupplier translationX,
       DoubleSupplier translationY,
       Outtake outtake,
-      Hood hood) {
-    return Align.rotateToHubWhileDriving(drivetrain, translationX, translationY)
-        .alongWith(scoreFuelFromAnywhere(drivetrain, outtake, hood));
+      Hood hood,
+      Supplier<Rotation2d> hubHeading,
+      Supplier<Pose2d> robotPose) {
+    return Align.rotateToHubWhileDriving(
+            drivetrain, translationX, translationY, hubHeading, robotPose)
+        .alongWith(scoreFuelFromAnywhere(drivetrain, outtake, hood, hubHeading, robotPose));
   }
 }
