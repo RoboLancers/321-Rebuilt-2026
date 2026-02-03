@@ -145,35 +145,7 @@ public final class Align {
     return rotateToHubWhileDriving(drivetrain, () -> 0, () -> 0, hubHeading, robotPose);
   }
 
-  public static Command rotateToHub1(
-      Drivetrain drivetrain, Supplier<Rotation2d> hubHeading, Supplier<Pose2d> robotPose) {
-    return rotateToHubWhileDriving1(drivetrain, () -> 0, () -> 0, hubHeading, robotPose);
-  }
-
-  public static Command rotateToHub2(
-      Drivetrain drivetrain, Supplier<Rotation2d> hubHeading, Supplier<Pose2d> robotPose) {
-    return rotateToHubWhileDriving2(drivetrain, () -> 0, () -> 0, hubHeading, robotPose);
-  }
-
   public static Command rotateToHubWhileDriving(
-      Drivetrain drivetrain,
-      DoubleSupplier translationX,
-      DoubleSupplier translationY,
-      Supplier<Rotation2d> hubHeading,
-      Supplier<Pose2d> robotPose) {
-    return drivetrain.teleopDriveWithHeading(translationX, translationY, hubHeading, robotPose);
-  }
-
-  public static Command rotateToHubWhileDriving1(
-      Drivetrain drivetrain,
-      DoubleSupplier translationX,
-      DoubleSupplier translationY,
-      Supplier<Rotation2d> hubHeading,
-      Supplier<Pose2d> robotPose) {
-    return drivetrain.teleopDriveWithHeading(translationX, translationY, hubHeading, robotPose);
-  }
-
-  public static Command rotateToHubWhileDriving2(
       Drivetrain drivetrain,
       DoubleSupplier translationX,
       DoubleSupplier translationY,

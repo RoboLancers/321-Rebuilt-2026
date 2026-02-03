@@ -106,6 +106,6 @@ public class Score {
       Supplier<Pose2d> robotPose) {
     return Align.rotateToHubWhileDriving(
             drivetrain, translationX, translationY, hubHeading, robotPose)
-        .alongWith(scoreFuelFromAnywhere(drivetrain, shooter, hood, hubHeading, robotPose));
+        .alongWith(shootFuelFromAnywhere(drivetrain, shooter, hood, robotPose));
   }
 }
