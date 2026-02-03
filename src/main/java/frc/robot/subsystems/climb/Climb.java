@@ -183,11 +183,11 @@ public class Climb extends SubsystemBase {
     TunableConstant kP = new TunableConstant("/Climb/kP", 0);
     TunableConstant kD = new TunableConstant("/Climb/kD", 0);
     TunableConstant kG = new TunableConstant("/Climb/kG", 0);
-    TunableConstant targetAngle = new TunableConstant("/Climb/targetAngle", 0);
+    TunableConstant kTargetAngle = new TunableConstant("/Climb/kTargetAngle", 0);
 
     climbController.setPID(kP.get(), 0, kD.get());
     climbFeedforward.setKg(kG.get());
-    goToAngle(Degrees.of(targetAngle.get()));
+    goToAngle(Degrees.of(kTargetAngle.get()));
   }
 
   public void tunePivotClimb() {
