@@ -47,15 +47,12 @@ public class RobotContainer {
                       est.standardDeviations(),
                       est.standardDeviations())));
 
-  public PoseEstimatorResolver poseEstimatorResolver =
-      new PoseEstimatorResolver(vision, drivetrain, pose -> drivetrain.addRobotPose(() -> pose));
-
-  // public Hood hood = new Hood();
-  // public Outtake outtake = new Outtake();
-  // public IntakePivot intakePivot = new IntakePivot();
-  // public IntakeRollers intakeRollers = new IntakeRollers();
-  // public Indexer spindexer = new Indexer();
-  // public Tunnel tunnel = new Tunnel();
+  public Hood hood = new Hood();
+  public Outtake outtake = new Outtake();
+  public IntakePivot intakePivot = new IntakePivot();
+  public IntakeRollers intakeRollers = new IntakeRollers();
+  public Indexer spindexer = new Indexer();
+  public Tunnel tunnel = new Tunnel();
 
   public Trigger slowMode = driver.b();
 
