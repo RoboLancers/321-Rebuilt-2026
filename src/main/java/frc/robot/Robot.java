@@ -69,11 +69,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       CommandScheduler.getInstance().schedule(m_autonomousCommand);
     }
-  }
-
-  @Override
-  public void autonomousPeriodic() {
-    switch (autoSelected) {
+     switch (autoSelected) {
       case kCenterDepotAuto:
       case kTopDepotAuto:
       case kBottomDepotAuto:
@@ -84,6 +80,11 @@ public class Robot extends TimedRobot {
       case kTopBumpAuto:
         break;
     }
+  }
+
+  @Override
+  public void autonomousPeriodic() {
+    
   }
 
   @Override
