@@ -15,9 +15,13 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.hood.HoodConstants;
 import frc.robot.subsystems.hood.hoodCommands.HoodCommands;
+import frc.robot.subsystems.indexer.Indexer;
+import frc.robot.subsystems.indexer.indexerCommands.Index;
 import frc.robot.subsystems.outtake.OuttakeConstants;
 import frc.robot.subsystems.outtake.Shooter;
 import frc.robot.subsystems.outtake.commands.ShootFuel;
+import frc.robot.subsystems.tunnel.Tunnel;
+import frc.robot.subsystems.tunnel.tunnelCommands.PassFuel;
 import frc.robot.util.MyAlliance;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -31,10 +35,14 @@ public class Score {
   private static final Distance region2 = Meters.of(0);
   private static final Distance region3 = Meters.of(0);
 
+  public static Command shootFuelWithVelocity(Shooter shooter, Indexer indexer, Tunnel tunnel, Command command){
+    return Index.index(indexer).alongWith(new PassFuel(tunnel)).alongWith(command);
+  }
+
   public static Command scoreFuelFromPose(
-      Drivetrain drivetrain, Shooter shooter, Supplier<Pose2d> robotPose) {
+      Drivetrain drivetrain, Shooter shooter, Indexer indexer, Tunnel tunnel, Supplier<Pose2d> robotPose) {
     return Align.driveToHubScoringPose(drivetrain, robotPose)
-        .andThen(ShootFuel.scoreSetPosition(shooter));
+        .andThen(Index.index(indexer).alongWith(new PassFuel(tunnel)).alongWith(ShootFuel.scoreSetPosition(shooter)));
   }
 
   public static Distance getHubDistance(Supplier<Pose2d> robotPose) {
@@ -83,17 +91,19 @@ public class Score {
       Drivetrain drivetrain,
       Shooter shooter,
       Hood hood,
+      Indexer indexer,
+      Tunnel tunnel,
       Supplier<Rotation2d> hubHeading,
       Supplier<Pose2d> robotPose) {
     return Align.rotateToHub(drivetrain, hubHeading, robotPose)
-        .andThen(ShootFuel.outtakeWithVelocity(shooter, () -> getScoreVelocity(robotPose)))
-        .alongWith(HoodCommands.goToAngle(hood, () -> getScoreAngle(robotPose)));
+        .andThen(HoodCommands.goToAngle(hood, ()->getScoreAngle(robotPose)))
+        .alongWith(Index.index(indexer).alongWith(new PassFuel(tunnel)).alongWith(ShootFuel.outtakeWithVelocity(shooter, ()->getScoreVelocity(robotPose))));
   }
 
   public static Command shootFuelFromAnywhere(
       Drivetrain drivetrain, Shooter shooter, Hood hood, Supplier<Pose2d> robotPose) {
-    return ShootFuel.outtakeWithVelocity(shooter, () -> getScoreVelocity(robotPose))
-        .alongWith(HoodCommands.goToAngle(hood, () -> getScoreAngle(robotPose)));
+    return 
+        HoodCommands.goToAngle(hood, () -> getScoreAngle(robotPose)).andThen(ShootFuel.outtakeWithVelocity(shooter,()->getScoreVelocity(robotPose)));
   }
 
   public static Command scoreFuelWhileDriving(

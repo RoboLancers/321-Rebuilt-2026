@@ -16,6 +16,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -32,6 +33,7 @@ import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.indexerCommands.Index;
 import frc.robot.subsystems.intakePivot.IntakePivot;
 import frc.robot.subsystems.intakePivot.intakePivotCommands.GoToDefaultPosition;
+import frc.robot.subsystems.intakePivot.intakePivotCommands.GoToIntakePosition;
 import frc.robot.subsystems.intakerollers.IntakeRollers;
 import frc.robot.subsystems.intakerollers.rolllercommands.IntakeFuel;
 import frc.robot.subsystems.outtake.Shooter;
@@ -39,6 +41,7 @@ import frc.robot.subsystems.outtake.commands.ShootFuel;
 import frc.robot.subsystems.tunnel.Tunnel;
 import frc.robot.subsystems.tunnel.tunnelCommands.RunAtVelocity;
 import frc.robot.subsystems.vision.Vision;
+import frc.robot.util.RebuiltUtil;
 
 public class RobotContainer {
 
@@ -95,6 +98,8 @@ public class RobotContainer {
 
     private Supplier<Pose2d> currentRobotPose = ()->drivetrain.getPose();
 
+    private Supplier<Rotation2d> hubHeading = ()->RebuiltUtil.getHubHeading(currentRobotPose);
+
   public RobotContainer() {
     configureBindings();
 
@@ -114,7 +119,10 @@ public class RobotContainer {
     spindexer.setDefaultCommand(Index.setVoltage(spindexer, ()->Volts.of(0)));
     tunnel.setDefaultCommand(new RunAtVelocity(tunnel, RPM.of(0)));
 
-    driver.leftBumper().whileTrue(Align.rotateToHub2);
+    driver.leftBumper().whileTrue(new GoToIntakePosition(intakePivot).andThen(new IntakeFuel(intakeRollers)));
+    driver.leftTrigger().whileTrue(Align.rotateToHubWhileDriving(drivetrain, driverForward, driverStrafe, hubHeading, currentRobotPose));
+    driver.rightTrigger().whileTrue(Score.shootFuelFromAnywhere(drivetrain, shooter, hood, currentRobotPose));
+    driver.rightBumper().whileTrue(HoodCommands.goToNeutralFeedAngle(hood).andThen(ShootFuel.feedNeutralZone(shooter)));
   }
 
   public Command getAutonomousCommand() {
