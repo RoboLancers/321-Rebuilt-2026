@@ -121,8 +121,8 @@ public class RobotContainer {
 
     driver.leftBumper().whileTrue(new GoToIntakePosition(intakePivot).andThen(new IntakeFuel(intakeRollers)));
     driver.leftTrigger().whileTrue(Align.rotateToHubWhileDriving(drivetrain, driverForward, driverStrafe, hubHeading, currentRobotPose));
-    driver.rightTrigger().whileTrue(Score.shootFuelFromAnywhere(drivetrain, shooter, hood, currentRobotPose));
-    driver.rightBumper().whileTrue(HoodCommands.goToNeutralFeedAngle(hood).andThen(ShootFuel.feedNeutralZone(shooter)));
+    driver.rightTrigger().whileTrue(Score.shootFuelFromAnywhere(drivetrain, shooter, hood, spindexer, tunnel, currentRobotPose));
+    driver.rightBumper().whileTrue(Score.feedFuel(shooter,hood,spindexer,tunnel));
   }
 
   public Command getAutonomousCommand() {
