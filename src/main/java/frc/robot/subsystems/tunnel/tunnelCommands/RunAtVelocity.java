@@ -5,7 +5,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.tunnel.Tunnel;
 
-public class RunAtVelocity extends Command{
+public class RunAtVelocity extends Command {
 
   Tunnel tunnel;
   AngularVelocity velocity;
@@ -15,7 +15,7 @@ public class RunAtVelocity extends Command{
     this.velocity = velocity;
   }
 
-  public void init(){}
+  public void init() {}
 
   public void execute() {
     tunnel.runAtVelocity(velocity);

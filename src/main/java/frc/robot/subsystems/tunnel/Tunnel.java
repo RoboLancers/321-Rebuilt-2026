@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.TunableConstant;
 
 @Logged
-public class Tunnel extends SubsystemBase{
+public class Tunnel extends SubsystemBase {
 
   PIDController tunnelController = new PIDController(TunnelConstants.kP, 0, 0);
 
