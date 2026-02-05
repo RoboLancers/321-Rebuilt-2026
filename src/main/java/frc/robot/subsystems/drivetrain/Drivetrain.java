@@ -389,16 +389,6 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
             .withForwardPerspective(ForwardPerspectiveValue.BlueAlliance));
   }
 
-  // public Command driveToPosePP(Pose2d pose) {
-  //   PathConstraints constraints =
-  //       new PathConstraints(
-  //           DrivetrainConstants.kMaxPathVelocity,
-  //           DrivetrainConstants.kMaxPathAcceleration,
-  //           DrivetrainConstants.kMaxPathAngularVelocity,
-  //           DrivetrainConstants.kMaxPathAngularAcceleration);
-  //   return AutoBuilder.pathfindToPose(pose, constraints, 0.0);
-  // }
-
   // drive with absolute heading control
   public void driveFixedHeading(double translationX, double translationY, Rotation2d rotation) {
     var speeds =

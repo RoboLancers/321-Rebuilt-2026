@@ -20,8 +20,7 @@ import edu.wpi.first.wpilibj.RobotBase;
 public class DrivetrainConstants {
   public record AutoGains(double kP, double kI, double kD) {}
 
-  public static final AutoGains kTranslationGains =
-      new AutoGains(6.328, 0, 0.01); // real (TODO: TUNE)
+  public static final AutoGains kTranslationGains = new AutoGains(6.328, 0, 0.01);
 
   public static final Constraints kTranslationConstraints = new Constraints(4.5, 5);
 
@@ -47,7 +46,7 @@ public class DrivetrainConstants {
       MetersPerSecond.of(5.0); // TunerConstants.kSpeedAt12Volts
 
   public static final Distance kAlignmentSetpointTranslationTolerance = Meters.of(0.01);
-  public static final Angle kAlignmentSetpointRotationTolerance = Degrees.of(2.0); // 2.0
+  public static final Angle kAlignmentSetpointRotationTolerance = Degrees.of(2.0);
 
   public static final Distance kAlignmentVelocityRadius =
       Meters.of(

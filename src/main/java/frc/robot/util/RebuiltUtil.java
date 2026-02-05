@@ -2,7 +2,6 @@
 package frc.robot.util;
 
 import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Radians;
 
@@ -13,12 +12,9 @@ import java.util.function.Supplier;
 public class RebuiltUtil {
 
   private static final Pose2d redHubPose =
-      new Pose2d(Meters.of(12.52 - Inches.of(23.5).in(Meters)), Meters.of(4.03), Rotation2d.kZero);
+      new Pose2d(Meters.of(11.9231), Meters.of(4.03), Rotation2d.kZero);
   private static final Pose2d blueHubPose =
-      new Pose2d(
-          Meters.of(4.02 + Inches.of(23.5).in(Meters)),
-          Meters.of(4.03),
-          new Rotation2d(Degrees.of(180)));
+      new Pose2d(Meters.of(4.6169), Meters.of(4.03), new Rotation2d(Degrees.of(180)));
 
   public static Pose2d getHub() {
     return MyAlliance.isRed() ? redHubPose : blueHubPose;
