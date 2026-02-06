@@ -187,7 +187,7 @@ public class Climb extends SubsystemBase {
     goToAngle(Degrees.of(kTargetAngle.get()));
   }
 
-  public void setClimbFeedforward(double kG){
+  public void setClimbFeedforward(double kG) {
     climbFeedforward.setKg(kG);
   }
 
