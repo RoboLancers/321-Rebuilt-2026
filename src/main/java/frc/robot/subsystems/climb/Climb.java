@@ -51,6 +51,7 @@ public class Climb extends SubsystemBase {
     configureClimbMotors();
     setClimbPID(ClimbConstants.kP, 0.0, ClimbConstants.kD);
     setPivotClimbPID(ClimbConstants.kPivotP, 0.0, ClimbConstants.kPivotD);
+    setClimbFeedforward(ClimbConstants.kG);
   }
 
   public void configureClimbMotors() {
@@ -97,11 +98,7 @@ public class Climb extends SubsystemBase {
             .withMotionMagic(
                 new MotionMagicConfigs()
                     .withMotionMagicCruiseVelocity(ClimbConstants.kPivotClimbMaxVelocity)
-                    .withMotionMagicAcceleration(ClimbConstants.kPivotClimbMaxAcceleration))
-            .withSlot0(
-                new Slot0Configs()
-                    .withGravityType(ClimbConstants.kPivotClimbGravityType)
-                    .withStaticFeedforwardSign(ClimbConstants.kPivotClimbFeedForwardSign));
+                    .withMotionMagicAcceleration(ClimbConstants.kPivotClimbMaxAcceleration));
 
     climbMotor.getConfigurator().apply(climbMotorConfiguration);
     pivotClimbMotor.getConfigurator().apply(pivotClimbMotorConfiguration);
@@ -135,7 +132,7 @@ public class Climb extends SubsystemBase {
   public boolean atTargetAngle() {
     boolean atAngle =
         Math.abs(getAngle().in(Degrees) - ClimbConstants.kTargetAngle.in(Degrees))
-            > ClimbConstants.kClimbAngleTolerance.in(Degrees);
+            < ClimbConstants.kClimbAngleTolerance.in(Degrees);
     return atAngle;
   }
 
@@ -143,7 +140,7 @@ public class Climb extends SubsystemBase {
   public boolean atPivotTargetAngle() {
     boolean atAngle =
         Math.abs(getPivotAngle().in(Degrees) - ClimbConstants.kTargetPivotAngle.in(Degrees))
-            > ClimbConstants.kPivotClimbAngleTolerance.in(Degrees);
+            < ClimbConstants.kPivotClimbAngleTolerance.in(Degrees);
     return atAngle;
   }
 
@@ -188,6 +185,10 @@ public class Climb extends SubsystemBase {
     climbController.setPID(kP.get(), 0, kD.get());
     climbFeedforward.setKg(kG.get());
     goToAngle(Degrees.of(kTargetAngle.get()));
+  }
+
+  public void setClimbFeedforward(double kG){
+    climbFeedforward.setKg(kG);
   }
 
   public void tunePivotClimb() {

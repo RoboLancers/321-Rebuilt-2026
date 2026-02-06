@@ -17,6 +17,6 @@ public class TurnOffMagnet extends Command {
   }
 
   public boolean isFinished() {
-    return true;
+    return false;
   }
 }

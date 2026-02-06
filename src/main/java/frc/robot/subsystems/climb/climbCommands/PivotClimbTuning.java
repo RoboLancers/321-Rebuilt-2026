@@ -17,6 +17,6 @@ public class PivotClimbTuning extends Command {
   }
 
   public boolean isFinished() {
-    return true;
+    return false;
   }
 }

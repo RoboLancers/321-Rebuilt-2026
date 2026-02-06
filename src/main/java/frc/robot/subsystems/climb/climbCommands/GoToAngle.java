@@ -8,12 +8,14 @@ import frc.robot.subsystems.climb.Climb;
 public class GoToAngle extends Command {
 
   Climb climb;
+  Angle angle;
 
-  public GoToAngle(Climb climb) {
+  public GoToAngle(Climb climb, Angle angle) {
     this.climb = climb;
+    this.angle = angle;
   }
 
-  public void execute(Angle angle) {
+  public void execute() {
     climb.goToAngle(angle);
   }
 

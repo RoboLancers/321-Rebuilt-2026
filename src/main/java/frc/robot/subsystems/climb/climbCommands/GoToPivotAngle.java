@@ -8,12 +8,14 @@ import frc.robot.subsystems.climb.Climb;
 public class GoToPivotAngle extends Command {
 
   Climb climb;
+  Angle angle;
 
-  public GoToPivotAngle(Climb climb) {
+  public GoToPivotAngle(Climb climb, Angle angle) {
     this.climb = climb;
+    this.angle = angle;
   }
 
-  public void execute(Angle angle) {
+  public void execute() {
     climb.goToPivotAngle(angle);
   }
 

@@ -17,6 +17,6 @@ public class ClimbTuning extends Command {
   }
 
   public boolean isFinished() {
-    return true;
+    return false;
   }
 }
