@@ -6,12 +6,8 @@ import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
-import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -41,6 +37,8 @@ import frc.robot.subsystems.tunnel.Tunnel;
 import frc.robot.subsystems.tunnel.tunnelCommands.RunAtVelocity;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.util.RebuiltUtil;
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 public class RobotContainer {
 
@@ -94,9 +92,9 @@ public class RobotContainer {
           -MathUtil.applyDeadband(driver.getRightX(), DrivetrainConstants.kRotationDeadband)
               * DrivetrainConstants.kMaxAngularVelocity.in(RadiansPerSecond);
 
-    private Supplier<Pose2d> currentRobotPose = ()->drivetrain.getPose();
+  private Supplier<Pose2d> currentRobotPose = () -> drivetrain.getPose();
 
-    private Supplier<Rotation2d> hubHeading = ()->RebuiltUtil.getHubHeading(currentRobotPose);
+  private Supplier<Rotation2d> hubHeading = () -> RebuiltUtil.getHubHeading(currentRobotPose);
 
   public RobotContainer() {
     configureBindings();
@@ -110,17 +108,28 @@ public class RobotContainer {
 
   private void configureBindings() {
     drivetrain.setDefaultCommand(drivetrain.teleopDrive(driverForward, driverStrafe, driverTurn));
-    intakeRollers.setDefaultCommand(Commands.run(()->intakeRollers.setVoltage(Volts.of(0)),intakeRollers));
-    shooter.setDefaultCommand(ShootFuel.outtakeWithVoltage(shooter, ()->Volts.of(0)));
+    intakeRollers.setDefaultCommand(
+        Commands.run(() -> intakeRollers.setVoltage(Volts.of(0)), intakeRollers));
+    shooter.setDefaultCommand(ShootFuel.outtakeWithVoltage(shooter, () -> Volts.of(0)));
     hood.setDefaultCommand(HoodCommands.goToTravelAngle(hood));
     intakePivot.setDefaultCommand(new GoToDefaultPosition(intakePivot));
-    spindexer.setDefaultCommand(Index.setVoltage(spindexer, ()->Volts.of(0)));
+    spindexer.setDefaultCommand(Index.setVoltage(spindexer, () -> Volts.of(0)));
     tunnel.setDefaultCommand(new RunAtVelocity(tunnel, RPM.of(0)));
 
-    driver.leftBumper().whileTrue(new GoToIntakePosition(intakePivot).andThen(new IntakeFuel(intakeRollers)));
-    driver.leftTrigger().whileTrue(Align.rotateToHubWhileDriving(drivetrain, driverForward, driverStrafe, hubHeading, currentRobotPose));
-    driver.rightTrigger().whileTrue(Score.shootFuelFromAnywhere(drivetrain, shooter, hood, spindexer, tunnel, currentRobotPose));
-    driver.rightBumper().whileTrue(Score.feedFuel(shooter,hood,spindexer,tunnel));
+    driver
+        .leftBumper()
+        .whileTrue(new GoToIntakePosition(intakePivot).andThen(new IntakeFuel(intakeRollers)));
+    driver
+        .leftTrigger()
+        .whileTrue(
+            Align.rotateToHubWhileDriving(
+                drivetrain, driverForward, driverStrafe, hubHeading, currentRobotPose));
+    driver
+        .rightTrigger()
+        .whileTrue(
+            Score.shootFuelFromAnywhere(
+                drivetrain, shooter, hood, spindexer, tunnel, currentRobotPose));
+    driver.rightBumper().whileTrue(Score.feedFuel(shooter, hood, spindexer, tunnel));
   }
 
   public Command getAutonomousCommand() {
