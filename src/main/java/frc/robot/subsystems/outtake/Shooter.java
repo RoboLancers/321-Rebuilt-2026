@@ -26,7 +26,7 @@ import frc.robot.util.TunableConstant;
 @Logged
 public class Shooter extends SubsystemBase {
 
-  private TalonFX motor = new TalonFX(OuttakeConstants.kMotorID);
+  @Logged private TalonFX motor = new TalonFX(OuttakeConstants.kMotorID);
 
   public double kP = 0;
 
@@ -100,17 +100,15 @@ public class Shooter extends SubsystemBase {
     return run(() -> setControl(RPM.of(targetRPM.get())));
   }
 
-  @Logged
+  @Logged(name = "TargetShooterVelocity")
   public Velocity getTargetShooterVelocity() {
     return this.targetShooterVelocity;
   }
 
-  @Logged(name = "shooterRPM")
   public double getVelocity() {
     return motor.getVelocity().getValueAsDouble();
   }
 
-  @Logged(name = "shooterVoltage")
   public Voltage getVoltage() {
     return motor.getMotorVoltage().getValue();
   }

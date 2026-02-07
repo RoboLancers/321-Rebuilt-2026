@@ -27,7 +27,7 @@ public class Tunnel extends SubsystemBase {
 
   SimpleMotorFeedforward tunnelFeedforward = new SimpleMotorFeedforward(0, TunnelConstants.kV, 0);
 
-  TalonFX tunnelMotor = new TalonFX(TunnelConstants.kTunnelMotorId);
+  @Logged TalonFX tunnelMotor = new TalonFX(TunnelConstants.kTunnelMotorId);
 
   public Tunnel() {
     tunnelMotorConfiguration();
@@ -74,11 +74,6 @@ public class Tunnel extends SubsystemBase {
                 + tunnelFeedforward.calculateWithVelocities(
                     getVelocity().in(RPM), velocity.in(RPM)));
     tunnelMotor.setVoltage(volts.in(Volts));
-  }
-
-  @Logged(name = "tunnelVoltage")
-  public Voltage getVoltage() {
-    return tunnelMotor.getMotorVoltage().getValue();
   }
 
   public void setTunnelPID(double kP, double kI, double kD) {
