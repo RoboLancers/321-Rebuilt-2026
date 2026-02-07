@@ -1,22 +1,26 @@
 /* (C) RoboLancers 2026 */
 package frc.robot.subsystems.intakerollers;
 
+import static edu.wpi.first.units.Units.Volts;
+
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.VoltageConfigs;
+import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.measure.Velocity;
+import edu.wpi.first.units.measure.Voltage;
 import frc.robot.util.TunableConstant;
 
 @Logged
 public class IntakeRollers {
 
-  private TalonFX rollerMotor = new TalonFX(IntakeRollerConstants.kRollerMotorId);
+  @Logged private TalonFX rollerMotor = new TalonFX(IntakeRollerConstants.kRollerMotorId);
   private CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
   private MotorOutputConfigs motorConfigs = new MotorOutputConfigs();
   private VoltageConfigs voltageConfigs = new VoltageConfigs();
@@ -24,6 +28,7 @@ public class IntakeRollers {
   private Slot0Configs slot0Configs = new Slot0Configs();
 
   private Velocity targetVelocity;
+  private Voltage targetVoltage;
 
   public IntakeRollers() {
     motorConfigurations();
@@ -47,8 +52,12 @@ public class IntakeRollers {
     rollerMotor.getConfigurator().apply(feedbackConfigs);
   }
 
-  public void setVoltage(double volts) {
-    rollerMotor.setVoltage(volts);
+  public void setVoltage(Voltage targetVoltage) {
+    rollerMotor.setVoltage(targetVoltage.in(Volts));
+  }
+
+  public void setVelocity(double targetVelocity) {
+    rollerMotor.setControl(new MotionMagicVelocityVoltage(targetVelocity));
   }
 
   public void setPID(double kP, double kD, double kV, double kG) {
@@ -70,12 +79,11 @@ public class IntakeRollers {
     setPID(kP.get(), kD.get(), kV.get(), kG.get());
   }
 
-  @Logged(name = "rollerVelocity")
   public double getRollerVelocity() {
     return rollerMotor.getVelocity().getValueAsDouble();
   }
 
-  @Logged
+  @Logged(name = "atTargetRollerVelocity")
   public boolean atTargetVoltage() {
     return rollerMotor.getVelocity().getValue() == targetVelocity;
   }
