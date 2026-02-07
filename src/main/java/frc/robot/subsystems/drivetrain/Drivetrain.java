@@ -43,6 +43,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.RobotConstants;
 import frc.robot.util.MyAlliance;
+import frc.robot.util.RebuiltUtil;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -178,6 +179,12 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
   boolean atFinalPoseSetpoint(Supplier<Pose2d> currentRobotPose) {
     if (!getAlignmentSetpoint().isFinalSetpoint()) return false;
     return atPoseSetpoint(currentRobotPose);
+  }
+
+  public Pose2d getNearestApriltag() {
+    return MyAlliance.isRed()
+        ? getPose().nearest(RebuiltUtil.redTagPoses)
+        : getPose().nearest(RebuiltUtil.blueTagPoses);
   }
 
   // drive with heading controlled by PID
