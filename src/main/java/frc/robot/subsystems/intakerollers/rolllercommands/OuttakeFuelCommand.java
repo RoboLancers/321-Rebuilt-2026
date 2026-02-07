@@ -19,6 +19,6 @@ public class OuttakeFuelCommand extends Command {
   }
 
   public boolean isFinished() {
-    return false; 
+    return false;
   }
 }

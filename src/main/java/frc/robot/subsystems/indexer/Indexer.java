@@ -25,8 +25,7 @@ import frc.robot.util.TunableConstant;
 @Logged
 public class Indexer extends SubsystemBase {
 
-  @Logged
-  private TalonFX motor = new TalonFX(IndexerConstants.kMotorID);
+  @Logged private TalonFX motor = new TalonFX(IndexerConstants.kMotorID);
   private Velocity targetVelocity;
   private Voltage targetVoltage;
 
@@ -108,7 +107,6 @@ public class Indexer extends SubsystemBase {
   public Voltage getTargetVoltage() {
     return this.targetVoltage;
   }
-
 
   public Voltage getVoltage() {
     return motor.getMotorVoltage().getValue();

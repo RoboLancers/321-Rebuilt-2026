@@ -26,8 +26,7 @@ import frc.robot.util.TunableConstant;
 @Logged(name = "Intake Pivot")
 public class IntakePivot extends SubsystemBase {
 
-  @Logged
-  private TalonFX intakePivotMotor = new TalonFX(IntakeConstants.kPivotMotorId);
+  @Logged private TalonFX intakePivotMotor = new TalonFX(IntakeConstants.kPivotMotorId);
   private TalonFXConfiguration talonConfigs = new TalonFXConfiguration();
   private MotorOutputConfigs motorConfigs = new MotorOutputConfigs();
   private FeedbackConfigs feedbackConfigs = new FeedbackConfigs();
@@ -69,7 +68,6 @@ public class IntakePivot extends SubsystemBase {
     intakePivotMotor.setControl(intakeVoltage);
   }
 
- 
   public Angle getAngle() {
     return Degrees.of(intakePivotMotor.getPosition().getValueAsDouble());
   }
@@ -97,21 +95,18 @@ public class IntakePivot extends SubsystemBase {
     goToAngle(Degrees.of(angle.get()));
   }
 
-  
   public Voltage getVoltage() {
     return intakePivotMotor.getMotorVoltage().getValue();
   }
 
-  public void setVoltage(Voltage targetVoltage){
+  public void setVoltage(Voltage targetVoltage) {
     intakePivotMotor.setVoltage(targetVoltage.in(Volts));
   }
-
 
   public double getVelocity() {
     return intakePivotMotor.getVelocity().getValueAsDouble();
   }
 
-  
   public Current current() {
     return intakePivotMotor.getStatorCurrent().getValue();
   }

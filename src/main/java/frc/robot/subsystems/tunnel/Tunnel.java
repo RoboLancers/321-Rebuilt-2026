@@ -26,8 +26,7 @@ public class Tunnel {
 
   SimpleMotorFeedforward tunnelFeedforward = new SimpleMotorFeedforward(0, TunnelConstants.kV, 0);
 
-  @Logged 
-  TalonFX tunnelMotor = new TalonFX(TunnelConstants.kTunnelMotorId);
+  @Logged TalonFX tunnelMotor = new TalonFX(TunnelConstants.kTunnelMotorId);
 
   public Tunnel() {
     tunnelMotorConfiguration();
@@ -61,7 +60,7 @@ public class Tunnel {
     tunnelMotor.getConfigurator().apply(tunnelMotorConfiguration);
   }
 
-  @Logged (name = "tunnelVelocity")
+  @Logged(name = "tunnelVelocity")
   public AngularVelocity getVelocity() {
     AngularVelocity velocity = RPM.of(tunnelMotor.getVelocity().getValueAsDouble());
     return velocity;
@@ -75,7 +74,6 @@ public class Tunnel {
                     getVelocity().in(RPM), velocity.in(RPM)));
     tunnelMotor.setVoltage(volts.in(Volts));
   }
-
 
   public void setTunnelPID(double kP, double kI, double kD) {
     tunnelController.setPID(kP, kI, kD);

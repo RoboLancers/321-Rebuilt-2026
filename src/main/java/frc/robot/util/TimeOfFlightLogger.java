@@ -1,8 +1,7 @@
-/* (C) Robolancers 2025 */
+/* (C) RoboLancers 2026 */
 package frc.robot.util;
 
 import com.playingwithfusion.TimeOfFlight;
-
 import edu.wpi.first.epilogue.CustomLoggerFor;
 import edu.wpi.first.epilogue.logging.ClassSpecificLogger;
 import edu.wpi.first.epilogue.logging.EpilogueBackend;

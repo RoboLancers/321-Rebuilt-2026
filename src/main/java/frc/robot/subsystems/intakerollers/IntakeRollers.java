@@ -1,8 +1,9 @@
 /* (C) RoboLancers 2026 */
 package frc.robot.subsystems.intakerollers;
 
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import static edu.wpi.first.units.Units.Volts;
+
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -19,8 +20,7 @@ import frc.robot.util.TunableConstant;
 @Logged
 public class IntakeRollers {
 
-  @Logged
-  private TalonFX rollerMotor = new TalonFX(IntakeRollerConstants.kRollerMotorId);
+  @Logged private TalonFX rollerMotor = new TalonFX(IntakeRollerConstants.kRollerMotorId);
   private CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
   private MotorOutputConfigs motorConfigs = new MotorOutputConfigs();
   private VoltageConfigs voltageConfigs = new VoltageConfigs();
@@ -56,7 +56,7 @@ public class IntakeRollers {
     rollerMotor.setVoltage(targetVoltage.in(Volts));
   }
 
-  public void setVelocity(double targetVelocity){
+  public void setVelocity(double targetVelocity) {
     rollerMotor.setControl(new MotionMagicVelocityVoltage(targetVelocity));
   }
 
@@ -79,7 +79,6 @@ public class IntakeRollers {
     setPID(kP.get(), kD.get(), kV.get(), kG.get());
   }
 
- 
   public double getRollerVelocity() {
     return rollerMotor.getVelocity().getValueAsDouble();
   }
