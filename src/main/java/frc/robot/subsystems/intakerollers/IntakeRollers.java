@@ -14,6 +14,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.measure.Velocity;
+import edu.wpi.first.units.measure.Voltage;
 
 @Logged
 public class IntakeRollers {
@@ -67,9 +68,9 @@ public class IntakeRollers {
     rollerMotor.getConfigurator().apply(slot0Configs);
   }
 
-  public void tune(double kP, double kD, double kV, double kG) {
+  public void tune(double kP, double kD, double kV, double kG, double rollerTargetVelocity) {
     setPID(kP, kD, kV, kG);
-    
+    setVelocity(rollerTargetVelocity);
   }
 
   @Logged(name = "rollerVelocity")

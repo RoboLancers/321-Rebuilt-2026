@@ -11,13 +11,15 @@ public class IntakeRollerTune extends Command {
   TunableConstant kD = new TunableConstant("IntakeRollers/kD", 0);
   TunableConstant kG = new TunableConstant("IntakeRollers/kG", 0);
   TunableConstant kV = new TunableConstant("IntakeRollers/kV", 0);
+  TunableConstant rollerTargetVelocity =
+      new TunableConstant("IntakeRollers/rollerTargetVelocity", 0);
 
   public IntakeRollerTune(IntakeRollers intakeRollers) {
     this.intakeRollers = intakeRollers;
   }
 
   public void execute() {
-    intakeRollers.tune(kP.get(), kD.get(), kV.get(), kG.get());
+    intakeRollers.tune(kP.get(), kD.get(), kV.get(), kG.get(), rollerTargetVelocity.get());
   }
 
   public boolean isFinished() {

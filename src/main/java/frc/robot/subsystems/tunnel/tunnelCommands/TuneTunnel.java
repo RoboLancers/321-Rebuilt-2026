@@ -1,10 +1,11 @@
 /* (C) RoboLancers 2026 */
 package frc.robot.subsystems.tunnel.tunnelCommands;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.tunnel.Tunnel;
 import frc.robot.util.TunableConstant;
 
-public class TuneTunnel {
+public class TuneTunnel extends Command {
 
   Tunnel tunnel;
 

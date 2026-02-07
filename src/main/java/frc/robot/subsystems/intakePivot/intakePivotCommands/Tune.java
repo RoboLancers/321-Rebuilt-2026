@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.intakePivot.IntakePivot;
 import frc.robot.util.TunableConstant;
 
-public class Tune extends Command{
+public class Tune extends Command {
 
   IntakePivot intakePivot;
   TunableConstant kP = new TunableConstant("/IntakePivot/kP", 0);

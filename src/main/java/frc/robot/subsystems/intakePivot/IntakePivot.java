@@ -43,6 +43,7 @@ public class IntakePivot extends SubsystemBase {
 
   public IntakePivot() {
     motorConfigurations();
+    setPID(IntakeConstants.kP, IntakeConstants.kD, IntakeConstants.kG);
   }
 
   private void motorConfigurations() {
