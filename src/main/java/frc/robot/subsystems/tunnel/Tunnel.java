@@ -17,7 +17,6 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
-import frc.robot.util.TunableConstant;
 
 @Logged
 public class Tunnel {
@@ -84,19 +83,12 @@ public class Tunnel {
     tunnelController.setPID(kP, kI, kD);
   }
 
-  public void tuneTunnel() {
-    TunableConstant kP = new TunableConstant("/Tunnel/kP", 0);
+  public void tuneTunnel(double kP, double kD, double kV, double targetVelocity) {
 
-    TunableConstant kD = new TunableConstant("/Tunnel/kD", 0);
+    tunnelController.setPID(kP, 0, kD);
 
-    TunableConstant kV = new TunableConstant("/Tunnel/kV", 0);
+    tunnelFeedforward.setKv(kV);
 
-    TunableConstant targetVelocity = new TunableConstant("/Tunnel/targetVelocity", 0);
-
-    tunnelController.setPID(kP.get(), 0, kD.get());
-
-    tunnelFeedforward.setKv(kV.get());
-
-    runAtVelocity(RPM.of(targetVelocity.get()));
+    runAtVelocity(RPM.of(targetVelocity));
   }
 }

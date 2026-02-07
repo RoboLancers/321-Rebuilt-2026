@@ -11,7 +11,6 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.measure.Velocity;
-import frc.robot.util.TunableConstant;
 
 @Logged
 public class IntakeRollers {
@@ -60,14 +59,8 @@ public class IntakeRollers {
     rollerMotor.getConfigurator().apply(slot0Configs);
   }
 
-  public void tune() {
-
-    TunableConstant kP = new TunableConstant("IntakeRollers/kP", 0);
-    TunableConstant kD = new TunableConstant("IntakeRollers/kD", 0);
-    TunableConstant kG = new TunableConstant("IntakeRollers/kG", 0);
-    TunableConstant kV = new TunableConstant("IntakeRollers/kV", 0);
-
-    setPID(kP.get(), kD.get(), kV.get(), kG.get());
+  public void tune(double kP, double kD, double kV, double kG) {
+    setPID(kP, kD, kV, kG);
   }
 
   @Logged(name = "rollerVelocity")

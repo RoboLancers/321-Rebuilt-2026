@@ -9,6 +9,12 @@ import edu.wpi.first.units.measure.AngularVelocity;
 
 public class OuttakeConstants {
 
+  public static final double kP = 0;
+
+  public static final double kD = 0;
+
+  public static final double kV = 0;
+
   public static final int kMotorID = 0;
 
   public static final double kStatorLimit = 40;
