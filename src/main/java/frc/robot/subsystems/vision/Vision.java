@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotConstants;
 import java.util.ArrayList;
@@ -26,6 +27,12 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 public class Vision extends SubsystemBase {
 
   public double currentAmbiguity;
+  public final int ledPort1 = 0;
+  public final int ledPort2 = 1;
+  public final int ledPort3 = 2;
+  public final int ledPort4 = 3;
+  public final int ledStart = 0;
+  public final int ledEnd = 7;
 
   public double getAmbiguityFromSupplier(DoubleSupplier ambiguity) {
     return ambiguity.getAsDouble();
@@ -50,13 +57,30 @@ public class Vision extends SubsystemBase {
 
   private PhotonCamera backLeftCamera = new PhotonCamera(VisionConstants.kBackLeftCameraName);
 
-  private PhotonCamera topElevatorCamera = new PhotonCamera(VisionConstants.kTopElevatorCameraName);
+  private PhotonCamera frontLeftCamera = new PhotonCamera(VisionConstants.kTopElevatorCameraName);
 
-  private PhotonCamera bottomElevatorCamera =
+  private PhotonCamera frontRightCamera =
       new PhotonCamera(VisionConstants.kBottomElevatorCameraName);
 
+  private PhotonCamera backRightCamera = new PhotonCamera(VisionConstants.backRightCameraName);
+
   public List<PhotonCamera> cameras =
-      List.of(backLeftCamera, topElevatorCamera, bottomElevatorCamera);
+      List.of(backLeftCamera, frontLeftCamera, frontRightCamera, backRightCamera);
+
+  public Color getStatusColor(PhotonCamera camera) {
+    if (camera.isConnected() == false) {
+      return new Color(255, 0, 0);
+    }
+
+    List<PhotonPipelineResult> unreadResults = camera.getAllUnreadResults();
+    if (unreadResults.isEmpty() == false) {
+      PhotonPipelineResult latestResult = unreadResults.get(unreadResults.size() - 1);
+      if (latestResult.hasTargets()) {
+        return new Color(191, 64, 191);
+      }
+    }
+    return new Color(255, 255, 255);
+  }
 
   private PhotonPoseEstimator backLeftPoseEstimator =
       new PhotonPoseEstimator(
@@ -208,6 +232,11 @@ public class Vision extends SubsystemBase {
         break;
       }
     }
+
+    SmartDashboard.putString("Camera 1", getStatusColor(backLeftCamera).toString());
+    SmartDashboard.putString("Camera 2 ", getStatusColor(backRightCamera).toString());
+    SmartDashboard.putString("Camera 3", getStatusColor(frontLeftCamera).toString());
+    SmartDashboard.putString("Camera 4", getStatusColor(frontRightCamera).toString());
 
     SmartDashboard.putBoolean("Cameras Are Connected", areCamerasConnected);
 

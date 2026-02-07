@@ -20,6 +20,8 @@ public class VisionConstants {
 
   public static final String kBottomElevatorCameraName = "Bottom Elevator Camera";
 
+  public static final String backRightCameraName = "Back Right Camera";
+
   public static final double kMinimumConfidence = 0.85;
 
   public static final double kTargetConfidence = 0.95;
