@@ -56,14 +56,14 @@ public class RobotContainer {
                       est.standardDeviations(),
                       est.standardDeviations())));
   private final SendableChooser<Command> autoChooser;
-  private final IntakeRollers intakeRollers = new IntakeRollers();
-  private final IntakeFuel intakeFuel = new IntakeFuel(intakeRollers);
-  private final Shooter shooter = new Shooter();
-  private final ShootFuel shootFuel = new ShootFuel();
-  private final Hood hood = new Hood();
-  private final IntakePivot intakePivot = new IntakePivot();
-  private final Indexer spindexer = new Indexer();
-  private final Tunnel tunnel = new Tunnel();
+  // private final IntakeRollers intakeRollers = new IntakeRollers();
+  // private final IntakeFuel intakeFuel = new IntakeFuel(intakeRollers);
+  // private final Shooter shooter = new Shooter();
+  // private final ShootFuel shootFuel = new ShootFuel();
+  // private final Hood hood = new Hood();
+  // private final IntakePivot intakePivot = new IntakePivot();
+  // private final Indexer spindexer = new Indexer();
+  // private final Tunnel tunnel = new Tunnel();
 
   public Trigger slowMode = driver.b();
 
@@ -102,34 +102,34 @@ public class RobotContainer {
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
-    NamedCommands.registerCommand("IntakeFuel", intakeFuel);
-    NamedCommands.registerCommand("ShootFuel", shootFuel.releaseFuel(shooter));
+    // NamedCommands.registerCommand("IntakeFuel", intakeFuel);
+    // NamedCommands.registerCommand("ShootFuel", shootFuel.releaseFuel(shooter));
   }
 
   private void configureBindings() {
     drivetrain.setDefaultCommand(drivetrain.teleopDrive(driverForward, driverStrafe, driverTurn));
-    intakeRollers.setDefaultCommand(
-        Commands.run(() -> intakeRollers.setVoltage(Volts.of(0)), intakeRollers));
-    shooter.setDefaultCommand(ShootFuel.outtakeWithVoltage(shooter, () -> Volts.of(0)));
-    hood.setDefaultCommand(HoodCommands.goToTravelAngle(hood));
-    intakePivot.setDefaultCommand(new GoToDefaultPosition(intakePivot));
-    spindexer.setDefaultCommand(Index.setVoltage(spindexer, () -> Volts.of(0)));
-    tunnel.setDefaultCommand(new RunAtVelocity(tunnel, RPM.of(0)));
+    // intakeRollers.setDefaultCommand(
+    //     Commands.run(() -> intakeRollers.setVoltage(Volts.of(0)), intakeRollers));
+    // shooter.setDefaultCommand(ShootFuel.outtakeWithVoltage(shooter, () -> Volts.of(0)));
+    // hood.setDefaultCommand(HoodCommands.goToTravelAngle(hood));
+    // intakePivot.setDefaultCommand(new GoToDefaultPosition(intakePivot));
+    // spindexer.setDefaultCommand(Index.setVoltage(spindexer, () -> Volts.of(0)));
+    // tunnel.setDefaultCommand(new RunAtVelocity(tunnel, RPM.of(0)));
 
-    driver
-        .leftBumper()
-        .whileTrue(new GoToIntakePosition(intakePivot).andThen(new IntakeFuel(intakeRollers)));
+    // driver
+    //     .leftBumper()
+    //     .whileTrue(new GoToIntakePosition(intakePivot).andThen(new IntakeFuel(intakeRollers)));
     driver
         .leftTrigger()
         .whileTrue(
             Align.rotateToHubWhileDriving(
                 drivetrain, driverForward, driverStrafe, hubHeading, currentRobotPose));
-    driver
-        .rightTrigger()
-        .whileTrue(
-            Score.shootFuelFromAnywhere(
-                drivetrain, shooter, hood, spindexer, tunnel, currentRobotPose));
-    driver.rightBumper().whileTrue(Score.feedFuel(shooter, hood, spindexer, tunnel));
+    // driver
+    //     .rightTrigger()
+    //     .whileTrue(
+    //         Score.shootFuelFromAnywhere(
+    //             drivetrain, shooter, hood, spindexer, tunnel, currentRobotPose));
+    // driver.rightBumper().whileTrue(Score.feedFuel(shooter, hood, spindexer, tunnel));
   }
 
   public Command getAutonomousCommand() {
