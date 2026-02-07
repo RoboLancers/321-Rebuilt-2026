@@ -1,23 +1,21 @@
 /* (C) RoboLancers 2026 */
 package frc.robot.subsystems.tunnel.tunnelCommands;
 
-import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.tunnel.Tunnel;
+import frc.robot.subsystems.tunnel.TunnelConstants;
 
-public class RunAtVelocity extends Command {
+public class PassFuel extends Command {
 
   Tunnel tunnel;
-  AngularVelocity velocity;
 
-  public RunAtVelocity(Tunnel tunnel, AngularVelocity velocity) {
+  public PassFuel(Tunnel tunnel) {
     this.tunnel = tunnel;
-    this.velocity = velocity;
   }
 
   public void init() {}
 
   public void execute() {
-    tunnel.runAtVelocity(velocity);
+    tunnel.runAtVelocity(TunnelConstants.kPassFuelRPM);
   }
 }

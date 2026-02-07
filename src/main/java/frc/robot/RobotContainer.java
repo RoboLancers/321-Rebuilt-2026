@@ -6,6 +6,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.intakerollers.IntakeRollers;
 import frc.robot.subsystems.intakerollers.rolllercommands.IntakeFuel;
 import frc.robot.subsystems.outtake.Shooter;
@@ -13,6 +14,7 @@ import frc.robot.subsystems.outtake.commands.ShootFuel;
 
 public class RobotContainer {
 
+  public Drivetrain drivetrain = Drivetrain.create();
   private final SendableChooser<Command> autoChooser;
   private final IntakeRollers intakeRollers = new IntakeRollers();
   private final IntakeFuel intakeFuel = new IntakeFuel(intakeRollers);
