@@ -233,10 +233,10 @@ public class Vision extends SubsystemBase {
       }
     }
 
-    SmartDashboard.putString("Camera 1", getStatusColor(backLeftCamera).toString());
-    SmartDashboard.putString("Camera 2 ", getStatusColor(backRightCamera).toString());
-    SmartDashboard.putString("Camera 3", getStatusColor(frontLeftCamera).toString());
-    SmartDashboard.putString("Camera 4", getStatusColor(frontRightCamera).toString());
+    SmartDashboard.putString("Camera 1", getStatusColor(backLeftCamera).toHexString());
+    SmartDashboard.putString("Camera 2 ", getStatusColor(backRightCamera).toHexString());
+    SmartDashboard.putString("Camera 3", getStatusColor(frontLeftCamera).toHexString());
+    SmartDashboard.putString("Camera 4", getStatusColor(frontRightCamera).toHexString());
 
     SmartDashboard.putBoolean("Cameras Are Connected", areCamerasConnected);
 
