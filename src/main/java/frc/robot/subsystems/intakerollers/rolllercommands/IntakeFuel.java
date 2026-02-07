@@ -14,7 +14,7 @@ public class IntakeFuel extends Command {
   }
 
   public void execute() {
-    intakeRollers.setVoltage(IntakeRollerConstants.kIntakeFuelVelocity);
+    intakeRollers.setVelocity(IntakeRollerConstants.kIntakeFuelVelocity);
   }
 
   public boolean isFinished() {

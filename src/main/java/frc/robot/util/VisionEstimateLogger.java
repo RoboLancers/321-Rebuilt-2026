@@ -16,6 +16,6 @@ public class VisionEstimateLogger extends ClassSpecificLogger<VisionEstimate> {
 
   @Override
   public void update(EpilogueBackend backend, VisionEstimate object) {
-    backend.log("", object.stdDevs(), Matrix.getStruct(Nat.N3(), Nat.N1()));
+    backend.log("Standard Deviation", object.standardDeviations());
   }
 }

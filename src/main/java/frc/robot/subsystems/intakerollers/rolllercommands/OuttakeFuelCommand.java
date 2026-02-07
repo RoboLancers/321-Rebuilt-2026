@@ -15,10 +15,10 @@ public class OuttakeFuelCommand extends Command {
   public void initialize() {}
 
   public void execute() {
-    intakeRollers.setVoltage(IntakeRollerConstants.kOuttakeFuelVelocity);
+    intakeRollers.setVelocity(IntakeRollerConstants.kOuttakeFuelVelocity);
   }
 
   public boolean isFinished() {
-    return false;
+    return false; 
   }
 }
