@@ -72,13 +72,18 @@ public class Vision extends SubsystemBase {
       return new Color(255, 0, 0);
     }
 
-    List<PhotonPipelineResult> unreadResults = camera.getAllUnreadResults();
-    if (unreadResults.isEmpty() == false) {
-      PhotonPipelineResult latestResult = unreadResults.get(unreadResults.size() - 1);
-      if (latestResult.hasTargets()) {
-        return new Color(191, 64, 191);
-      }
+    // List<PhotonPipelineResult> unreadResults = camera.getAllUnreadResults();
+    // if (unreadResults.isEmpty() == false) {
+    //   PhotonPipelineResult latestResult = unreadResults.get(unreadResults.size() - 1);
+    //   if (latestResult.hasTargets()) {
+
+    //   }
+    // }
+
+    if (camera.getLatestResult().hasTargets()) {
+      return new Color(191, 64, 191);
     }
+
     return new Color(255, 255, 255);
   }
 
