@@ -1,10 +1,11 @@
 /* (C) RoboLancers 2026 */
 package frc.robot.subsystems.intakePivot.intakePivotCommands;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.intakePivot.IntakePivot;
 import frc.robot.util.TunableConstant;
 
-public class Tune {
+public class Tune extends Command{
 
   IntakePivot intakePivot;
   TunableConstant kP = new TunableConstant("/IntakePivot/kP", 0);
