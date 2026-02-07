@@ -47,7 +47,7 @@ public class DrivetrainConstants {
       MetersPerSecond.of(5.0); // TunerConstants.kSpeedAt12Volts
 
   public static final Distance kAlignmentSetpointTranslationTolerance = Meters.of(0.01);
-  public static final Angle kAlignmentSetpointRotationTolerance = Degrees.of(1.9); // 2.0
+  public static final Angle kAlignmentSetpointRotationTolerance = Degrees.of(2.0); // 2.0
 
   public static final Distance kAlignmentVelocityRadius =
       Meters.of(

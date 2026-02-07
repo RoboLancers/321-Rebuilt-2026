@@ -21,7 +21,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.util.DriveFeedforwards;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
@@ -95,7 +94,7 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
               DrivetrainConstants.kTuneHeadingGains.kD())
           .withRotationalDeadband(0.1);
 
-  private final Field2d poseField = new Field2d();
+  public Field2d poseField = new Field2d();
 
   private AlignmentSetpoint alignmentSetpoint = new AlignmentSetpoint(Pose2d.kZero, true);
 
@@ -169,28 +168,25 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
     return MyAlliance.isRed() ? rotation.plus(Rotation2d.k180deg) : rotation;
   }
 
-  boolean atPoseSetpoint() {
+  boolean atPoseSetpoint(Supplier<Pose2d> currentRobotPose) {
     return atPoseSetpoint(
         DrivetrainConstants.kAlignmentSetpointTranslationTolerance,
-        DrivetrainConstants.kAlignmentSetpointRotationTolerance);
+        DrivetrainConstants.kAlignmentSetpointRotationTolerance,
+        currentRobotPose);
   }
 
-  boolean atFinalPoseSetpoint() {
+  boolean atFinalPoseSetpoint(Supplier<Pose2d> currentRobotPose) {
     if (!getAlignmentSetpoint().isFinalSetpoint()) return false;
-    return atPoseSetpoint();
+    return atPoseSetpoint(currentRobotPose);
   }
 
   // drive with heading controlled by PID
-  Command driveFixedHeading(
+  public Command driveFixedHeading(
       DoubleSupplier translationX, DoubleSupplier translationY, Supplier<Rotation2d> rotation) {
     return run(
         () ->
             driveFixedHeading(
                 translationX.getAsDouble(), translationY.getAsDouble(), rotation.get()));
-  }
-
-  Command driveToFieldPose(Supplier<AlignmentSetpoint> pose) {
-    return driveToFieldPose(pose, this::getPose);
   }
 
   Command driveToFieldPose(Supplier<AlignmentSetpoint> pose, Supplier<Pose2d> currentPose) {
@@ -217,6 +213,10 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
                 }));
   }
 
+  public Command driveToFieldPoseCommand(Supplier<Pose2d> pose, Supplier<Pose2d> currentRobotPose) {
+    return driveToFieldPose(() -> (new AlignmentSetpoint(pose.get(), true)), currentRobotPose);
+  }
+
   public Command teleopDrive(
       DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier rotation) {
     return run(
@@ -235,6 +235,41 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
                   .withRotationalRate(speeds.omegaRadiansPerSecond)
                   .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective));
         });
+  }
+
+  public Command teleopDriveWithHeading(
+      DoubleSupplier translationX,
+      DoubleSupplier translationY,
+      Supplier<Rotation2d> heading,
+      Supplier<Pose2d> currentRobotPose) {
+    return runOnce(
+            () -> {
+              ChassisSpeeds speeds =
+                  ChassisSpeeds.fromRobotRelativeSpeeds(
+                      getChassisSpeeds(), currentRobotPose.get().getRotation());
+
+              thetaController.reset(
+                  currentRobotPose.get().getRotation().getRadians(), speeds.omegaRadiansPerSecond);
+            })
+        .andThen(
+            run(
+                () -> {
+                  var speeds =
+                      ChassisSpeeds.discretize(
+                          translationX.getAsDouble(),
+                          translationY.getAsDouble(),
+                          thetaController.calculate(
+                              currentRobotPose.get().getRotation().getRadians(),
+                              heading.get().getRadians()),
+                          RobotConstants.kRobotLoopPeriod.in(Seconds));
+
+                  setControl(
+                      fieldCentricRequest
+                          .withVelocityX(speeds.vxMetersPerSecond)
+                          .withVelocityY(speeds.vyMetersPerSecond)
+                          .withRotationalRate(speeds.omegaRadiansPerSecond)
+                          .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective));
+                }));
   }
 
   public Command teleopDriveFixedHeading(
@@ -326,12 +361,12 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
 
     ChassisSpeeds targetSpeeds =
         ChassisSpeeds.discretize(
-            xPoseController.calculate(getPose().getX(), pose.getX())
+            xPoseController.calculate(currentPose.getX(), pose.getX())
                 + xPoseController.getSetpoint().velocity * ffFactor,
-            yPoseController.calculate(getPose().getY(), pose.getY())
+            yPoseController.calculate(currentPose.getY(), pose.getY())
                 + yPoseController.getSetpoint().velocity * ffFactor,
             thetaController.calculate(
-                    getPose().getRotation().getRadians(), pose.getRotation().getRadians())
+                    currentPose.getRotation().getRadians(), pose.getRotation().getRadians())
                 + thetaController.getSetpoint().velocity * ffFactor,
             RobotConstants.kRobotLoopPeriod.in(Seconds));
 
@@ -354,15 +389,15 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
             .withForwardPerspective(ForwardPerspectiveValue.BlueAlliance));
   }
 
-  public Command driveToPosePP(Pose2d pose) {
-    PathConstraints constraints =
-        new PathConstraints(
-            DrivetrainConstants.kMaxPathVelocity,
-            DrivetrainConstants.kMaxPathAcceleration,
-            DrivetrainConstants.kMaxPathAngularVelocity,
-            DrivetrainConstants.kMaxPathAngularAcceleration);
-    return AutoBuilder.pathfindToPose(pose, constraints, 0.0);
-  }
+  // public Command driveToPosePP(Pose2d pose) {
+  //   PathConstraints constraints =
+  //       new PathConstraints(
+  //           DrivetrainConstants.kMaxPathVelocity,
+  //           DrivetrainConstants.kMaxPathAcceleration,
+  //           DrivetrainConstants.kMaxPathAngularVelocity,
+  //           DrivetrainConstants.kMaxPathAngularAcceleration);
+  //   return AutoBuilder.pathfindToPose(pose, constraints, 0.0);
+  // }
 
   // drive with absolute heading control
   public void driveFixedHeading(double translationX, double translationY, Rotation2d rotation) {
@@ -384,12 +419,12 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
     alignmentSetpoint = setpoint;
   }
 
-  public boolean atPoseSetpoint(Distance tranTol, Angle rotTol) {
-    final var currentPose = getPose();
-    return currentPose.getTranslation().getDistance(alignmentSetpoint.pose().getTranslation())
+  public boolean atPoseSetpoint(Distance tranTol, Angle rotTol, Supplier<Pose2d> currentPose) {
+    return currentPose.get().getTranslation().getDistance(alignmentSetpoint.pose().getTranslation())
             < tranTol.in(Meters)
         && Math.abs(
                 currentPose
+                    .get()
                     .getRotation()
                     .minus(alignmentSetpoint.pose().getRotation())
                     .getDegrees())
@@ -456,12 +491,13 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
                 lastAlliance = allianceColor;
               });
     }
+    SmartDashboard.putNumber("Drivetrain Pose X", getPose().getX());
+
+    SmartDashboard.putNumber("Drivetrain Pose Y", getPose().getY());
+
+    SmartDashboard.putNumber("Drivetrain Pose Yaw", getPose().getRotation().getDegrees());
 
     poseField.setRobotPose(getPose());
-  }
-
-  @Logged(name = "AtPoseSetpoint")
-  public boolean atSetpoint() {
-    return atPoseSetpoint();
+    SmartDashboard.putData("Robot Pose Field", poseField);
   }
 }
