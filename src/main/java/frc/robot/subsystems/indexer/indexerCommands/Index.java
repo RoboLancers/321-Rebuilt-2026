@@ -12,7 +12,7 @@ import java.util.function.Supplier;
 public class Index {
 
   public static Command setVoltage(Indexer indexer, Supplier<Voltage> voltage) {
-    return Commands.run(() -> indexer.setVoltage(voltage.get()));
+    return Commands.run(() -> indexer.setVoltage(voltage.get()),indexer);
   }
 
   public static Command goToVelocity(Indexer indexer, Supplier<AngularVelocity> velocity) {
