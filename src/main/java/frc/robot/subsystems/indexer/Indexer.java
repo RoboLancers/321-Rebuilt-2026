@@ -25,10 +25,9 @@ import frc.robot.util.TunableConstant;
 @Logged
 public class Indexer extends SubsystemBase {
 
-  private TalonFX motor = new TalonFX(IndexerConstants.kMotorID);
+  @Logged private TalonFX motor = new TalonFX(IndexerConstants.kMotorID);
   private Velocity targetVelocity;
   private Voltage targetVoltage;
-  private Current targetCurrent;
 
   public Indexer() {
     configureMotors();
@@ -71,12 +70,12 @@ public class Indexer extends SubsystemBase {
     motor.getConfigurator().apply(pidConfigs);
   }
 
-  public void goToVelocity(AngularVelocity velocity) {
-    motor.setControl(new MotionMagicVelocityVoltage(velocity));
+  public void goToVelocity(AngularVelocity targetVelocity) {
+    motor.setControl(new MotionMagicVelocityVoltage(targetVelocity));
   }
 
-  public void setVoltage(Voltage voltage) {
-    motor.setVoltage(voltage.in(Volts));
+  public void setVoltage(Voltage targetVoltage) {
+    motor.setVoltage(targetVoltage.in(Volts));
   }
 
   public void tune() {
@@ -95,33 +94,25 @@ public class Indexer extends SubsystemBase {
     goToVelocity(RPM.of(targetSpeed.get()));
   }
 
-  @Logged
+  @Logged(name = "indexerTargetVelocity")
   public Velocity getTargetVelocity() {
     return this.targetVelocity;
   }
 
-  @Logged
   public double getVelocity() {
     return motor.getVelocity().getValueAsDouble();
   }
 
-  @Logged
+  @Logged(name = "IndexerTargetVoltage")
   public Voltage getTargetVoltage() {
     return this.targetVoltage;
   }
 
-  @Logged
   public Voltage getVoltage() {
     return motor.getMotorVoltage().getValue();
   }
 
-  @Logged
   public Current getIndexerCurrent() {
     return motor.getStatorCurrent().getValue();
-  }
-
-  @Logged
-  public Current getTargetCurrent() {
-    return this.targetCurrent;
   }
 }
