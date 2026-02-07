@@ -2,6 +2,7 @@
 package frc.robot.subsystems.intakePivot;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
@@ -26,7 +27,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 @Logged(name = "Intake Pivot")
 public class IntakePivot extends SubsystemBase {
 
-  private TalonFX intakePivotMotor = new TalonFX(IntakeConstants.kPivotMotorId);
+  @Logged private TalonFX intakePivotMotor = new TalonFX(IntakeConstants.kPivotMotorId);
   private TalonFXConfiguration talonConfigs = new TalonFXConfiguration();
   private MotorOutputConfigs motorConfigs = new MotorOutputConfigs();
   private FeedbackConfigs feedbackConfigs = new FeedbackConfigs();
@@ -67,7 +68,6 @@ public class IntakePivot extends SubsystemBase {
     intakePivotMotor.setControl(intakeVoltage);
   }
 
-  @Logged
   public Angle getAngle() {
     return Degrees.of(intakePivotMotor.getPosition().getValueAsDouble());
   }
@@ -76,7 +76,7 @@ public class IntakePivot extends SubsystemBase {
     intakePivotMotor.setPosition(Degrees.of(absoluteEncoder.get()));
   }
 
-  @Logged
+  @Logged(name = "atTargetAngle")
   public boolean atTargetAngle() {
     return getAngle() == targetAngle;
   }
@@ -90,22 +90,23 @@ public class IntakePivot extends SubsystemBase {
     goToAngle(Degrees.of(angle));
   }
 
-  @Logged
   public Voltage getVoltage() {
     return intakePivotMotor.getMotorVoltage().getValue();
   }
 
-  @Logged(name = "pivotVelocity")
+  public void setVoltage(Voltage targetVoltage) {
+    intakePivotMotor.setVoltage(targetVoltage.in(Volts));
+  }
+
   public double getVelocity() {
     return intakePivotMotor.getVelocity().getValueAsDouble();
   }
 
-  @Logged
   public Current current() {
     return intakePivotMotor.getStatorCurrent().getValue();
   }
 
-  @Logged
+  @Logged(name = "AtTargetVelocity")
   public boolean atTargetVelocity() {
     return intakePivotMotor.getVelocity().getValue() == targetVelocity;
   }

@@ -25,7 +25,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 @Logged
 public class Shooter extends SubsystemBase {
 
-  private TalonFX motor = new TalonFX(OuttakeConstants.kMotorID);
+  @Logged private TalonFX motor = new TalonFX(OuttakeConstants.kMotorID);
 
   private Velocity targetShooterVelocity;
 
@@ -84,17 +84,15 @@ public class Shooter extends SubsystemBase {
     motor.setControl(new MotionMagicVelocityVoltage(RPM.of(targetRPM)));
   }
 
-  @Logged
+  @Logged(name = "TargetShooterVelocity")
   public Velocity getTargetShooterVelocity() {
     return this.targetShooterVelocity;
   }
 
-  @Logged(name = "shooterRPM")
   public double getVelocity() {
     return motor.getVelocity().getValueAsDouble();
   }
 
-  @Logged(name = "shooterVoltage")
   public Voltage getVoltage() {
     return motor.getMotorVoltage().getValue();
   }

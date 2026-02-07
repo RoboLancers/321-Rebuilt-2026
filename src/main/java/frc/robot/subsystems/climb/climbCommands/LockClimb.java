@@ -12,7 +12,8 @@ public class LockClimb extends Command {
   Climb climb;
   TalonFX climbMotor;
 
-  public LockClimb(TalonFX climbMotor) {
+  public LockClimb(Climb climb, TalonFX climbMotor) {
+    this.climb = climb;
     this.climbMotor = climbMotor;
   }
 
