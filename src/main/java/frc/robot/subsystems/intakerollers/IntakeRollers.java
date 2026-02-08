@@ -15,9 +15,10 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 @Logged
-public class IntakeRollers {
+public class IntakeRollers extends SubsystemBase {
 
   @Logged private TalonFX rollerMotor = new TalonFX(IntakeRollerConstants.kRollerMotorId);
   private CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
