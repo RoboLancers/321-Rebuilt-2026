@@ -1,6 +1,8 @@
 /* (C) RoboLancers 2026 */
 package frc.robot.subsystems.hood.hoodCommands;
 
+import static edu.wpi.first.units.Units.Degrees;
+
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -11,7 +13,11 @@ import java.util.function.Supplier;
 public class HoodCommands {
 
   public static Command goToAngle(Hood hood, Supplier<Angle> angle) {
-    return Commands.run(() -> hood.goToAngle(angle.get()), hood);
+    return Commands.run(() -> hood.goToAngle(angle.get()))
+        .until(
+            () ->
+                Math.abs(angle.get().in(Degrees) - hood.getAngle().in(Degrees))
+                    <= HoodConstants.kAngleTolerance.in(Degrees));
   }
 
   public static Command goToScoringAngle(Hood hood) {
