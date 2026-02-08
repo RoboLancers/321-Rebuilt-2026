@@ -22,7 +22,6 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Relay.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.util.TunableConstant;
 
 @Logged
 public class Climb extends SubsystemBase {
@@ -176,28 +175,19 @@ public class Climb extends SubsystemBase {
     pivotClimbController.setPID(kPivotP, kPivotI, kPivotD);
   }
 
-  public void tuneClimb() {
-    TunableConstant kP = new TunableConstant("/Climb/kP", 0);
-    TunableConstant kD = new TunableConstant("/Climb/kD", 0);
-    TunableConstant kG = new TunableConstant("/Climb/kG", 0);
-    TunableConstant kTargetAngle = new TunableConstant("/Climb/kTargetAngle", 0);
-
-    climbController.setPID(kP.get(), 0, kD.get());
-    climbFeedforward.setKg(kG.get());
-    goToAngle(Degrees.of(kTargetAngle.get()));
+  public void tuneClimb(double kP, double kD, double kG, double kTargetAngle) {
+    climbController.setPID(kP, 0, kD);
+    climbFeedforward.setKg(kG);
+    goToAngle(Degrees.of(kTargetAngle));
   }
 
   public void setClimbFeedforward(double kG) {
     climbFeedforward.setKg(kG);
   }
 
-  public void tunePivotClimb() {
-    TunableConstant kPivotP = new TunableConstant("/Climb/kPivotP", 0);
-    TunableConstant kPivotD = new TunableConstant("/Climb/kPivotD", 0);
-    TunableConstant pivotTargetAngle = new TunableConstant("/Climb/pivotTargetAngle", 0);
-
-    pivotClimbController.setPID(kPivotP.get(), 0, kPivotD.get());
-    goToPivotAngle(Degrees.of(pivotTargetAngle.get()));
+  public void tunePivotClimb(double kPivotP, double kPivotD, double kPivotTargetAngle) {
+    pivotClimbController.setPID(kPivotP, 0, kPivotD);
+    goToPivotAngle(Degrees.of(kPivotTargetAngle));
   }
 
   public void turnOnMagnet() {

@@ -2,12 +2,25 @@
 package frc.robot.subsystems.indexer.indexerCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.indexer.Indexer;
+import frc.robot.util.TunableConstant;
 
-public class TuneIndexer {
+public class TuneIndexer extends Command {
+  Indexer indexer;
+  TunableConstant kP = new TunableConstant("Indexer/kP/", 0);
+  TunableConstant kD = new TunableConstant("Indexer/kD/", 0);
+  TunableConstant kV = new TunableConstant("Indexer/kV/", 0);
+  TunableConstant targetSpeed = new TunableConstant("Indexer/targetSpeed", 0);
 
-  public static Command tune(Indexer indexer) {
-    return Commands.run(() -> indexer.tune());
+  public TuneIndexer(Indexer indexer) {
+    this.indexer = indexer;
+  }
+
+  public void execute() {
+    indexer.tune(kP.get(), kD.get(), kV.get(), targetSpeed.get());
+  }
+
+  public boolean isFinished() {
+    return false;
   }
 }

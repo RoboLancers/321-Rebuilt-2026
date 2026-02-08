@@ -6,7 +6,6 @@ import static edu.wpi.first.units.Units.Degrees;
 import edu.wpi.first.units.measure.Angle;
 
 public class IntakeConstants {
-
   public static final int kPivotMotorId = 0;
   public static final double kCurrentLimits = 0;
   public static final double kCurrentLimit = 0;
