@@ -3,6 +3,10 @@ package frc.robot.subsystems.vision;
 
 import static edu.wpi.first.units.Units.Meters;
 
+import com.ctre.phoenix6.configs.CANdleFeaturesConfigs;
+import com.ctre.phoenix6.configs.LEDConfigs;
+import com.ctre.phoenix6.hardware.CANdle;
+import com.ctre.phoenix6.signals.VBatOutputModeValue;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -11,8 +15,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotConstants;
+import frc.robot.subsystems.leds.LedConstants;
+import frc.robot.subsystems.vision.CameraStatusLED.StatusType;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
@@ -33,6 +41,20 @@ public class Vision extends SubsystemBase {
   public final int ledPort4 = 3;
   public final int ledStart = 0;
   public final int ledEnd = 7;
+  public final Color purple = new Color(191, 64, 191);
+  public final Color red = new Color(255, 255, 255);
+  public final Color white = new Color(255, 0, 0);
+  public Color status;
+  public CANdle candle = new CANdle(0);
+
+  public void LedConfigs() {
+    LEDConfigs configs = new LEDConfigs();
+    CANdleFeaturesConfigs featuresConfigs = new CANdleFeaturesConfigs();
+    configs.BrightnessScalar = LedConstants.brightnessScaler;
+    featuresConfigs.VBatOutputMode = VBatOutputModeValue.On;
+    candle.getConfigurator().apply(configs);
+    candle.getConfigurator().apply(featuresConfigs);
+  }
 
   public double getAmbiguityFromSupplier(DoubleSupplier ambiguity) {
     return ambiguity.getAsDouble();
@@ -64,28 +86,11 @@ public class Vision extends SubsystemBase {
 
   private PhotonCamera backRightCamera = new PhotonCamera(VisionConstants.backRightCameraName);
 
-  public List<PhotonCamera> cameras =
+  private List<PhotonCamera> cameras =
       List.of(backLeftCamera, frontLeftCamera, frontRightCamera, backRightCamera);
 
-  public Color getStatusColor(PhotonCamera camera) {
-    if (camera.isConnected() == false) {
-      return new Color(255, 0, 0);
-    }
-
-    // List<PhotonPipelineResult> unreadResults = camera.getAllUnreadResults();
-    // if (unreadResults.isEmpty() == false) {
-    //   PhotonPipelineResult latestResult = unreadResults.get(unreadResults.size() - 1);
-    //   if (latestResult.hasTargets()) {
-
-    //   }
-    // }
-
-    if (camera.getLatestResult().hasTargets()) {
-      return new Color(191, 64, 191);
-    }
-
-    return new Color(255, 255, 255);
-  }
+  private Dictionary<PhotonCamera, CameraStatusLED> cameraStatusLEDs =
+      new Hashtable<PhotonCamera, CameraStatusLED>(4);
 
   private PhotonPoseEstimator backLeftPoseEstimator =
       new PhotonPoseEstimator(
@@ -114,6 +119,11 @@ public class Vision extends SubsystemBase {
 
   public Vision(Consumer<VisionEstimate> visionEstConsumer) {
     this.visionEstConsumer = visionEstConsumer;
+
+    cameraStatusLEDs.put(backLeftCamera, new CameraStatusLED(ledPort1));
+    cameraStatusLEDs.put(frontLeftCamera, new CameraStatusLED(ledPort2));
+    cameraStatusLEDs.put(backRightCamera, new CameraStatusLED(ledPort3));
+    cameraStatusLEDs.put(frontRightCamera, new CameraStatusLED(ledPort4));
   }
 
   private List<VisionEstimate> getVisionEstimates() {
@@ -124,15 +134,25 @@ public class Vision extends SubsystemBase {
 
     for (int i = 0; i < cameras.size(); i++) {
 
-      if (cameras.get(i) == null || !cameras.get(i).isConnected()) continue;
+      CameraStatusLED statusLED = cameraStatusLEDs.get(cameras.get(i));
+      if (cameras.get(i) == null || !cameras.get(i).isConnected()) {
+
+        // set the corresponding color to red
+        statusLED.updateStatusColor(StatusType.Error);
+        continue;
+      }
 
       List<PhotonPipelineResult> unreadResults = cameras.get(i).getAllUnreadResults();
-
-      if (unreadResults.isEmpty()) continue;
-
       PhotonPipelineResult latestResult = unreadResults.get(unreadResults.size() - 1);
 
-      if (!latestResult.hasTargets()) continue;
+      if (!latestResult.hasTargets() || unreadResults.isEmpty()) {
+        // set corresponding color to white
+        statusLED.updateStatusColor(StatusType.NotDetected);
+        continue;
+      }
+
+      // set correponding color to purple
+      statusLED.updateStatusColor(StatusType.Detected);
 
       EstimatedRobotPose estimatedPose =
           estimators
@@ -148,6 +168,7 @@ public class Vision extends SubsystemBase {
               .orElse(null);
 
       if (estimatedPose == null) {
+
         continue;
       }
 
@@ -238,10 +259,11 @@ public class Vision extends SubsystemBase {
       }
     }
 
-    SmartDashboard.putString("Camera 1", getStatusColor(backLeftCamera).toHexString());
-    SmartDashboard.putString("Camera 2 ", getStatusColor(backRightCamera).toHexString());
-    SmartDashboard.putString("Camera 3", getStatusColor(frontLeftCamera).toHexString());
-    SmartDashboard.putString("Camera 4", getStatusColor(frontRightCamera).toHexString());
+    SmartDashboard.putString("Camera 1", cameraStatusLEDs.get(frontLeftCamera).getStatusColorHex());
+    SmartDashboard.putString(
+        "Camera 2 ", cameraStatusLEDs.get(frontRightCamera).getStatusColorHex());
+    SmartDashboard.putString("Camera 3", cameraStatusLEDs.get(backRightCamera).getStatusColorHex());
+    SmartDashboard.putString("Camera 4", cameraStatusLEDs.get(backLeftCamera).getStatusColorHex());
 
     SmartDashboard.putBoolean("Cameras Are Connected", areCamerasConnected);
 
