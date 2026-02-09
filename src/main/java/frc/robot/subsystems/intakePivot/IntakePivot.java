@@ -12,8 +12,10 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Current;
@@ -21,7 +23,6 @@ import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.util.TunableConstant;
 
 @Logged(name = "Intake Pivot")
 public class IntakePivot extends SubsystemBase {
@@ -42,6 +43,7 @@ public class IntakePivot extends SubsystemBase {
 
   public IntakePivot() {
     motorConfigurations();
+    setPID(IntakeConstants.kP, IntakeConstants.kD, IntakeConstants.kG);
   }
 
   private void motorConfigurations() {
@@ -51,9 +53,8 @@ public class IntakePivot extends SubsystemBase {
     currentLimitsConfigs.withStatorCurrentLimitEnable(IntakeConstants.kCurrentLimitEnable);
     currentLimitsConfigs.withStatorCurrentLimit(IntakeConstants.kCurrentLimit);
 
-    slot0Configs.withKG(IntakeConstants.kG);
-    slot0Configs.withKD(IntakeConstants.kD);
-    slot0Configs.withKP(IntakeConstants.kP);
+    slot0Configs.withGravityType(GravityTypeValue.Arm_Cosine);
+    slot0Configs.withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
 
     feedbackConfigs.withSensorToMechanismRatio(IntakeConstants.kSensorToMechanismRatio);
 
@@ -81,18 +82,13 @@ public class IntakePivot extends SubsystemBase {
     return getAngle() == targetAngle;
   }
 
-  public void tune() {
+  public void setPID(double kP, double kD, double kG) {
+    intakePivotMotor.getConfigurator().apply(new Slot0Configs().withKP(kP).withKD(kD).withKG(kG));
+  }
 
-    TunableConstant kP = new TunableConstant("/IntakePivot/kP", 0);
-    TunableConstant kD = new TunableConstant("/IntakePivot/kD", 0);
-    TunableConstant kG = new TunableConstant("/IntakePivot/kG", 0);
-    TunableConstant angle = new TunableConstant("/IntakePivot/angle", 0);
-
-    IntakeConstants.kP = kP.get();
-    IntakeConstants.kD = kD.get();
-    IntakeConstants.kG = kG.get();
-
-    goToAngle(Degrees.of(angle.get()));
+  public void tune(double kP, double kD, double kG, double angle) {
+    setPID(kP, kD, kG);
+    goToAngle(Degrees.of(angle));
   }
 
   public Voltage getVoltage() {

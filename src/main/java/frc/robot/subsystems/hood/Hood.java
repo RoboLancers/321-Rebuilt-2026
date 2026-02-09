@@ -21,7 +21,6 @@ import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.util.TunableConstant;
 
 @Logged
 public class Hood extends SubsystemBase {
@@ -67,14 +66,7 @@ public class Hood extends SubsystemBase {
   }
 
   public void setHoodPID(double kP, double kD, double kG) {
-    hoodMotor
-        .getConfigurator()
-        .apply(
-            new Slot0Configs()
-                .withKP(kP)
-                .withKD(kD)
-                .withKG(kG)
-                .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign));
+    hoodMotor.getConfigurator().apply(new Slot0Configs().withKP(kP).withKD(kD).withKG(kG));
   }
 
   public void goToAngle(Angle targetAngle) {
@@ -98,15 +90,9 @@ public class Hood extends SubsystemBase {
     return atTargetAngle;
   }
 
-  public void tune() {
-    TunableConstant kG = new TunableConstant("Hood/kG/", 0);
-    TunableConstant kD = new TunableConstant("Hood/kD/", 0);
-    TunableConstant kP = new TunableConstant("Hood/kP/", 0);
-    TunableConstant targetAngle = new TunableConstant("Hood/targetAngle/", 0);
-
-    setHoodPID(kP.get(), kD.get(), kG.get());
-
-    goToAngle(Degrees.of(targetAngle.get()));
+  public void tune(double kP, double kD, double kG, double targetAngle) {
+    setHoodPID(kP, kD, kG);
+    goToAngle(Degrees.of(targetAngle));
   }
 
   @Logged(name = "targetAngle")
