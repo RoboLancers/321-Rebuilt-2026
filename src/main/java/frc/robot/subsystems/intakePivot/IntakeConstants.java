@@ -1,14 +1,16 @@
 /* (C) RoboLancers 2026 */
 package frc.robot.subsystems.intakePivot;
 
+import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Degrees;
 
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Current;
 
 public class IntakeConstants {
   public static final int kPivotMotorId = 0;
-  public static final double kCurrentLimits = 0;
-  public static final double kCurrentLimit = 0;
+  public static final Current kCurrentLimits = Amps.of(40);
+  public static final Current kCurrentLimit = Amps.of(40);
   public static final boolean kCurrentLimitEnable = true;
   public static final boolean kInverted = true;
   public static double kG = 0;

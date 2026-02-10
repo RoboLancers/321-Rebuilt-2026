@@ -44,8 +44,10 @@ public class IntakeRollers extends SubsystemBase {
     motorConfigs.withNeutralMode(NeutralModeValue.Brake);
     feedbackConfigs.withSensorToMechanismRatio(IntakeRollerConstants.kSensorToMechanismRatio);
 
-    currentLimitsConfigs.withStatorCurrentLimitEnable(IntakeRollerConstants.kCurrentLimitsEnable);
-    currentLimitsConfigs.withStatorCurrentLimit(IntakeRollerConstants.kCurrentLimit);
+    currentLimitsConfigs.withStatorCurrentLimitEnable(IntakeRollerConstants.kStatorCurrentLimitsEnable);
+    currentLimitsConfigs.withStatorCurrentLimit(IntakeRollerConstants.kStatorCurrentLimit);
+    currentLimitsConfigs.withSupplyCurrentLimitEnable(IntakeRollerConstants.kSupplyCurrentLimitsEnable);
+    currentLimitsConfigs.withSupplyCurrentLimit(IntakeRollerConstants.kSupplyCurrentLimit);
 
     rollerMotor.getConfigurator().apply(motorConfigs);
     rollerMotor.getConfigurator().apply(currentLimitsConfigs);
