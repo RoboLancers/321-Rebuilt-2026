@@ -77,7 +77,7 @@ public class ClimbConstants {
 
   public static final Angle kPivotClimbAngleTolerance = Degrees.of(1);
 
-  public static final double kClawGearRatio = 12/40;
-  public static final double kSprocketGearRatio = 3/4;
+  public static final double kClawGearRatio = 12 / 40;
+  public static final double kSprocketGearRatio = 3 / 4;
   public static final double kClimbPivotGearRatio = 160;
 }
