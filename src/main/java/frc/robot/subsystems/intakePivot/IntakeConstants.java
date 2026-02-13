@@ -9,7 +9,6 @@ import edu.wpi.first.units.measure.Current;
 
 public class IntakeConstants {
   public static final int kPivotMotorId = 0;
-  public static final Current kCurrentLimits = Amps.of(40);
   public static final Current kCurrentLimit = Amps.of(40);
   public static final boolean kCurrentLimitEnable = true;
   public static final boolean kInverted = true;
