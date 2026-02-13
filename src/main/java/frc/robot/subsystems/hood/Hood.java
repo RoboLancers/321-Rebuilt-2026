@@ -42,8 +42,10 @@ public class Hood extends SubsystemBase {
         new TalonFXConfiguration()
             .withCurrentLimits(
                 new CurrentLimitsConfigs()
-                    .withStatorCurrentLimit(HoodConstants.kHoodMotorCurrentLimit)
-                    .withStatorCurrentLimitEnable(true))
+                    .withStatorCurrentLimit(HoodConstants.kHoodStatorCurrentLimit)
+                    .withStatorCurrentLimitEnable(true)
+                    .withSupplyCurrentLimit(HoodConstants.kHoodSupplyCurrentLimit)
+                    .withSupplyCurrentLimitEnable(true))
             .withMotorOutput(
                 new MotorOutputConfigs()
                     .withInverted(

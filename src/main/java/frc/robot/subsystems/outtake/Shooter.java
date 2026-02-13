@@ -43,7 +43,7 @@ public class Shooter extends SubsystemBase {
                 new CurrentLimitsConfigs()
                     .withStatorCurrentLimit(OuttakeConstants.kStatorLimit)
                     .withStatorCurrentLimitEnable(true)
-                    .withSupplyCurrentLimit(OuttakeConstants.kStatorLimit)
+                    .withSupplyCurrentLimit(OuttakeConstants.kSupplyLimit)
                     .withSupplyCurrentLimitEnable(true))
             .withMotorOutput(
                 new MotorOutputConfigs()
