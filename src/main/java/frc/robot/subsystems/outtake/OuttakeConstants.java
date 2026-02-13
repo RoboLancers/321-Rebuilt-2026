@@ -21,7 +21,7 @@ public class OuttakeConstants {
 
   public static final boolean kInverted = false;
 
-  public static final double kGearing = 1;
+  public static final double kGearing = 2;
 
   public static final double kNominalVoltage = 12;
 
