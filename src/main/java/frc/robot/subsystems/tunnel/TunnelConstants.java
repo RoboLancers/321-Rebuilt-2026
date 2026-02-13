@@ -20,6 +20,8 @@ public class TunnelConstants {
 
   public static final double kV = 0;
 
+  public static final double kTunnelGearRatio = 9 / 1;
+
   public static final int kTunnelMotorId = 1;
 
   public static final Current kTunnelStatorLimit = Amps.of(40);
