@@ -14,21 +14,23 @@ import frc.robot.RobotConstants;
 
 public class VisionConstants {
 
-  public static final String kBackLeftCameraName = "Back Left Swerve Module Camera";
+  public static final String kLeftClimbCameraName = "Left Climb Camera";
 
-  public static final String kTopElevatorCameraName = "Top Elevator Camera";
+  public static final String kRightClimbCameraName = "Right Climb Camera";
 
-  public static final String kBottomElevatorCameraName = "Bottom Elevator Camera";
+  public static final String kLeftShooterCameraName = "Bottom Shooter Camera";
+
+  public static final String kRightShooterCameraName = "Right Shooter Camera";
 
   public static final double kMinimumConfidence = 0.85;
 
   public static final double kTargetConfidence = 0.95;
 
-  public static final Transform3d kTopElevatorTransform =
+  public static final Transform3d kLeftClimbCameraTransform =
       new Transform3d(
-          Meters.of(0.2314956),
-          Meters.of(-0.16764),
-          Meters.of(0.3103626),
+          Meters.of(0),
+          Meters.of(0),
+          Meters.of(0),
           new Rotation3d(Degrees.zero(), Degrees.of(-1), Degrees.of(48)));
 
   public static final Transform3d kBottomElevatorTransform =
