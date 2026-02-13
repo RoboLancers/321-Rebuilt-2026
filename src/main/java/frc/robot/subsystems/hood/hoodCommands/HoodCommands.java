@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 public class HoodCommands {
 
   public static Command goToAngle(Hood hood, Supplier<Angle> angle) {
-    return Commands.run(() -> hood.goToAngle(angle.get()))
+    return Commands.run(() -> hood.goToAngle(angle.get()), hood)
         .until(
             () ->
                 Math.abs(angle.get().in(Degrees) - hood.getAngle().in(Degrees))
