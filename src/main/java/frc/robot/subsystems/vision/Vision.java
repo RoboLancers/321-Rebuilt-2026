@@ -81,12 +81,11 @@ public class Vision extends SubsystemBase {
 
   private PhotonCamera backLeftCamera = new PhotonCamera(VisionConstants.kBackLeftCameraName);
 
-  private PhotonCamera frontLeftCamera = new PhotonCamera(VisionConstants.kTopElevatorCameraName);
+  private PhotonCamera frontLeftCamera = new PhotonCamera(VisionConstants.kFrontLeftCameraName);
 
-  private PhotonCamera frontRightCamera =
-      new PhotonCamera(VisionConstants.kBottomElevatorCameraName);
+  private PhotonCamera frontRightCamera = new PhotonCamera(VisionConstants.kFrontRightCameraName);
 
-  private PhotonCamera backRightCamera = new PhotonCamera(VisionConstants.backRightCameraName);
+  private PhotonCamera backRightCamera = new PhotonCamera(VisionConstants.kBackRightCameraName);
 
   private List<PhotonCamera> cameras =
       List.of(backLeftCamera, frontLeftCamera, frontRightCamera, backRightCamera);

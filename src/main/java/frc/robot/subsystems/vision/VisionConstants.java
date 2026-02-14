@@ -16,11 +16,11 @@ public class VisionConstants {
 
   public static final String kBackLeftCameraName = "Back Left Swerve Module Camera";
 
-  public static final String kTopElevatorCameraName = "Top Elevator Camera";
+  public static final String kFrontLeftCameraName = "Front Left Swerve Camera";
 
-  public static final String kBottomElevatorCameraName = "Bottom Elevator Camera";
+  public static final String kFrontRightCameraName = "Front Right";
 
-  public static final String backRightCameraName = "Back Right Camera";
+  public static final String kBackRightCameraName = "Back Right Swerve Camera";
 
   public static final double kMinimumConfidence = 0.85;
 
