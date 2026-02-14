@@ -20,7 +20,6 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.util.TunableConstant;
 
 @Logged
 public class Indexer extends SubsystemBase {
@@ -31,7 +30,7 @@ public class Indexer extends SubsystemBase {
 
   public Indexer() {
     configureMotors();
-    setPID();
+    setPID(IndexerConstants.kP, IndexerConstants.kD, IndexerConstants.kV);
   }
 
   public void configureMotors() {
@@ -60,12 +59,8 @@ public class Indexer extends SubsystemBase {
     motor.getConfigurator().apply(configurations);
   }
 
-  public void setPID() {
-    Slot0Configs pidConfigs =
-        new Slot0Configs()
-            .withKP(IndexerConstants.kP)
-            .withKD(IndexerConstants.kD)
-            .withKV(IndexerConstants.kV);
+  public void setPID(double kP, double kD, double kV) {
+    Slot0Configs pidConfigs = new Slot0Configs().withKP(kP).withKD(kD).withKV(kV);
 
     motor.getConfigurator().apply(pidConfigs);
   }
@@ -78,20 +73,9 @@ public class Indexer extends SubsystemBase {
     motor.setVoltage(targetVoltage.in(Volts));
   }
 
-  public void tune() {
-    TunableConstant kP = new TunableConstant("Indexer/kP/", 0);
-
-    TunableConstant kD = new TunableConstant("Indexer/kD/", 0);
-
-    TunableConstant kV = new TunableConstant("Indexer/kV/", 0);
-
-    TunableConstant targetSpeed = new TunableConstant("Indexer/targetSpeed", 0);
-
-    IndexerConstants.kP = kP.get();
-    IndexerConstants.kV = kV.get();
-    IndexerConstants.kD = kD.get();
-
-    goToVelocity(RPM.of(targetSpeed.get()));
+  public void tune(double kP, double kD, double kV, double targetSpeed) {
+    setPID(kP, kD, kV);
+    goToVelocity(RPM.of(targetSpeed));
   }
 
   @Logged(name = "indexerTargetVelocity")

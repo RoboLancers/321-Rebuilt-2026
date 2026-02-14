@@ -2,25 +2,36 @@
 package frc.robot.util;
 
 import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Radians;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import java.util.List;
 import java.util.function.Supplier;
 
 public class RebuiltUtil {
 
-  private static final Pose2d redHubPose =
-      new Pose2d(Meters.of(12.52 - Inches.of(23.5).in(Meters)), Meters.of(4.03), Rotation2d.kZero);
-  private static final Pose2d blueHubPose =
-      new Pose2d(
-          Meters.of(4.02 + Inches.of(23.5).in(Meters)),
-          Meters.of(4.03),
-          new Rotation2d(Degrees.of(180)));
+  public static final List<Integer> redApriltagIDs =
+      List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+  public static final List<Integer> blueApriltagIDs =
+      List.of(17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32);
 
-  public static Pose2d getHub() {
+  public static final List<Pose2d> redTagPoses = AprilTagUtil.apriltagIDsToPoses(redApriltagIDs);
+  public static final List<Pose2d> blueTagPoses = AprilTagUtil.apriltagIDsToPoses(blueApriltagIDs);
+
+  public static final Pose2d redHubPose =
+      new Pose2d(Meters.of(11.9231), Meters.of(4.03), Rotation2d.kZero);
+  public static final Pose2d blueHubPose =
+      new Pose2d(Meters.of(4.6169), Meters.of(4.03), new Rotation2d(Degrees.of(180)));
+
+  public static final int redClimbTagID = 15;
+  public static final int blueClimbTagID = 31;
+
+  public static final int redTroughTagID = 13;
+  public static final int blueTroughTagID = 29;
+
+  public static Pose2d getHubPose() {
     return MyAlliance.isRed() ? redHubPose : blueHubPose;
   }
 
@@ -30,10 +41,10 @@ public class RebuiltUtil {
         new Rotation2d(
             Radians.of(
                 Math.PI
-                    + getHub().getRotation().getRadians()
+                    + getHubPose().getRotation().getRadians()
                     + Math.atan(
-                        (getHub().getY() - robotPose.get().getY())
-                            / (getHub().getX() - robotPose.get().getX()))));
+                        (getHubPose().getY() - robotPose.get().getY())
+                            / (getHubPose().getX() - robotPose.get().getX()))));
 
     return rotationToHub;
   }

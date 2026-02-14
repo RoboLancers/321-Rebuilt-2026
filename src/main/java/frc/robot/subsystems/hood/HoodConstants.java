@@ -21,9 +21,13 @@ public class HoodConstants {
 
   public static final int kHoodEncoderId = 0;
 
+  public static final double kHoodGearRatio = 1000 / 7;
+
   public static final boolean kHoodMotorInverted = false;
 
-  public static final Current kHoodMotorCurrentLimit = Amps.of(6);
+  public static final Current kHoodStatorCurrentLimit = Amps.of(40);
+
+  public static final Current kHoodSupplyCurrentLimit = Amps.of(40);
 
   public static final LinearVelocity kHoodMotorMaxVelocity = MetersPerSecond.of(1);
 

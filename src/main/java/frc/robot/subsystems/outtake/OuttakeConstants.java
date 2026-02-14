@@ -1,21 +1,31 @@
 /* (C) RoboLancers 2026 */
 package frc.robot.subsystems.outtake;
 
+import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
 
 public class OuttakeConstants {
 
+  public static final double kP = 0;
+
+  public static final double kD = 0;
+
+  public static final double kV = 0;
+
   public static final int kMotorID = 0;
 
-  public static final double kStatorLimit = 40;
+  public static final Current kStatorLimit = Amps.of(40);
+
+  public static final Current kSupplyLimit = Amps.of(40);
 
   public static final boolean kInverted = false;
 
-  public static final double kGearing = 1;
+  public static final double kGearing = 2;
 
   public static final double kNominalVoltage = 12;
 

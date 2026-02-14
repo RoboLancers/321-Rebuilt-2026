@@ -15,10 +15,10 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.units.measure.Voltage;
-import frc.robot.util.TunableConstant;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 @Logged
-public class IntakeRollers {
+public class IntakeRollers extends SubsystemBase {
 
   @Logged private TalonFX rollerMotor = new TalonFX(IntakeRollerConstants.kRollerMotorId);
   private CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
@@ -44,8 +44,12 @@ public class IntakeRollers {
     motorConfigs.withNeutralMode(NeutralModeValue.Brake);
     feedbackConfigs.withSensorToMechanismRatio(IntakeRollerConstants.kSensorToMechanismRatio);
 
-    currentLimitsConfigs.withStatorCurrentLimitEnable(IntakeRollerConstants.kCurrentLimitsEnable);
-    currentLimitsConfigs.withStatorCurrentLimit(IntakeRollerConstants.kCurrentLimit);
+    currentLimitsConfigs.withStatorCurrentLimitEnable(
+        IntakeRollerConstants.kStatorCurrentLimitsEnable);
+    currentLimitsConfigs.withStatorCurrentLimit(IntakeRollerConstants.kStatorCurrentLimit);
+    currentLimitsConfigs.withSupplyCurrentLimitEnable(
+        IntakeRollerConstants.kSupplyCurrentLimitsEnable);
+    currentLimitsConfigs.withSupplyCurrentLimit(IntakeRollerConstants.kSupplyCurrentLimit);
 
     rollerMotor.getConfigurator().apply(motorConfigs);
     rollerMotor.getConfigurator().apply(currentLimitsConfigs);
@@ -69,16 +73,12 @@ public class IntakeRollers {
     rollerMotor.getConfigurator().apply(slot0Configs);
   }
 
-  public void tune() {
-
-    TunableConstant kP = new TunableConstant("IntakeRollers/kP", 0);
-    TunableConstant kD = new TunableConstant("IntakeRollers/kD", 0);
-    TunableConstant kG = new TunableConstant("IntakeRollers/kG", 0);
-    TunableConstant kV = new TunableConstant("IntakeRollers/kV", 0);
-
-    setPID(kP.get(), kD.get(), kV.get(), kG.get());
+  public void tune(double kP, double kD, double kV, double kG, double rollerTargetVelocity) {
+    setPID(kP, kD, kV, kG);
+    setVelocity(rollerTargetVelocity);
   }
 
+  @Logged(name = "rollerVelocity")
   public double getRollerVelocity() {
     return rollerMotor.getVelocity().getValueAsDouble();
   }
