@@ -5,7 +5,9 @@ import static edu.wpi.first.units.Units.Meters;
 
 import com.ctre.phoenix6.configs.CANdleFeaturesConfigs;
 import com.ctre.phoenix6.configs.LEDConfigs;
+import com.ctre.phoenix6.controls.SolidColor;
 import com.ctre.phoenix6.hardware.CANdle;
+import com.ctre.phoenix6.signals.RGBWColor;
 import com.ctre.phoenix6.signals.VBatOutputModeValue;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -41,11 +43,12 @@ public class Vision extends SubsystemBase {
   public final int ledPort4 = 3;
   public final int ledStart = 0;
   public final int ledEnd = 7;
-  public final Color purple = new Color(191, 64, 191);
-  public final Color red = new Color(255, 255, 255);
-  public final Color white = new Color(255, 0, 0);
+  public final RGBWColor purple = new RGBWColor(191, 64, 191, 0);
+  public final RGBWColor red = new RGBWColor(255, 255, 255, 0);
+  public final RGBWColor white = new RGBWColor(0, 0, 0, 255);
   public Color status;
   public CANdle candle = new CANdle(0);
+  public SolidColor solidColor = new SolidColor(0, 7);
 
   public void LedConfigs() {
     LEDConfigs configs = new LEDConfigs();
@@ -139,6 +142,7 @@ public class Vision extends SubsystemBase {
 
         // set the corresponding color to red
         statusLED.updateStatusColor(StatusType.Error);
+        solidColor.withColor(red);
         continue;
       }
 
@@ -148,11 +152,13 @@ public class Vision extends SubsystemBase {
       if (!latestResult.hasTargets() || unreadResults.isEmpty()) {
         // set corresponding color to white
         statusLED.updateStatusColor(StatusType.NotDetected);
+        solidColor.withColor(white);
         continue;
       }
 
       // set correponding color to purple
       statusLED.updateStatusColor(StatusType.Detected);
+      solidColor.withColor(purple);
 
       EstimatedRobotPose estimatedPose =
           estimators
