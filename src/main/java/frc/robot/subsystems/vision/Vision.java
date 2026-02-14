@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotConstants;
-import frc.robot.subsystems.leds.LedConstants;
 import frc.robot.subsystems.vision.CameraStatusLED.StatusType;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -53,7 +52,7 @@ public class Vision extends SubsystemBase {
   public void LedConfigs() {
     LEDConfigs configs = new LEDConfigs();
     CANdleFeaturesConfigs featuresConfigs = new CANdleFeaturesConfigs();
-    configs.BrightnessScalar = LedConstants.brightnessScaler;
+    configs.BrightnessScalar = VisionConstants.brightnessScaler;
     featuresConfigs.VBatOutputMode = VBatOutputModeValue.On;
     candle.getConfigurator().apply(configs);
     candle.getConfigurator().apply(featuresConfigs);

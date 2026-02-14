@@ -14,6 +14,8 @@ import frc.robot.RobotConstants;
 
 public class VisionConstants {
 
+    
+
   public static final String kBackLeftCameraName = "Back Left Swerve Module Camera";
 
   public static final String kTopElevatorCameraName = "Top Elevator Camera";
@@ -55,4 +57,6 @@ public class VisionConstants {
           new Translation2d(
               RobotConstants.kAprilTagLayout.getFieldLength() + kAllowedFieldDistance.in(Meters),
               RobotConstants.kAprilTagLayout.getFieldWidth() + kAllowedFieldDistance.in(Meters)));
+
+    public static final int brightnessScaler = 0;
 }
