@@ -42,19 +42,6 @@ public class RobotContainer {
   // private final IntakeFuel intakeFuel = new IntakeFuel(intakeRollers);
   // private final Shooter shooter = new Shooter();
   // private final ShootFuel shootFuel = new ShootFuel();
-  private final Drivetrain drivetrain = Drivetrain.create();
-  private final Vision vision =
-      Vision.create(
-          est ->
-              drivetrain.addVisionMeasurement(
-                  est.estimatedPose().estimatedPose.toPose2d(),
-                  est.estimatedPose().timestampSeconds,
-                  VecBuilder.fill(
-                      est.standardDeviations(),
-                      est.standardDeviations(),
-                      est.standardDeviations())));
-
-  public CommandXboxController driver = new CommandXboxController(0);
 
   public Trigger slowMode = driver.b();
 
@@ -86,33 +73,6 @@ public class RobotContainer {
   // private final IntakePivot intakePivot = new IntakePivot();
   // private final Indexer spindexer = new Indexer();
   // private final Tunnel tunnel = new Tunnel();
-
-  public Trigger slowMode = driver.b();
-
-  private DoubleSupplier driverForward =
-      () ->
-          -MathUtil.applyDeadband(
-                  Math.pow(Math.hypot(driver.getLeftY(), driver.getLeftX()), 2),
-                  DrivetrainConstants.kDriveDeadband)
-              * Math.cos(Math.atan2(driver.getLeftX(), driver.getLeftY()))
-              * (slowMode.getAsBoolean()
-                  ? 1.5
-                  : DrivetrainConstants.kMaxLinearVelocity.in(MetersPerSecond));
-
-  private DoubleSupplier driverStrafe =
-      () ->
-          -MathUtil.applyDeadband(
-                  Math.pow(Math.hypot(driver.getLeftY(), driver.getLeftX()), 2),
-                  DrivetrainConstants.kDriveDeadband)
-              * Math.sin(Math.atan2(driver.getLeftX(), driver.getLeftY()))
-              * (slowMode.getAsBoolean()
-                  ? 1.5
-                  : DrivetrainConstants.kMaxLinearVelocity.in(MetersPerSecond));
-
-  private DoubleSupplier driverTurn =
-      () ->
-          -MathUtil.applyDeadband(driver.getRightX(), DrivetrainConstants.kRotationDeadband)
-              * DrivetrainConstants.kMaxAngularVelocity.in(RadiansPerSecond);
 
   private Supplier<Pose2d> currentRobotPose = () -> drivetrain.getPose();
 
