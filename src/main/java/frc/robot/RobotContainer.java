@@ -37,11 +37,15 @@ public class RobotContainer {
                       est.standardDeviations(),
                       est.standardDeviations(),
                       est.standardDeviations())));
-  // private final SendableChooser<Command> autoChooser;
+  private final SendableChooser<Command> autoChooser;
   // private final IntakeRollers intakeRollers = new IntakeRollers();
   // private final IntakeFuel intakeFuel = new IntakeFuel(intakeRollers);
   // private final Shooter shooter = new Shooter();
   // private final ShootFuel shootFuel = new ShootFuel();
+  // private final Hood hood = new Hood();
+  // private final IntakePivot intakePivot = new IntakePivot();
+  // private final Indexer spindexer = new Indexer();
+  // private final Tunnel tunnel = new Tunnel();
 
   public Trigger slowMode = driver.b();
 
@@ -69,10 +73,6 @@ public class RobotContainer {
       () ->
           -MathUtil.applyDeadband(driver.getRightX(), DrivetrainConstants.kRotationDeadband)
               * DrivetrainConstants.kMaxAngularVelocity.in(RadiansPerSecond);
-  // private final Hood hood = new Hood();
-  // private final IntakePivot intakePivot = new IntakePivot();
-  // private final Indexer spindexer = new Indexer();
-  // private final Tunnel tunnel = new Tunnel();
 
   private Supplier<Pose2d> currentRobotPose = () -> drivetrain.getPose();
 
@@ -81,8 +81,8 @@ public class RobotContainer {
   public RobotContainer() {
     configureBindings();
 
-    // autoChooser = AutoBuilder.buildAutoChooser();
-    // SmartDashboard.putData("Auto Chooser", autoChooser);
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser", autoChooser);
 
     // NamedCommands.registerCommand("IntakeFuel", intakeFuel);
     // NamedCommands.registerCommand("ShootFuel", shootFuel.releaseFuel(shooter));
@@ -115,7 +115,6 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    // return autoChooser.getSelected();
-    return null;
+    return autoChooser.getSelected();
   }
 }
