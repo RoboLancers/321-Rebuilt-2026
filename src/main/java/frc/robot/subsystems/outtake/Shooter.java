@@ -21,25 +21,18 @@ import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.util.TunableConstant;
 
 @Logged
 public class Shooter extends SubsystemBase {
 
-  private TalonFX motor = new TalonFX(OuttakeConstants.kMotorID);
-
-  public double kP = 0;
-
-  public double kD = 0;
-
-  public double kV = 0;
+  @Logged private TalonFX motor = new TalonFX(OuttakeConstants.kMotorID);
 
   private Velocity targetShooterVelocity;
 
   public Shooter() {
 
     configureMotors();
-    setPID();
+    setPID(OuttakeConstants.kP, OuttakeConstants.kD, OuttakeConstants.kV);
   }
 
   private void configureMotors() {
@@ -50,7 +43,7 @@ public class Shooter extends SubsystemBase {
                 new CurrentLimitsConfigs()
                     .withStatorCurrentLimit(OuttakeConstants.kStatorLimit)
                     .withStatorCurrentLimitEnable(true)
-                    .withSupplyCurrentLimit(OuttakeConstants.kStatorLimit)
+                    .withSupplyCurrentLimit(OuttakeConstants.kSupplyLimit)
                     .withSupplyCurrentLimitEnable(true))
             .withMotorOutput(
                 new MotorOutputConfigs()
@@ -71,7 +64,7 @@ public class Shooter extends SubsystemBase {
     motor.getConfigurator().apply(configuration);
   }
 
-  private void setPID() {
+  private void setPID(double kP, double kD, double kV) {
 
     Slot0Configs pid = new Slot0Configs().withKP(kP).withKD(kD).withKV(kV);
 
@@ -86,31 +79,20 @@ public class Shooter extends SubsystemBase {
     return run(() -> motor.setVoltage(volts.in(Volts)));
   }
 
-  public Command tune() {
-
-    TunableConstant kP = new TunableConstant("/Outtake/kP", 0);
-    TunableConstant kD = new TunableConstant("/Outtake/kD", 0);
-    TunableConstant kV = new TunableConstant("/Outtake/kV", 0);
-    TunableConstant targetRPM = new TunableConstant("/Outtake/targetRPM", 0);
-
-    this.kP = kP.get();
-    this.kD = kD.get();
-    this.kV = kV.get();
-
-    return run(() -> setControl(RPM.of(targetRPM.get())));
+  public void tune(double kP, double kD, double kV, double targetRPM) {
+    setPID(kP, kD, kV);
+    motor.setControl(new MotionMagicVelocityVoltage(RPM.of(targetRPM)));
   }
 
-  @Logged
+  @Logged(name = "TargetShooterVelocity")
   public Velocity getTargetShooterVelocity() {
     return this.targetShooterVelocity;
   }
 
-  @Logged(name = "shooterRPM")
   public double getVelocity() {
     return motor.getVelocity().getValueAsDouble();
   }
 
-  @Logged(name = "shooterVoltage")
   public Voltage getVoltage() {
     return motor.getMotorVoltage().getValue();
   }

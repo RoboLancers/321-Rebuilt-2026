@@ -1,22 +1,26 @@
 /* (C) RoboLancers 2026 */
 package frc.robot.subsystems.intakerollers;
 
+import static edu.wpi.first.units.Units.Volts;
+
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.VoltageConfigs;
+import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.measure.Velocity;
-import frc.robot.util.TunableConstant;
+import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 @Logged
-public class IntakeRollers {
+public class IntakeRollers extends SubsystemBase {
 
-  private TalonFX rollerMotor = new TalonFX(IntakeRollerConstants.kRollerMotorId);
+  @Logged private TalonFX rollerMotor = new TalonFX(IntakeRollerConstants.kRollerMotorId);
   private CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
   private MotorOutputConfigs motorConfigs = new MotorOutputConfigs();
   private VoltageConfigs voltageConfigs = new VoltageConfigs();
@@ -24,6 +28,7 @@ public class IntakeRollers {
   private Slot0Configs slot0Configs = new Slot0Configs();
 
   private Velocity targetVelocity;
+  private Voltage targetVoltage;
 
   public IntakeRollers() {
     motorConfigurations();
@@ -39,16 +44,24 @@ public class IntakeRollers {
     motorConfigs.withNeutralMode(NeutralModeValue.Brake);
     feedbackConfigs.withSensorToMechanismRatio(IntakeRollerConstants.kSensorToMechanismRatio);
 
-    currentLimitsConfigs.withStatorCurrentLimitEnable(IntakeRollerConstants.kCurrentLimitsEnable);
-    currentLimitsConfigs.withStatorCurrentLimit(IntakeRollerConstants.kCurrentLimit);
+    currentLimitsConfigs.withStatorCurrentLimitEnable(
+        IntakeRollerConstants.kStatorCurrentLimitsEnable);
+    currentLimitsConfigs.withStatorCurrentLimit(IntakeRollerConstants.kStatorCurrentLimit);
+    currentLimitsConfigs.withSupplyCurrentLimitEnable(
+        IntakeRollerConstants.kSupplyCurrentLimitsEnable);
+    currentLimitsConfigs.withSupplyCurrentLimit(IntakeRollerConstants.kSupplyCurrentLimit);
 
     rollerMotor.getConfigurator().apply(motorConfigs);
     rollerMotor.getConfigurator().apply(currentLimitsConfigs);
     rollerMotor.getConfigurator().apply(feedbackConfigs);
   }
 
-  public void setVoltage(double volts) {
-    rollerMotor.setVoltage(volts);
+  public void setVoltage(Voltage targetVoltage) {
+    rollerMotor.setVoltage(targetVoltage.in(Volts));
+  }
+
+  public void setVelocity(double targetVelocity) {
+    rollerMotor.setControl(new MotionMagicVelocityVoltage(targetVelocity));
   }
 
   public void setPID(double kP, double kD, double kV, double kG) {
@@ -60,14 +73,9 @@ public class IntakeRollers {
     rollerMotor.getConfigurator().apply(slot0Configs);
   }
 
-  public void tune() {
-
-    TunableConstant kP = new TunableConstant("IntakeRollers/kP", 0);
-    TunableConstant kD = new TunableConstant("IntakeRollers/kD", 0);
-    TunableConstant kG = new TunableConstant("IntakeRollers/kG", 0);
-    TunableConstant kV = new TunableConstant("IntakeRollers/kV", 0);
-
-    setPID(kP.get(), kD.get(), kV.get(), kG.get());
+  public void tune(double kP, double kD, double kV, double kG, double rollerTargetVelocity) {
+    setPID(kP, kD, kV, kG);
+    setVelocity(rollerTargetVelocity);
   }
 
   @Logged(name = "rollerVelocity")
@@ -75,7 +83,7 @@ public class IntakeRollers {
     return rollerMotor.getVelocity().getValueAsDouble();
   }
 
-  @Logged
+  @Logged(name = "atTargetRollerVelocity")
   public boolean atTargetVoltage() {
     return rollerMotor.getVelocity().getValue() == targetVelocity;
   }

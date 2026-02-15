@@ -15,7 +15,7 @@ public class IndexerConstants {
 
   public static boolean kInverted = false;
 
-  public static double kGearing = 1;
+  public static double kGearing = 1 / 4;
 
   public static AngularVelocity kMaxVelocity = RPM.of(1500);
 
