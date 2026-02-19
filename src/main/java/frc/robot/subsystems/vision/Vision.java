@@ -99,10 +99,10 @@ public class Vision extends SubsystemBase {
     this.visionEstConsumer = visionEstConsumer;
     this.LEDCandle = LEDCandle;
 
-    cameraStatusLEDs.put(backLeftCamera, new CameraStatusLED(LEDCandle, 0, 0));
-    cameraStatusLEDs.put(frontLeftCamera, new CameraStatusLED(LEDCandle, 0, 0));
-    cameraStatusLEDs.put(backRightCamera, new CameraStatusLED(LEDCandle, 0, 0));
-    cameraStatusLEDs.put(frontRightCamera, new CameraStatusLED(LEDCandle, 0, 0));
+    cameraStatusLEDs.put(backLeftCamera, new CameraStatusLED(LEDCandle, 0, 1));
+    cameraStatusLEDs.put(frontLeftCamera, new CameraStatusLED(LEDCandle, 2, 3));
+    cameraStatusLEDs.put(backRightCamera, new CameraStatusLED(LEDCandle, 4, 5));
+    cameraStatusLEDs.put(frontRightCamera, new CameraStatusLED(LEDCandle, 6, 7));
   }
 
   private List<VisionEstimate> getVisionEstimates() {

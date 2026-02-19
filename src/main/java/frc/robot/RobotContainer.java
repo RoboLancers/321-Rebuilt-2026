@@ -4,7 +4,10 @@ package frc.robot;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
+import com.ctre.phoenix6.configs.CANdleFeaturesConfigs;
+import com.ctre.phoenix6.configs.LEDConfigs;
 import com.ctre.phoenix6.hardware.CANdle;
+import com.ctre.phoenix6.signals.VBatOutputModeValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
@@ -19,6 +22,7 @@ import frc.robot.commands.Align;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainConstants;
 import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.util.RebuiltUtil;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -26,6 +30,16 @@ import java.util.function.Supplier;
 public class RobotContainer {
 
   public CANdle candle = new CANdle(0);
+
+  public void LedConfigs() {
+    LEDConfigs configs = new LEDConfigs();
+    CANdleFeaturesConfigs featuresConfigs = new CANdleFeaturesConfigs();
+    configs.BrightnessScalar = VisionConstants.brightnessScaler;
+    featuresConfigs.VBatOutputMode = VBatOutputModeValue.On;
+    candle.getConfigurator().apply(configs);
+    candle.getConfigurator().apply(featuresConfigs);
+  }
+
   private final CommandXboxController driver = new CommandXboxController(0);
 
   public Drivetrain drivetrain = Drivetrain.create();

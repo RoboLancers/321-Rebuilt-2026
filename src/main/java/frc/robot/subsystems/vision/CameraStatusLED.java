@@ -1,23 +1,11 @@
 /* (C) RoboLancers 2026 */
 package frc.robot.subsystems.vision;
 
-import com.ctre.phoenix6.configs.CANdleFeaturesConfigs;
-import com.ctre.phoenix6.configs.LEDConfigs;
 import com.ctre.phoenix6.controls.SolidColor;
 import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.signals.RGBWColor;
-import com.ctre.phoenix6.signals.VBatOutputModeValue;
 
 public class CameraStatusLED {
-
-  public void LedConfigs() {
-    LEDConfigs configs = new LEDConfigs();
-    CANdleFeaturesConfigs featuresConfigs = new CANdleFeaturesConfigs();
-    configs.BrightnessScalar = VisionConstants.brightnessScaler;
-    featuresConfigs.VBatOutputMode = VBatOutputModeValue.On;
-    candle.getConfigurator().apply(configs);
-    candle.getConfigurator().apply(featuresConfigs);
-  }
 
   public enum StatusType {
     Detected,
