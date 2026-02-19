@@ -17,7 +17,10 @@ import com.ctre.phoenix6.swerve.SwerveModule.ModuleRequest;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.util.DriveFeedforwards;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
@@ -41,6 +44,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.RobotConstants;
 import frc.robot.util.MyAlliance;
 import frc.robot.util.RebuiltUtil;
+import java.util.Arrays;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -120,7 +124,7 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
     }
 
     // Configure AutoBuilder last
-    /* AutoBuilder.configure(
+    AutoBuilder.configure(
         this::getPose, // Robot pose supplier
         this::resetPose, // Method to reset odometry (will be called if your auto has a starting
         // pose)
@@ -147,10 +151,8 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
           }
           return false;
         },
-
         this // Reference to this subsystem to set requirements
         );
-    */
   }
 
   void configurePoseControllers() {
@@ -492,6 +494,39 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
     SmartDashboard.putNumber("Drivetrain Pose Y", getPose().getY());
 
     SmartDashboard.putNumber("Drivetrain Pose Yaw", getPose().getRotation().getDegrees());
+
+    SmartDashboard.putNumber(
+        "Target Speed 1", Arrays.asList(getTargetModuleStates()).get(0).speedMetersPerSecond);
+    SmartDashboard.putNumber(
+        "Target Speed 2", Arrays.asList(getTargetModuleStates()).get(1).speedMetersPerSecond);
+    SmartDashboard.putNumber(
+        "Target Speed 3", Arrays.asList(getTargetModuleStates()).get(2).speedMetersPerSecond);
+    SmartDashboard.putNumber(
+        "Target Speed 4", Arrays.asList(getTargetModuleStates()).get(3).speedMetersPerSecond);
+    SmartDashboard.putNumber(
+        "Measured Speed 1", Arrays.asList(getMeasuredModuleStates()).get(0).speedMetersPerSecond);
+    SmartDashboard.putNumber(
+        "Measured Speed 2", Arrays.asList(getMeasuredModuleStates()).get(1).speedMetersPerSecond);
+    SmartDashboard.putNumber(
+        "Measured Speed 3", Arrays.asList(getMeasuredModuleStates()).get(2).speedMetersPerSecond);
+    SmartDashboard.putNumber(
+        "Measured Speed 4", Arrays.asList(getMeasuredModuleStates()).get(3).speedMetersPerSecond);
+    SmartDashboard.putNumber(
+        "Target Pos 1", Arrays.asList(getTargetModuleStates()).get(0).angle.getDegrees());
+    SmartDashboard.putNumber(
+        "Target Pos 2", Arrays.asList(getTargetModuleStates()).get(1).angle.getDegrees());
+    SmartDashboard.putNumber(
+        "Target Pos 3", Arrays.asList(getTargetModuleStates()).get(2).angle.getDegrees());
+    SmartDashboard.putNumber(
+        "Target Pos 4", Arrays.asList(getTargetModuleStates()).get(3).angle.getDegrees());
+    SmartDashboard.putNumber(
+        "Measured Pos 1", Arrays.asList(getMeasuredModuleStates()).get(0).angle.getDegrees());
+    SmartDashboard.putNumber(
+        "Measured Pos 2", Arrays.asList(getMeasuredModuleStates()).get(1).angle.getDegrees());
+    SmartDashboard.putNumber(
+        "Measured Pos 3", Arrays.asList(getMeasuredModuleStates()).get(2).angle.getDegrees());
+    SmartDashboard.putNumber(
+        "Measured Pos 4", Arrays.asList(getMeasuredModuleStates()).get(3).angle.getDegrees());
 
     poseField.setRobotPose(getPose());
     SmartDashboard.putData("Robot Pose Field", poseField);

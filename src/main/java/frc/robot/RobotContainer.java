@@ -4,6 +4,7 @@ package frc.robot;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
+import com.ctre.phoenix6.hardware.CANdle;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
@@ -24,6 +25,7 @@ import java.util.function.Supplier;
 
 public class RobotContainer {
 
+  public CANdle candle = new CANdle(0);
   private final CommandXboxController driver = new CommandXboxController(0);
 
   public Drivetrain drivetrain = Drivetrain.create();
@@ -36,8 +38,9 @@ public class RobotContainer {
                   VecBuilder.fill(
                       est.standardDeviations(),
                       est.standardDeviations(),
-                      est.standardDeviations())));
-  private final SendableChooser<Command> autoChooser;
+                      est.standardDeviations())),
+          candle);
+  private SendableChooser<Command> autoChooser;
   // private final IntakeRollers intakeRollers = new IntakeRollers();
   // private final IntakeFuel intakeFuel = new IntakeFuel(intakeRollers);
   // private final Shooter shooter = new Shooter();

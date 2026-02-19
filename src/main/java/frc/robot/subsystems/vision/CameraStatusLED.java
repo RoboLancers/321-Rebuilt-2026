@@ -1,9 +1,23 @@
 /* (C) RoboLancers 2026 */
 package frc.robot.subsystems.vision;
 
-import edu.wpi.first.wpilibj.util.Color;
+import com.ctre.phoenix6.configs.CANdleFeaturesConfigs;
+import com.ctre.phoenix6.configs.LEDConfigs;
+import com.ctre.phoenix6.controls.SolidColor;
+import com.ctre.phoenix6.hardware.CANdle;
+import com.ctre.phoenix6.signals.RGBWColor;
+import com.ctre.phoenix6.signals.VBatOutputModeValue;
 
 public class CameraStatusLED {
+
+  public void LedConfigs() {
+    LEDConfigs configs = new LEDConfigs();
+    CANdleFeaturesConfigs featuresConfigs = new CANdleFeaturesConfigs();
+    configs.BrightnessScalar = VisionConstants.brightnessScaler;
+    featuresConfigs.VBatOutputMode = VBatOutputModeValue.On;
+    candle.getConfigurator().apply(configs);
+    candle.getConfigurator().apply(featuresConfigs);
+  }
 
   public enum StatusType {
     Detected,
@@ -11,12 +25,21 @@ public class CameraStatusLED {
     Error
   }
 
-  private final Color kDetectedColor = new Color(191, 64, 191); // purple
-  private final Color kErrorColor = new Color(255, 255, 255); // red
-  private final Color kDefaultColor = new Color(255, 0, 0); // white
-  private Color statusColor = kDefaultColor;
+  public SolidColor solidColor;
+  private final RGBWColor kDetectedColor = new RGBWColor(191, 64, 191, 0); // purple
+  private final RGBWColor kErrorColor = new RGBWColor(255, 255, 255, 0); // red
+  private final RGBWColor kDefaultColor = new RGBWColor(0, 0, 0, 255); // white
+  private RGBWColor statusColor = kDefaultColor;
+  private CANdle candle;
+  private int LEDStartIndex;
+  private int LEDEndIndex;
 
-  public CameraStatusLED(int ledPort) {}
+  public CameraStatusLED(CANdle candle, int LEdStartIndex, int LEDEndIndex) {
+    this.candle = candle;
+    this.LEDEndIndex = LEdStartIndex;
+    this.LEDEndIndex = LEDEndIndex;
+    this.solidColor = new SolidColor(LEDStartIndex, LEDEndIndex);
+  }
 
   public void updateStatusColor(StatusType type) {
     switch (type) {
@@ -31,9 +54,10 @@ public class CameraStatusLED {
         statusColor = kDefaultColor;
         break;
     }
+    solidColor.withColor(statusColor);
   }
 
-  public Color getStatusColor() {
+  public RGBWColor getStatusColor() {
     return this.statusColor;
   }
 

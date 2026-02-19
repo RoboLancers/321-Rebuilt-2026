@@ -3,12 +3,7 @@ package frc.robot.subsystems.vision;
 
 import static edu.wpi.first.units.Units.Meters;
 
-import com.ctre.phoenix6.configs.CANdleFeaturesConfigs;
-import com.ctre.phoenix6.configs.LEDConfigs;
-import com.ctre.phoenix6.controls.SolidColor;
 import com.ctre.phoenix6.hardware.CANdle;
-import com.ctre.phoenix6.signals.RGBWColor;
-import com.ctre.phoenix6.signals.VBatOutputModeValue;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -35,28 +30,10 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class Vision extends SubsystemBase {
 
+  private CANdle LEDCandle;
   public double currentAmbiguity;
-  public final int ledPort1 = 0;
-  public final int ledPort2 = 1;
-  public final int ledPort3 = 2;
-  public final int ledPort4 = 3;
-  public final int ledStart = 0;
-  public final int ledEnd = 7;
-  public final RGBWColor purple = new RGBWColor(191, 64, 191, 0);
-  public final RGBWColor red = new RGBWColor(255, 255, 255, 0);
-  public final RGBWColor white = new RGBWColor(0, 0, 0, 255);
+  public final int candlePort = 0;
   public Color status;
-  public CANdle candle = new CANdle(0);
-  public SolidColor solidColor = new SolidColor(0, 7);
-
-  public void LedConfigs() {
-    LEDConfigs configs = new LEDConfigs();
-    CANdleFeaturesConfigs featuresConfigs = new CANdleFeaturesConfigs();
-    configs.BrightnessScalar = VisionConstants.brightnessScaler;
-    featuresConfigs.VBatOutputMode = VBatOutputModeValue.On;
-    candle.getConfigurator().apply(configs);
-    candle.getConfigurator().apply(featuresConfigs);
-  }
 
   public double getAmbiguityFromSupplier(DoubleSupplier ambiguity) {
     return ambiguity.getAsDouble();
@@ -114,17 +91,18 @@ public class Vision extends SubsystemBase {
   public List<PhotonPoseEstimator> estimators =
       List.of(backLeftPoseEstimator, topElevatorPoseEstimator, bottomElevatorPoseEstimator);
 
-  public static Vision create(Consumer<VisionEstimate> visionEstConsumer) {
-    return new Vision(visionEstConsumer);
+  public static Vision create(Consumer<VisionEstimate> visionEstConsume, CANdle LEDCandle) {
+    return new Vision(visionEstConsume, LEDCandle);
   }
 
-  public Vision(Consumer<VisionEstimate> visionEstConsumer) {
+  public Vision(Consumer<VisionEstimate> visionEstConsumer, CANdle LEDCandle) {
     this.visionEstConsumer = visionEstConsumer;
+    this.LEDCandle = LEDCandle;
 
-    cameraStatusLEDs.put(backLeftCamera, new CameraStatusLED(ledPort1));
-    cameraStatusLEDs.put(frontLeftCamera, new CameraStatusLED(ledPort2));
-    cameraStatusLEDs.put(backRightCamera, new CameraStatusLED(ledPort3));
-    cameraStatusLEDs.put(frontRightCamera, new CameraStatusLED(ledPort4));
+    cameraStatusLEDs.put(backLeftCamera, new CameraStatusLED(LEDCandle, 0, 0));
+    cameraStatusLEDs.put(frontLeftCamera, new CameraStatusLED(LEDCandle, 0, 0));
+    cameraStatusLEDs.put(backRightCamera, new CameraStatusLED(LEDCandle, 0, 0));
+    cameraStatusLEDs.put(frontRightCamera, new CameraStatusLED(LEDCandle, 0, 0));
   }
 
   private List<VisionEstimate> getVisionEstimates() {
@@ -140,7 +118,6 @@ public class Vision extends SubsystemBase {
 
         // set the corresponding color to red
         statusLED.updateStatusColor(StatusType.Error);
-        solidColor.withColor(red);
         continue;
       }
 
@@ -150,13 +127,11 @@ public class Vision extends SubsystemBase {
       if (!latestResult.hasTargets() || unreadResults.isEmpty()) {
         // set corresponding color to white
         statusLED.updateStatusColor(StatusType.NotDetected);
-        solidColor.withColor(white);
         continue;
       }
 
       // set correponding color to purple
       statusLED.updateStatusColor(StatusType.Detected);
-      solidColor.withColor(purple);
 
       EstimatedRobotPose estimatedPose =
           estimators
