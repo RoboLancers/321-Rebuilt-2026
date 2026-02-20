@@ -5,11 +5,15 @@ import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
+import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.units.measure.Voltage;
 
 public class HoodConstants {
 
@@ -52,4 +56,12 @@ public class HoodConstants {
   public static final Angle kReleaseAngle = Degrees.of(0);
 
   public static final Angle kTravelAngle = Degrees.of(0);
+
+  public static final Voltage kHomingVoltage = Volts.of(0.5);
+
+  public static final Current kCurrentCeiling = Amps.of(20);
+
+  public static final AngularVelocity kHomingVelocityFloor = RPM.of(1);
+
+  public static final double kHomingVelocityTolerance = 2;
 }
