@@ -1,9 +1,12 @@
 /* (C) RoboLancers 2026 */
 package frc.robot.subsystems.hood;
 
+import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
+import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
@@ -19,6 +22,9 @@ import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -81,8 +87,28 @@ public class Hood extends SubsystemBase {
     return angle;
   }
 
+  public AngularVelocity getVelocity(){
+    return hoodMotor.getVelocity().getValue();
+  }
+
+  public Current getCurrent(){
+    return hoodMotor.getStatorCurrent().getValue();
+  }
+
+  public boolean isHomedVelocity(){
+    return Math.abs(getVelocity().in(RPM) - HoodConstants.kHomingVelocityFloor.in(RPM)) <= HoodConstants.kHomingVelocityTolerance;
+  }
+
+  public boolean isHomedCurrent(){
+    return getCurrent().in(Amps) >= HoodConstants.kCurrentCeiling.in(Amps);
+  }
+
   public void zeroEncoder() {
     hoodMotor.setPosition(absoluteEncoder.get());
+  }
+
+  public void runVolts(Voltage volts){
+    hoodMotor.setVoltage(volts.in(Volts));
   }
 
   public boolean atTargetAngle(Angle targetAngle) {
