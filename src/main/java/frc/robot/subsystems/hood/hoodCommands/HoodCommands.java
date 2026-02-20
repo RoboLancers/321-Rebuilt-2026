@@ -58,10 +58,14 @@ public class HoodCommands {
   }
 
   public static Command homeHoodVelocity(Hood hood) {
-    return runVolts(hood, () -> HoodConstants.kHomingVoltage).until(() -> hood.isHomedVelocity());
+    return runVolts(hood, () -> HoodConstants.kHomingVoltage)
+        .until(() -> hood.isHomedVelocity())
+        .andThen(() -> hood.zeroEncoder());
   }
 
   public static Command homeHoodCurrent(Hood hood) {
-    return runVolts(hood, () -> HoodConstants.kHomingVoltage).until(() -> hood.isHomedCurrent());
+    return runVolts(hood, () -> HoodConstants.kHomingVoltage)
+        .until(() -> hood.isHomedCurrent())
+        .andThen(() -> hood.zeroEncoder());
   }
 }
