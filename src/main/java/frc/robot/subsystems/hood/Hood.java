@@ -87,19 +87,20 @@ public class Hood extends SubsystemBase {
     return angle;
   }
 
-  public AngularVelocity getVelocity(){
+  public AngularVelocity getVelocity() {
     return hoodMotor.getVelocity().getValue();
   }
 
-  public Current getCurrent(){
+  public Current getCurrent() {
     return hoodMotor.getStatorCurrent().getValue();
   }
 
-  public boolean isHomedVelocity(){
-    return Math.abs(getVelocity().in(RPM) - HoodConstants.kHomingVelocityFloor.in(RPM)) <= HoodConstants.kHomingVelocityTolerance;
+  public boolean isHomedVelocity() {
+    return Math.abs(getVelocity().in(RPM) - HoodConstants.kHomingVelocityFloor.in(RPM))
+        <= HoodConstants.kHomingVelocityTolerance;
   }
 
-  public boolean isHomedCurrent(){
+  public boolean isHomedCurrent() {
     return getCurrent().in(Amps) >= HoodConstants.kCurrentCeiling.in(Amps);
   }
 
@@ -107,7 +108,7 @@ public class Hood extends SubsystemBase {
     hoodMotor.setPosition(absoluteEncoder.get());
   }
 
-  public void runVolts(Voltage volts){
+  public void runVolts(Voltage volts) {
     hoodMotor.setVoltage(volts.in(Volts));
   }
 

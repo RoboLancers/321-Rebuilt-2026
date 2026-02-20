@@ -2,7 +2,6 @@
 package frc.robot.subsystems.hood.hoodCommands;
 
 import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Voltage;
@@ -22,8 +21,8 @@ public class HoodCommands {
                     <= HoodConstants.kAngleTolerance.in(Degrees));
   }
 
-  public static Command runVolts(Hood hood, Supplier<Voltage> volts){
-    return Commands.run(()->hood.runVolts(volts.get()),hood);
+  public static Command runVolts(Hood hood, Supplier<Voltage> volts) {
+    return Commands.run(() -> hood.runVolts(volts.get()), hood);
   }
 
   public static Command goToScoringAngle(Hood hood) {
@@ -58,11 +57,11 @@ public class HoodCommands {
     return goToAngle(hood, () -> HoodConstants.kTravelAngle);
   }
 
-  public static Command homeHoodVelocity(Hood hood){
-    return runVolts(hood, ()->HoodConstants.kHomingVoltage).until(()->hood.isHomedVelocity());
+  public static Command homeHoodVelocity(Hood hood) {
+    return runVolts(hood, () -> HoodConstants.kHomingVoltage).until(() -> hood.isHomedVelocity());
   }
 
-  public static Command homeHoodCurrent(Hood hood){
-    return runVolts(hood, ()->HoodConstants.kHomingVoltage).until(()->hood.isHomedCurrent());
+  public static Command homeHoodCurrent(Hood hood) {
+    return runVolts(hood, () -> HoodConstants.kHomingVoltage).until(() -> hood.isHomedCurrent());
   }
 }
