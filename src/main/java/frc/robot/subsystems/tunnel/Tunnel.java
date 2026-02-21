@@ -13,6 +13,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -24,12 +25,12 @@ public class Tunnel extends SubsystemBase {
 
   private PIDController tunnelController = new PIDController(TunnelConstants.kP, 0, 0);
 
-  private SimpleMotorFeedforward tunnelFeedforward = new SimpleMotorFeedforward(0, TunnelConstants.kV, 0);
+  private SimpleMotorFeedforward tunnelFeedforward =
+      new SimpleMotorFeedforward(0, TunnelConstants.kV, 0);
 
-  @Logged
-  private TalonFX tunnelMotor = new TalonFX(TunnelConstants.kTunnelMotorId);
+  @Logged private TalonFX tunnelMotor = new TalonFX(TunnelConstants.kTunnelMotorId);
 
-  private AngularVelocity targetVelocity = RPM.of(0);
+  @NotLogged private AngularVelocity targetVelocity = RPM.of(0);
 
   public Tunnel() {
     tunnelMotorConfiguration();
@@ -38,26 +39,27 @@ public class Tunnel extends SubsystemBase {
 
   private void tunnelMotorConfiguration() {
 
-    TalonFXConfiguration tunnelMotorConfiguration = new TalonFXConfiguration()
-        .withCurrentLimits(
-            new CurrentLimitsConfigs()
-                .withStatorCurrentLimit(TunnelConstants.kTunnelStatorLimit)
-                .withStatorCurrentLimitEnable(true)
-                .withSupplyCurrentLimit(TunnelConstants.kTunnelSupplyLimit)
-                .withSupplyCurrentLimitEnable(true))
-        .withMotorOutput(
-            new MotorOutputConfigs()
-                .withNeutralMode(TunnelConstants.kTunnelNeutralMode)
-                .withInverted(
-                    TunnelConstants.kTunnelInverted
-                        ? InvertedValue.Clockwise_Positive
-                        : InvertedValue.CounterClockwise_Positive))
-        .withMotionMagic(
-            new MotionMagicConfigs()
-                .withMotionMagicCruiseVelocity(
-                    TunnelConstants.kTunnelMaxVelocity.in(DegreesPerSecond))
-                .withMotionMagicAcceleration(
-                    TunnelConstants.kTunnelMaxAcceleration.in(DegreesPerSecondPerSecond)));
+    TalonFXConfiguration tunnelMotorConfiguration =
+        new TalonFXConfiguration()
+            .withCurrentLimits(
+                new CurrentLimitsConfigs()
+                    .withStatorCurrentLimit(TunnelConstants.kTunnelStatorLimit)
+                    .withStatorCurrentLimitEnable(true)
+                    .withSupplyCurrentLimit(TunnelConstants.kTunnelSupplyLimit)
+                    .withSupplyCurrentLimitEnable(true))
+            .withMotorOutput(
+                new MotorOutputConfigs()
+                    .withNeutralMode(TunnelConstants.kTunnelNeutralMode)
+                    .withInverted(
+                        TunnelConstants.kTunnelInverted
+                            ? InvertedValue.Clockwise_Positive
+                            : InvertedValue.CounterClockwise_Positive))
+            .withMotionMagic(
+                new MotionMagicConfigs()
+                    .withMotionMagicCruiseVelocity(
+                        TunnelConstants.kTunnelMaxVelocity.in(DegreesPerSecond))
+                    .withMotionMagicAcceleration(
+                        TunnelConstants.kTunnelMaxAcceleration.in(DegreesPerSecondPerSecond)));
 
     tunnelMotor.getConfigurator().apply(tunnelMotorConfiguration);
   }
@@ -75,10 +77,11 @@ public class Tunnel extends SubsystemBase {
 
   public void runAtVelocity(AngularVelocity velocity) {
     this.targetVelocity = velocity;
-    Voltage volts = Volts.of(
-        tunnelController.calculate(getVelocity().in(RPM), velocity.in(RPM))
-            + tunnelFeedforward.calculateWithVelocities(
-                getVelocity().in(RPM), velocity.in(RPM)));
+    Voltage volts =
+        Volts.of(
+            tunnelController.calculate(getVelocity().in(RPM), velocity.in(RPM))
+                + tunnelFeedforward.calculateWithVelocities(
+                    getVelocity().in(RPM), velocity.in(RPM)));
     tunnelMotor.setVoltage(volts.in(Volts));
   }
 

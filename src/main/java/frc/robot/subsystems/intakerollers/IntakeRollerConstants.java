@@ -2,7 +2,9 @@
 package frc.robot.subsystems.intakerollers;
 
 import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.RPM;
 
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 
 public class IntakeRollerConstants {
@@ -12,8 +14,8 @@ public class IntakeRollerConstants {
   public static final Current kStatorCurrentLimit = Amps.of(40);
   public static final Current kSupplyCurrentLimit = Amps.of(40);
   public static final double kSensorToMechanismRatio = 0;
-  public static final double kIntakeFuelVelocity = 0;
-  public static final double kOuttakeFuelVelocity = 0;
+  public static final AngularVelocity kIntakeFuelVelocity = RPM.of(0);
+  public static final AngularVelocity kOuttakeFuelVelocity = RPM.of(0);
   public static final double kP = 0;
   public static final double kD = 0;
   public static final double kG = 0;
