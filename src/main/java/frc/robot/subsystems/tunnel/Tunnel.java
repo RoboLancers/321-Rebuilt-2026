@@ -22,11 +22,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 @Logged
 public class Tunnel extends SubsystemBase {
 
-  PIDController tunnelController = new PIDController(TunnelConstants.kP, 0, 0);
+  private PIDController tunnelController = new PIDController(TunnelConstants.kP, 0, 0);
 
-  SimpleMotorFeedforward tunnelFeedforward = new SimpleMotorFeedforward(0, TunnelConstants.kV, 0);
+  private SimpleMotorFeedforward tunnelFeedforward = new SimpleMotorFeedforward(0, TunnelConstants.kV, 0);
 
-  @Logged TalonFX tunnelMotor = new TalonFX(TunnelConstants.kTunnelMotorId);
+  @Logged
+  private TalonFX tunnelMotor = new TalonFX(TunnelConstants.kTunnelMotorId);
+
+  private AngularVelocity targetVelocity = RPM.of(0);
 
   public Tunnel() {
     tunnelMotorConfiguration();
@@ -35,43 +38,47 @@ public class Tunnel extends SubsystemBase {
 
   private void tunnelMotorConfiguration() {
 
-    TalonFXConfiguration tunnelMotorConfiguration =
-        new TalonFXConfiguration()
-            .withCurrentLimits(
-                new CurrentLimitsConfigs()
-                    .withStatorCurrentLimit(TunnelConstants.kTunnelStatorLimit)
-                    .withStatorCurrentLimitEnable(true)
-                    .withSupplyCurrentLimit(TunnelConstants.kTunnelSupplyLimit)
-                    .withSupplyCurrentLimitEnable(true))
-            .withMotorOutput(
-                new MotorOutputConfigs()
-                    .withNeutralMode(TunnelConstants.kTunnelNeutralMode)
-                    .withInverted(
-                        TunnelConstants.kTunnelInverted
-                            ? InvertedValue.Clockwise_Positive
-                            : InvertedValue.CounterClockwise_Positive))
-            .withMotionMagic(
-                new MotionMagicConfigs()
-                    .withMotionMagicCruiseVelocity(
-                        TunnelConstants.kTunnelMaxVelocity.in(DegreesPerSecond))
-                    .withMotionMagicAcceleration(
-                        TunnelConstants.kTunnelMaxAcceleration.in(DegreesPerSecondPerSecond)));
+    TalonFXConfiguration tunnelMotorConfiguration = new TalonFXConfiguration()
+        .withCurrentLimits(
+            new CurrentLimitsConfigs()
+                .withStatorCurrentLimit(TunnelConstants.kTunnelStatorLimit)
+                .withStatorCurrentLimitEnable(true)
+                .withSupplyCurrentLimit(TunnelConstants.kTunnelSupplyLimit)
+                .withSupplyCurrentLimitEnable(true))
+        .withMotorOutput(
+            new MotorOutputConfigs()
+                .withNeutralMode(TunnelConstants.kTunnelNeutralMode)
+                .withInverted(
+                    TunnelConstants.kTunnelInverted
+                        ? InvertedValue.Clockwise_Positive
+                        : InvertedValue.CounterClockwise_Positive))
+        .withMotionMagic(
+            new MotionMagicConfigs()
+                .withMotionMagicCruiseVelocity(
+                    TunnelConstants.kTunnelMaxVelocity.in(DegreesPerSecond))
+                .withMotionMagicAcceleration(
+                    TunnelConstants.kTunnelMaxAcceleration.in(DegreesPerSecondPerSecond)));
 
     tunnelMotor.getConfigurator().apply(tunnelMotorConfiguration);
   }
 
-  @Logged(name = "tunnelVelocity")
+  @Logged(name = "velocity")
   public AngularVelocity getVelocity() {
     AngularVelocity velocity = RPM.of(tunnelMotor.getVelocity().getValueAsDouble());
     return velocity;
   }
 
+  @Logged(name = "targetVelocity")
+  public AngularVelocity getTargetVelocity() {
+    return this.targetVelocity;
+  }
+
   public void runAtVelocity(AngularVelocity velocity) {
-    Voltage volts =
-        Volts.of(
-            tunnelController.calculate(getVelocity().in(RPM), velocity.in(RPM))
-                + tunnelFeedforward.calculateWithVelocities(
-                    getVelocity().in(RPM), velocity.in(RPM)));
+    this.targetVelocity = velocity;
+    Voltage volts = Volts.of(
+        tunnelController.calculate(getVelocity().in(RPM), velocity.in(RPM))
+            + tunnelFeedforward.calculateWithVelocities(
+                getVelocity().in(RPM), velocity.in(RPM)));
     tunnelMotor.setVoltage(volts.in(Volts));
   }
 
