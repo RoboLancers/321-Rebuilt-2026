@@ -34,7 +34,8 @@ public class Hood extends SubsystemBase {
   private DutyCycleEncoder absoluteEncoder = new DutyCycleEncoder(HoodConstants.kHoodEncoderId);
 
   private TalonFX hoodMotor = new TalonFX(HoodConstants.kHoodMotorId);
-  @NotLogged private Angle targetAngle;
+  @NotLogged
+  private Angle targetAngle = HoodConstants.kStartingAngle;
 
   public Hood() {
     configureMotors();
@@ -44,31 +45,30 @@ public class Hood extends SubsystemBase {
 
   public void configureMotors() {
 
-    TalonFXConfiguration hoodMotorConfigs =
-        new TalonFXConfiguration()
-            .withCurrentLimits(
-                new CurrentLimitsConfigs()
-                    .withStatorCurrentLimit(HoodConstants.kHoodStatorCurrentLimit)
-                    .withStatorCurrentLimitEnable(true)
-                    .withSupplyCurrentLimit(HoodConstants.kHoodSupplyCurrentLimit)
-                    .withSupplyCurrentLimitEnable(true))
-            .withMotorOutput(
-                new MotorOutputConfigs()
-                    .withInverted(
-                        HoodConstants.kHoodMotorInverted
-                            ? InvertedValue.Clockwise_Positive
-                            : InvertedValue.CounterClockwise_Positive)
-                    .withNeutralMode(NeutralModeValue.Brake))
-            .withMotionMagic(
-                new MotionMagicConfigs()
-                    .withMotionMagicCruiseVelocity(
-                        HoodConstants.kHoodMotorMaxVelocity.in(MetersPerSecond))
-                    .withMotionMagicAcceleration(
-                        HoodConstants.kHoodMotorMaxAcceleration.in(MetersPerSecondPerSecond)))
-            .withSlot0(
-                new Slot0Configs()
-                    .withGravityType(GravityTypeValue.Arm_Cosine)
-                    .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign));
+    TalonFXConfiguration hoodMotorConfigs = new TalonFXConfiguration()
+        .withCurrentLimits(
+            new CurrentLimitsConfigs()
+                .withStatorCurrentLimit(HoodConstants.kHoodStatorCurrentLimit)
+                .withStatorCurrentLimitEnable(true)
+                .withSupplyCurrentLimit(HoodConstants.kHoodSupplyCurrentLimit)
+                .withSupplyCurrentLimitEnable(true))
+        .withMotorOutput(
+            new MotorOutputConfigs()
+                .withInverted(
+                    HoodConstants.kHoodMotorInverted
+                        ? InvertedValue.Clockwise_Positive
+                        : InvertedValue.CounterClockwise_Positive)
+                .withNeutralMode(NeutralModeValue.Brake))
+        .withMotionMagic(
+            new MotionMagicConfigs()
+                .withMotionMagicCruiseVelocity(
+                    HoodConstants.kHoodMotorMaxVelocity.in(MetersPerSecond))
+                .withMotionMagicAcceleration(
+                    HoodConstants.kHoodMotorMaxAcceleration.in(MetersPerSecondPerSecond)))
+        .withSlot0(
+            new Slot0Configs()
+                .withGravityType(GravityTypeValue.Arm_Cosine)
+                .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign));
 
     hoodMotor.getConfigurator().apply(hoodMotorConfigs);
   }
@@ -77,8 +77,9 @@ public class Hood extends SubsystemBase {
     hoodMotor.getConfigurator().apply(new Slot0Configs().withKP(kP).withKD(kD).withKG(kG));
   }
 
-  public void goToAngle(Angle targetAngle) {
-    hoodMotor.setControl(new MotionMagicVoltage(targetAngle));
+  public void goToAngle(Angle angle) {
+    this.targetAngle = angle;
+    hoodMotor.setControl(new MotionMagicVoltage(angle));
   }
 
   @Logged(name = "currentPitch")
@@ -96,8 +97,8 @@ public class Hood extends SubsystemBase {
   }
 
   public boolean isHomedVelocity() {
-    return Math.abs(getVelocity().in(RPM) - HoodConstants.kHomingVelocityFloor.in(RPM))
-        <= HoodConstants.kHomingVelocityTolerance;
+    return Math.abs(
+        getVelocity().in(RPM) - HoodConstants.kHomingVelocityFloor.in(RPM)) <= HoodConstants.kHomingVelocityTolerance;
   }
 
   public boolean isHomedCurrent() {
@@ -113,9 +114,8 @@ public class Hood extends SubsystemBase {
   }
 
   public boolean atTargetAngle(Angle targetAngle) {
-    boolean atTargetAngle =
-        Math.abs(getAngle().in(Degrees) - targetAngle.in(Degrees))
-            < HoodConstants.kAngleTolerance.in(Degrees);
+    boolean atTargetAngle = Math.abs(getAngle().in(Degrees) - targetAngle.in(Degrees)) < HoodConstants.kAngleTolerance
+        .in(Degrees);
     return atTargetAngle;
   }
 
