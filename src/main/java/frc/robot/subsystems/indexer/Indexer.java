@@ -23,8 +23,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 @Logged
 public class Indexer extends SubsystemBase {
 
-  @Logged
-  private TalonFX motor = new TalonFX(IndexerConstants.kMotorID);
+  @Logged private TalonFX motor = new TalonFX(IndexerConstants.kMotorID);
   private AngularVelocity targetVelocity = DegreesPerSecond.of(0);
 
   public Indexer() {
@@ -33,26 +32,27 @@ public class Indexer extends SubsystemBase {
   }
 
   public void configureMotors() {
-    TalonFXConfiguration configurations = new TalonFXConfiguration()
-        .withCurrentLimits(
-            new CurrentLimitsConfigs()
-                .withStatorCurrentLimit(IndexerConstants.kCurrentLimit)
-                .withStatorCurrentLimitEnable(true)
-                .withSupplyCurrentLimit(IndexerConstants.kCurrentLimit)
-                .withSupplyCurrentLimitEnable(true))
-        .withMotorOutput(
-            new MotorOutputConfigs()
-                .withNeutralMode(NeutralModeValue.Brake)
-                .withInverted(
-                    IndexerConstants.kInverted
-                        ? InvertedValue.CounterClockwise_Positive
-                        : InvertedValue.Clockwise_Positive))
-        .withFeedback(
-            new FeedbackConfigs().withSensorToMechanismRatio(IndexerConstants.kGearing))
-        .withMotionMagic(
-            new MotionMagicConfigs()
-                .withMotionMagicCruiseVelocity(IndexerConstants.kMaxVelocity)
-                .withMotionMagicAcceleration(IndexerConstants.kMaxAcceleration));
+    TalonFXConfiguration configurations =
+        new TalonFXConfiguration()
+            .withCurrentLimits(
+                new CurrentLimitsConfigs()
+                    .withStatorCurrentLimit(IndexerConstants.kCurrentLimit)
+                    .withStatorCurrentLimitEnable(true)
+                    .withSupplyCurrentLimit(IndexerConstants.kCurrentLimit)
+                    .withSupplyCurrentLimitEnable(true))
+            .withMotorOutput(
+                new MotorOutputConfigs()
+                    .withNeutralMode(NeutralModeValue.Brake)
+                    .withInverted(
+                        IndexerConstants.kInverted
+                            ? InvertedValue.CounterClockwise_Positive
+                            : InvertedValue.Clockwise_Positive))
+            .withFeedback(
+                new FeedbackConfigs().withSensorToMechanismRatio(IndexerConstants.kGearing))
+            .withMotionMagic(
+                new MotionMagicConfigs()
+                    .withMotionMagicCruiseVelocity(IndexerConstants.kMaxVelocity)
+                    .withMotionMagicAcceleration(IndexerConstants.kMaxAcceleration));
 
     motor.getConfigurator().apply(configurations);
   }

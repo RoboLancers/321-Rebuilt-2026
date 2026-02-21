@@ -19,8 +19,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 @Logged
 public class IntakeRollers extends SubsystemBase {
 
-  @Logged
-  private TalonFX rollerMotor = new TalonFX(IntakeRollerConstants.kRollerMotorId);
+  @Logged private TalonFX rollerMotor = new TalonFX(IntakeRollerConstants.kRollerMotorId);
   private CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
   private MotorOutputConfigs motorConfigs = new MotorOutputConfigs();
   private VoltageConfigs voltageConfigs = new VoltageConfigs();
@@ -69,7 +68,8 @@ public class IntakeRollers extends SubsystemBase {
     rollerMotor.getConfigurator().apply(slot0Configs);
   }
 
-  public void tune(double kP, double kD, double kV, double kG, AngularVelocity rollerTargetVelocity) {
+  public void tune(
+      double kP, double kD, double kV, double kG, AngularVelocity rollerTargetVelocity) {
     setPID(kP, kD, kV, kG);
     setVelocity(rollerTargetVelocity);
   }

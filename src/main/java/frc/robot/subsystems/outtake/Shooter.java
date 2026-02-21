@@ -22,8 +22,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 @Logged
 public class Shooter extends SubsystemBase {
 
-  @Logged
-  private TalonFX motor = new TalonFX(OuttakeConstants.kMotorID);
+  @Logged private TalonFX motor = new TalonFX(OuttakeConstants.kMotorID);
 
   private AngularVelocity targetShooterVelocity = RPM.of(0);
 
@@ -35,28 +34,29 @@ public class Shooter extends SubsystemBase {
 
   private void configureMotors() {
 
-    TalonFXConfiguration configuration = new TalonFXConfiguration()
-        .withCurrentLimits(
-            new CurrentLimitsConfigs()
-                .withStatorCurrentLimit(OuttakeConstants.kStatorLimit)
-                .withStatorCurrentLimitEnable(true)
-                .withSupplyCurrentLimit(OuttakeConstants.kSupplyLimit)
-                .withSupplyCurrentLimitEnable(true))
-        .withMotorOutput(
-            new MotorOutputConfigs()
-                .withInverted(
-                    OuttakeConstants.kInverted
-                        ? InvertedValue.Clockwise_Positive
-                        : InvertedValue.CounterClockwise_Positive)
-                .withNeutralMode(NeutralModeValue.Brake))
-        .withFeedback(
-            new FeedbackConfigs()
-                .withSensorToMechanismRatio(OuttakeConstants.kGearing)
-                .withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor))
-        .withMotionMagic(
-            new MotionMagicConfigs()
-                .withMotionMagicCruiseVelocity(OuttakeConstants.kMaxVelocity)
-                .withMotionMagicAcceleration(OuttakeConstants.kMaxAcceleration));
+    TalonFXConfiguration configuration =
+        new TalonFXConfiguration()
+            .withCurrentLimits(
+                new CurrentLimitsConfigs()
+                    .withStatorCurrentLimit(OuttakeConstants.kStatorLimit)
+                    .withStatorCurrentLimitEnable(true)
+                    .withSupplyCurrentLimit(OuttakeConstants.kSupplyLimit)
+                    .withSupplyCurrentLimitEnable(true))
+            .withMotorOutput(
+                new MotorOutputConfigs()
+                    .withInverted(
+                        OuttakeConstants.kInverted
+                            ? InvertedValue.Clockwise_Positive
+                            : InvertedValue.CounterClockwise_Positive)
+                    .withNeutralMode(NeutralModeValue.Brake))
+            .withFeedback(
+                new FeedbackConfigs()
+                    .withSensorToMechanismRatio(OuttakeConstants.kGearing)
+                    .withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor))
+            .withMotionMagic(
+                new MotionMagicConfigs()
+                    .withMotionMagicCruiseVelocity(OuttakeConstants.kMaxVelocity)
+                    .withMotionMagicAcceleration(OuttakeConstants.kMaxAcceleration));
 
     motor.getConfigurator().apply(configuration);
   }
