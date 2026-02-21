@@ -34,7 +34,7 @@ public class Hood extends SubsystemBase {
   private DutyCycleEncoder absoluteEncoder = new DutyCycleEncoder(HoodConstants.kHoodEncoderId);
 
   private TalonFX hoodMotor = new TalonFX(HoodConstants.kHoodMotorId);
-  @NotLogged private Angle targetAngle;
+  @NotLogged private Angle targetAngle = HoodConstants.kStartingAngle;
 
   public Hood() {
     configureMotors();
@@ -77,8 +77,9 @@ public class Hood extends SubsystemBase {
     hoodMotor.getConfigurator().apply(new Slot0Configs().withKP(kP).withKD(kD).withKG(kG));
   }
 
-  public void goToAngle(Angle targetAngle) {
-    hoodMotor.setControl(new MotionMagicVoltage(targetAngle));
+  public void goToAngle(Angle angle) {
+    this.targetAngle = angle;
+    hoodMotor.setControl(new MotionMagicVoltage(angle));
   }
 
   @Logged(name = "currentPitch")
