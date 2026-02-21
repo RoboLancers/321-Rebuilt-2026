@@ -16,17 +16,19 @@ public class CameraStatusLED {
   public SolidColor solidColor;
   private final RGBWColor kDetectedColor = new RGBWColor(191, 64, 191, 0); // purple
   private final RGBWColor kErrorColor = new RGBWColor(255, 255, 255, 0); // red
-  private final RGBWColor kDefaultColor = new RGBWColor(0, 0, 0, 255); // white
+  private final RGBWColor kDefaultColor = new RGBWColor(0, 0, 0, 0); // white
   private RGBWColor statusColor = kDefaultColor;
   private CANdle candle;
   private int LEDStartIndex;
   private int LEDEndIndex;
 
-  public CameraStatusLED(CANdle candle, int LEdStartIndex, int LEDEndIndex) {
+  public CameraStatusLED(CANdle candle, int LEDStartIndex, int LEDEndIndex) {
     this.candle = candle;
-    this.LEDEndIndex = LEdStartIndex;
+    this.LEDStartIndex = LEDStartIndex;
     this.LEDEndIndex = LEDEndIndex;
     this.solidColor = new SolidColor(LEDStartIndex, LEDEndIndex);
+
+    this.candle.setControl(this.solidColor);
   }
 
   public void updateStatusColor(StatusType type) {

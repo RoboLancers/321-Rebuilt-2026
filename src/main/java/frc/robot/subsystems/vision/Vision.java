@@ -4,6 +4,7 @@ package frc.robot.subsystems.vision;
 import static edu.wpi.first.units.Units.Meters;
 
 import com.ctre.phoenix6.hardware.CANdle;
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -115,8 +116,6 @@ public class Vision extends SubsystemBase {
 
       CameraStatusLED statusLED = cameraStatusLEDs.get(cameras.get(i));
       if (cameras.get(i) == null || !cameras.get(i).isConnected()) {
-
-        // set the corresponding color to red
         statusLED.updateStatusColor(StatusType.Error);
         continue;
       }
@@ -125,12 +124,10 @@ public class Vision extends SubsystemBase {
       PhotonPipelineResult latestResult = unreadResults.get(unreadResults.size() - 1);
 
       if (!latestResult.hasTargets() || unreadResults.isEmpty()) {
-        // set corresponding color to white
         statusLED.updateStatusColor(StatusType.NotDetected);
         continue;
       }
 
-      // set correponding color to purple
       statusLED.updateStatusColor(StatusType.Detected);
 
       EstimatedRobotPose estimatedPose =
@@ -147,7 +144,6 @@ public class Vision extends SubsystemBase {
               .orElse(null);
 
       if (estimatedPose == null) {
-
         continue;
       }
 
@@ -183,8 +179,8 @@ public class Vision extends SubsystemBase {
     return visionEstimates;
   }
 
+  //TODO: Update Standard Deviations
   private double calculateStdDevs(EstimatedRobotPose estimatedPose) {
-
     double distance = 0;
 
     if (estimatedPose == null) return 1;
@@ -215,7 +211,15 @@ public class Vision extends SubsystemBase {
     }
   }
 
-  public boolean areCamerasConnected;
+  @Logged
+  public boolean areCamerasConnected() {
+    for (PhotonCamera camera : cameras) {
+      if (!camera.isConnected()) {
+        return false;
+      }
+    }
+    return true;
+  }
 
   @Override
   public void periodic() {
@@ -229,22 +233,16 @@ public class Vision extends SubsystemBase {
       }
     }
 
-    for (PhotonCamera camera : cameras) {
-      if (camera.isConnected()) {
-        areCamerasConnected = true;
-      } else {
-        areCamerasConnected = false;
-        break;
-      }
-    }
-
-    SmartDashboard.putString("Camera 1", cameraStatusLEDs.get(frontLeftCamera).getStatusColorHex());
     SmartDashboard.putString(
-        "Camera 2 ", cameraStatusLEDs.get(frontRightCamera).getStatusColorHex());
-    SmartDashboard.putString("Camera 3", cameraStatusLEDs.get(backRightCamera).getStatusColorHex());
-    SmartDashboard.putString("Camera 4", cameraStatusLEDs.get(backLeftCamera).getStatusColorHex());
+        "Front Left Cam", cameraStatusLEDs.get(frontLeftCamera).getStatusColorHex());
+    SmartDashboard.putString(
+        "Front Right Cam", cameraStatusLEDs.get(frontRightCamera).getStatusColorHex());
+    SmartDashboard.putString(
+        "Back Left Cam", cameraStatusLEDs.get(backLeftCamera).getStatusColorHex());
+    SmartDashboard.putString(
+        "Back Right Cam", cameraStatusLEDs.get(backRightCamera).getStatusColorHex());
 
-    SmartDashboard.putBoolean("Cameras Are Connected", areCamerasConnected);
+    SmartDashboard.putBoolean("Cameras Are Connected", areCamerasConnected());
 
     SmartDashboard.putNumber("Vision Pose X", getLatestBestPose().getX());
 

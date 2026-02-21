@@ -23,37 +23,18 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainConstants;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
+import frc.robot.subsystems.vision.VisionEstimate;
 import frc.robot.util.RebuiltUtil;
+import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 public class RobotContainer {
 
   public CANdle candle = new CANdle(0);
-
-  public void LedConfigs() {
-    LEDConfigs configs = new LEDConfigs();
-    CANdleFeaturesConfigs featuresConfigs = new CANdleFeaturesConfigs();
-    configs.BrightnessScalar = VisionConstants.brightnessScaler;
-    featuresConfigs.VBatOutputMode = VBatOutputModeValue.On;
-    candle.getConfigurator().apply(configs);
-    candle.getConfigurator().apply(featuresConfigs);
-  }
-
   private final CommandXboxController driver = new CommandXboxController(0);
 
   public Drivetrain drivetrain = Drivetrain.create();
-  public Vision vision =
-      Vision.create(
-          est ->
-              drivetrain.addVisionMeasurement(
-                  est.estimatedPose().estimatedPose.toPose2d(),
-                  est.estimatedPose().timestampSeconds,
-                  VecBuilder.fill(
-                      est.standardDeviations(),
-                      est.standardDeviations(),
-                      est.standardDeviations())),
-          candle);
   private SendableChooser<Command> autoChooser;
   // private final IntakeRollers intakeRollers = new IntakeRollers();
   // private final IntakeFuel intakeFuel = new IntakeFuel(intakeRollers);
@@ -65,6 +46,15 @@ public class RobotContainer {
   // private final Tunnel tunnel = new Tunnel();
 
   public Trigger slowMode = driver.b();
+
+  private Consumer<VisionEstimate> visionEstimate =
+      est ->
+          drivetrain.addVisionMeasurement(
+              est.estimatedPose().estimatedPose.toPose2d(),
+              est.estimatedPose().timestampSeconds,
+              VecBuilder.fill(
+                  est.standardDeviations(), est.standardDeviations(), est.standardDeviations()));
+  public Vision vision = Vision.create(visionEstimate, candle);
 
   private DoubleSupplier driverForward =
       () ->
@@ -95,7 +85,17 @@ public class RobotContainer {
 
   private Supplier<Rotation2d> hubHeading = () -> RebuiltUtil.getHubHeading(currentRobotPose);
 
+  public void setupCandleConfiguration() {
+    LEDConfigs configs = new LEDConfigs();
+    CANdleFeaturesConfigs featuresConfigs = new CANdleFeaturesConfigs();
+    configs.BrightnessScalar = VisionConstants.brightnessScaler;
+    featuresConfigs.VBatOutputMode = VBatOutputModeValue.On;
+    candle.getConfigurator().apply(configs);
+    candle.getConfigurator().apply(featuresConfigs);
+  }
+
   public RobotContainer() {
+    setupCandleConfiguration();
     configureBindings();
 
     autoChooser = AutoBuilder.buildAutoChooser();
@@ -108,27 +108,30 @@ public class RobotContainer {
   private void configureBindings() {
     drivetrain.setDefaultCommand(drivetrain.teleopDrive(driverForward, driverStrafe, driverTurn));
     // intakeRollers.setDefaultCommand(
-    //     Commands.run(() -> intakeRollers.setVoltage(Volts.of(0)), intakeRollers));
-    // shooter.setDefaultCommand(ShootFuel.outtakeWithVoltage(shooter, () -> Volts.of(0)));
+    // Commands.run(() -> intakeRollers.setVoltage(Volts.of(0)), intakeRollers));
+    // shooter.setDefaultCommand(ShootFuel.outtakeWithVoltage(shooter, () ->
+    // Volts.of(0)));
     // hood.setDefaultCommand(HoodCommands.goToTravelAngle(hood));
     // intakePivot.setDefaultCommand(new GoToDefaultPosition(intakePivot));
     // spindexer.setDefaultCommand(Index.setVoltage(spindexer, () -> Volts.of(0)));
     // tunnel.setDefaultCommand(new RunAtVelocity(tunnel, RPM.of(0)));
 
     // driver
-    //     .leftBumper()
-    //     .whileTrue(new GoToIntakePosition(intakePivot).andThen(new IntakeFuel(intakeRollers)));
+    // .leftBumper()
+    // .whileTrue(new GoToIntakePosition(intakePivot).andThen(new
+    // IntakeFuel(intakeRollers)));
     driver
         .leftTrigger()
         .whileTrue(
             Align.rotateToHubWhileDriving(
                 drivetrain, driverForward, driverStrafe, hubHeading, currentRobotPose));
     // driver
-    //     .rightTrigger()
-    //     .whileTrue(
-    //         Score.shootFuelFromAnywhere(
-    //             drivetrain, shooter, hood, spindexer, tunnel, currentRobotPose));
-    // driver.rightBumper().whileTrue(Score.feedFuel(shooter, hood, spindexer, tunnel));
+    // .rightTrigger()
+    // .whileTrue(
+    // Score.shootFuelFromAnywhere(
+    // drivetrain, shooter, hood, spindexer, tunnel, currentRobotPose));
+    // driver.rightBumper().whileTrue(Score.feedFuel(shooter, hood, spindexer,
+    // tunnel));
   }
 
   public Command getAutonomousCommand() {
