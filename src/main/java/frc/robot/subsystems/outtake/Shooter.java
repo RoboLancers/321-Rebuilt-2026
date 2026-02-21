@@ -2,7 +2,6 @@
 package frc.robot.subsystems.outtake;
 
 import static edu.wpi.first.units.Units.RPM;
-import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
@@ -17,17 +16,16 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 @Logged
 public class Shooter extends SubsystemBase {
 
-  @Logged private TalonFX motor = new TalonFX(OuttakeConstants.kMotorID);
+  @Logged
+  private TalonFX motor = new TalonFX(OuttakeConstants.kMotorID);
 
-  private Velocity targetShooterVelocity;
+  private AngularVelocity targetShooterVelocity = RPM.of(0);
 
   public Shooter() {
 
@@ -37,29 +35,28 @@ public class Shooter extends SubsystemBase {
 
   private void configureMotors() {
 
-    TalonFXConfiguration configuration =
-        new TalonFXConfiguration()
-            .withCurrentLimits(
-                new CurrentLimitsConfigs()
-                    .withStatorCurrentLimit(OuttakeConstants.kStatorLimit)
-                    .withStatorCurrentLimitEnable(true)
-                    .withSupplyCurrentLimit(OuttakeConstants.kSupplyLimit)
-                    .withSupplyCurrentLimitEnable(true))
-            .withMotorOutput(
-                new MotorOutputConfigs()
-                    .withInverted(
-                        OuttakeConstants.kInverted
-                            ? InvertedValue.Clockwise_Positive
-                            : InvertedValue.CounterClockwise_Positive)
-                    .withNeutralMode(NeutralModeValue.Brake))
-            .withFeedback(
-                new FeedbackConfigs()
-                    .withSensorToMechanismRatio(OuttakeConstants.kGearing)
-                    .withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor))
-            .withMotionMagic(
-                new MotionMagicConfigs()
-                    .withMotionMagicCruiseVelocity(OuttakeConstants.kMaxVelocity)
-                    .withMotionMagicAcceleration(OuttakeConstants.kMaxAcceleration));
+    TalonFXConfiguration configuration = new TalonFXConfiguration()
+        .withCurrentLimits(
+            new CurrentLimitsConfigs()
+                .withStatorCurrentLimit(OuttakeConstants.kStatorLimit)
+                .withStatorCurrentLimitEnable(true)
+                .withSupplyCurrentLimit(OuttakeConstants.kSupplyLimit)
+                .withSupplyCurrentLimitEnable(true))
+        .withMotorOutput(
+            new MotorOutputConfigs()
+                .withInverted(
+                    OuttakeConstants.kInverted
+                        ? InvertedValue.Clockwise_Positive
+                        : InvertedValue.CounterClockwise_Positive)
+                .withNeutralMode(NeutralModeValue.Brake))
+        .withFeedback(
+            new FeedbackConfigs()
+                .withSensorToMechanismRatio(OuttakeConstants.kGearing)
+                .withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor))
+        .withMotionMagic(
+            new MotionMagicConfigs()
+                .withMotionMagicCruiseVelocity(OuttakeConstants.kMaxVelocity)
+                .withMotionMagicAcceleration(OuttakeConstants.kMaxAcceleration));
 
     motor.getConfigurator().apply(configuration);
   }
@@ -71,12 +68,9 @@ public class Shooter extends SubsystemBase {
     motor.getConfigurator().apply(pid);
   }
 
-  public Command setControl(AngularVelocity rpm) {
-    return run(() -> motor.setControl(new MotionMagicVelocityVoltage(rpm.in(RPM))));
-  }
-
-  public Command runVolts(Voltage volts) {
-    return run(() -> motor.setVoltage(volts.in(Volts)));
+  public void setVelocity(AngularVelocity rpm) {
+    targetShooterVelocity = rpm;
+    motor.setControl(new MotionMagicVelocityVoltage(rpm.in(RPM)));
   }
 
   public void tune(double kP, double kD, double kV, double targetRPM) {
@@ -85,7 +79,7 @@ public class Shooter extends SubsystemBase {
   }
 
   @Logged(name = "TargetShooterVelocity")
-  public Velocity getTargetShooterVelocity() {
+  public AngularVelocity getTargetShooterVelocity() {
     return this.targetShooterVelocity;
   }
 

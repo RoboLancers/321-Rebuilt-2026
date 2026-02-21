@@ -1,7 +1,7 @@
 /* (C) RoboLancers 2026 */
 package frc.robot.subsystems.intakerollers;
 
-import static edu.wpi.first.units.Units.DegreesPerSecond;
+import static edu.wpi.first.units.Units.RPM;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
@@ -27,7 +27,7 @@ public class IntakeRollers extends SubsystemBase {
   private FeedbackConfigs feedbackConfigs = new FeedbackConfigs();
   private Slot0Configs slot0Configs = new Slot0Configs();
 
-  private AngularVelocity targetVelocity = DegreesPerSecond.of(0);
+  private AngularVelocity targetVelocity = RPM.of(0);
 
   public IntakeRollers() {
     motorConfigurations();
