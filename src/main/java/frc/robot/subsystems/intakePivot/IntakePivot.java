@@ -3,7 +3,6 @@ package frc.robot.subsystems.intakePivot;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.DegreesPerSecond;
-import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
@@ -39,7 +38,6 @@ public class IntakePivot extends SubsystemBase {
   private Slot0Configs slot0Configs = new Slot0Configs();
 
   private Angle targetAngle = IntakeConstants.kDefaultPosition;
-  private Voltage targetVoltage = Volts.of(0);
   private AngularVelocity targetVelocity = DegreesPerSecond.of(0);
 
   public IntakePivot() {
@@ -95,11 +93,6 @@ public class IntakePivot extends SubsystemBase {
 
   public Voltage getVoltage() {
     return intakePivotMotor.getMotorVoltage().getValue();
-  }
-
-  public void setVoltage(Voltage targetVoltage) {
-    this.targetVoltage = targetVoltage;
-    intakePivotMotor.setVoltage(targetVoltage.in(Volts));
   }
 
   public double getVelocity() {
