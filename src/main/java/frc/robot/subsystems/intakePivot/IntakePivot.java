@@ -2,6 +2,7 @@
 package frc.robot.subsystems.intakePivot;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
@@ -18,8 +19,8 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
-import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -28,6 +29,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class IntakePivot extends SubsystemBase {
 
   @Logged private TalonFX intakePivotMotor = new TalonFX(IntakeConstants.kPivotMotorId);
+  private DutyCycleEncoder absoluteEncoder = new DutyCycleEncoder(IntakeConstants.kEncoderID);
+
   private TalonFXConfiguration talonConfigs = new TalonFXConfiguration();
   private MotorOutputConfigs motorConfigs = new MotorOutputConfigs();
   private FeedbackConfigs feedbackConfigs = new FeedbackConfigs();
@@ -35,11 +38,9 @@ public class IntakePivot extends SubsystemBase {
   private VoltageConfigs voltageConfigs = new VoltageConfigs();
   private Slot0Configs slot0Configs = new Slot0Configs();
 
-  private Angle targetAngle;
-  private Voltage targetVoltage;
-  private Velocity targetVelocity;
-
-  private DutyCycleEncoder absoluteEncoder = new DutyCycleEncoder(IntakeConstants.kEncoderID);
+  private Angle targetAngle = IntakeConstants.kDefaultPosition;
+  private Voltage targetVoltage = Volts.of(0);
+  private AngularVelocity targetVelocity = DegreesPerSecond.of(0);
 
   public IntakePivot() {
     motorConfigurations();
@@ -65,6 +66,7 @@ public class IntakePivot extends SubsystemBase {
   }
 
   public void goToAngle(Angle angle) {
+    targetAngle = angle;
     MotionMagicVoltage intakeVoltage = new MotionMagicVoltage(angle);
     intakePivotMotor.setControl(intakeVoltage);
   }
@@ -96,6 +98,7 @@ public class IntakePivot extends SubsystemBase {
   }
 
   public void setVoltage(Voltage targetVoltage) {
+    this.targetVoltage = targetVoltage;
     intakePivotMotor.setVoltage(targetVoltage.in(Volts));
   }
 
@@ -103,7 +106,7 @@ public class IntakePivot extends SubsystemBase {
     return intakePivotMotor.getVelocity().getValueAsDouble();
   }
 
-  public Current current() {
+  public Current getCurrent() {
     return intakePivotMotor.getStatorCurrent().getValue();
   }
 
