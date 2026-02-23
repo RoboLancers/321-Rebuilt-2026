@@ -14,6 +14,8 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 @Logged
@@ -74,13 +76,29 @@ public class IntakeRollers extends SubsystemBase {
     setVelocity(rollerTargetVelocity);
   }
 
-  @Logged(name = "rollerVelocity")
+  @Logged(name = "intakeRollersVelocity")
   public double getRollerVelocity() {
     return rollerMotor.getVelocity().getValueAsDouble();
   }
 
-  @Logged(name = "atTargetRollerVelocity")
-  public boolean atTargetVoltage() {
+  @Logged(name = "intakeRollersAtTargetVelocity")
+  public boolean atTargetVelocity() {
     return rollerMotor.getVelocity().getValue() == targetVelocity;
   }
+
+  @Logged(name = "intakeRollersTargetVelocity")
+  public double getRollerTargetVelocity(){
+    return targetVelocity.in(RPM);
+  }
+
+  @Logged(name = "intakeRollersVoltage")
+  public Voltage getVoltage(){
+    return rollerMotor.getMotorVoltage().getValue();
+  }
+
+  @Logged (name = "intakeRollersCurrent")
+  public Current getCurrent(){
+    return rollerMotor.getStatorCurrent().getValue();
+  }
+
 }

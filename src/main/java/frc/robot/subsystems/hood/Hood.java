@@ -82,13 +82,13 @@ public class Hood extends SubsystemBase {
     hoodMotor.setControl(new MotionMagicVoltage(angle));
   }
 
-  @Logged(name = "currentPitch")
+  @Logged(name = "hoodPitch")
   public Angle getAngle() {
     Angle angle = Degrees.of(hoodMotor.getPosition().getValueAsDouble());
     return angle;
   }
 
-  @Logged(name = "velocity")
+  @Logged(name = "hoodVelocity")
   public AngularVelocity getVelocity() {
     return hoodMotor.getVelocity().getValue();
   }
@@ -122,17 +122,17 @@ public class Hood extends SubsystemBase {
     goToAngle(Degrees.of(targetAngle));
   }
 
-  @Logged(name = "targetAngle")
+  @Logged(name = "hoodTargetAngle")
   public Angle getTargetAngle() {
     return this.targetAngle;
   }
 
-  @Logged(name = "voltage")
+  @Logged(name = "hoodVoltage")
   public Voltage getVoltage(){
     return hoodMotor.getMotorVoltage().getValue();
   }
 
-  @Logged (name = "current")
+  @Logged (name = "hoodCurrent")
   public Current getCurrent(){
     return hoodMotor.getStatorCurrent().getValue();
   }

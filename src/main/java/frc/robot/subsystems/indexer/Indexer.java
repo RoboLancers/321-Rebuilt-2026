@@ -77,15 +77,18 @@ public class Indexer extends SubsystemBase {
   public AngularVelocity getTargetVelocity() {
     return this.targetVelocity;
   }
-
-  public double getVelocity() {
-    return motor.getVelocity().getValueAsDouble();
+  
+@Logged(name = "indexerVelocity")
+  public AngularVelocity getVelocity() {
+    return motor.getVelocity().getValue();
   }
 
+  @Logged(name = "indexerVoltage")
   public Voltage getVoltage() {
     return motor.getMotorVoltage().getValue();
   }
 
+  @Logged(name = "indexerCurrent")
   public Current getIndexerCurrent() {
     return motor.getStatorCurrent().getValue();
   }
