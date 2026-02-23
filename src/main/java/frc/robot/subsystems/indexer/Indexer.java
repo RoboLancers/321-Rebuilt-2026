@@ -20,7 +20,6 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-@Logged
 public class Indexer extends SubsystemBase {
 
   @Logged private TalonFX motor = new TalonFX(IndexerConstants.kMotorID);
@@ -78,14 +77,17 @@ public class Indexer extends SubsystemBase {
     return this.targetVelocity;
   }
 
-  public double getVelocity() {
-    return motor.getVelocity().getValueAsDouble();
+  @Logged(name = "indexerVelocity")
+  public AngularVelocity getVelocity() {
+    return motor.getVelocity().getValue();
   }
 
+  @Logged(name = "indexerVoltage")
   public Voltage getVoltage() {
     return motor.getMotorVoltage().getValue();
   }
 
+  @Logged(name = "indexerCurrent")
   public Current getIndexerCurrent() {
     return motor.getStatorCurrent().getValue();
   }

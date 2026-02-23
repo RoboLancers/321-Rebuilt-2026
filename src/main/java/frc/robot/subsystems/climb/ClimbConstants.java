@@ -16,9 +16,9 @@ import edu.wpi.first.units.measure.Current;
 
 public class ClimbConstants {
 
-  public static final Angle kTargetAngle = Degrees.of(360);
+  public static final Angle kClimbTargetAngle = Degrees.of(0);
 
-  public static final Angle kTargetPivotAngle = Degrees.of(90);
+  public static final Angle kPivotTargetAngle = Degrees.of(90);
 
   public static final double kP = 0;
 
