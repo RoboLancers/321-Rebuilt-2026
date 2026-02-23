@@ -5,6 +5,8 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -22,6 +24,7 @@ import frc.robot.util.RebuiltUtil;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+@Logged
 public class RobotContainer {
 
   private final CommandXboxController driver = new CommandXboxController(0);
