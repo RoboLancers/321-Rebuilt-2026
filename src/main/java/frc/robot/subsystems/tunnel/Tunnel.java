@@ -17,6 +17,7 @@ import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -30,7 +31,7 @@ public class Tunnel extends SubsystemBase {
 
   @Logged private TalonFX tunnelMotor = new TalonFX(TunnelConstants.kTunnelMotorId);
 
-  @NotLogged private AngularVelocity targetVelocity = RPM.of(0);
+  private AngularVelocity targetVelocity = RPM.of(0);
 
   public Tunnel() {
     tunnelMotorConfiguration();
@@ -64,13 +65,13 @@ public class Tunnel extends SubsystemBase {
     tunnelMotor.getConfigurator().apply(tunnelMotorConfiguration);
   }
 
-  @Logged(name = "velocity")
+  @Logged(name = "tunnelVelocity")
   public AngularVelocity getVelocity() {
     AngularVelocity velocity = RPM.of(tunnelMotor.getVelocity().getValueAsDouble());
     return velocity;
   }
 
-  @Logged(name = "targetVelocity")
+  @Logged(name = "tunnelTargetVelocity")
   public AngularVelocity getTargetVelocity() {
     return this.targetVelocity;
   }
@@ -96,5 +97,15 @@ public class Tunnel extends SubsystemBase {
     tunnelFeedforward.setKv(kV);
 
     runAtVelocity(RPM.of(targetVelocity));
+  }
+
+  @Logged(name = "tunnelVoltage")
+  public Voltage getVoltage(){
+    return tunnelMotor.getMotorVoltage().getValue();
+  }
+
+  @Logged (name = "tunnelCurrent")
+  public Current getCurrent(){
+    return tunnelMotor.getStatorCurrent().getValue();
   }
 }
