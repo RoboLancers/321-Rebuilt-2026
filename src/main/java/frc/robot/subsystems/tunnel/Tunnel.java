@@ -13,7 +13,6 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.epilogue.Logged;
-import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -100,12 +99,12 @@ public class Tunnel extends SubsystemBase {
   }
 
   @Logged(name = "tunnelVoltage")
-  public Voltage getVoltage(){
+  public Voltage getVoltage() {
     return tunnelMotor.getMotorVoltage().getValue();
   }
 
-  @Logged (name = "tunnelCurrent")
-  public Current getCurrent(){
+  @Logged(name = "tunnelCurrent")
+  public Current getCurrent() {
     return tunnelMotor.getStatorCurrent().getValue();
   }
 }

@@ -129,37 +129,36 @@ public class Climb extends SubsystemBase {
   }
 
   @Logged(name = "climbPivotVoltage")
-  public Voltage getPivotVoltage(){
+  public Voltage getPivotVoltage() {
     Voltage voltage = pivotClimbMotor.getMotorVoltage().getValue();
     return voltage;
   }
 
   @Logged(name = "climbPivotCurrent")
-  public Current getPivotCurrent(){
+  public Current getPivotCurrent() {
     Current current = pivotClimbMotor.getStatorCurrent().getValue();
     return current;
   }
 
   @Logged(name = "climbVoltage")
-  public Voltage getClimbVoltage(){
+  public Voltage getClimbVoltage() {
     Voltage voltage = climbMotor.getMotorVoltage().getValue();
     return voltage;
   }
 
   @Logged(name = "climbCurrent")
-  public Current getClimbCurrent(){
+  public Current getClimbCurrent() {
     Current current = climbMotor.getStatorCurrent().getValue();
     return current;
   }
 
   @Logged(name = "magnetOn")
-    public boolean getMagnetActivationStatus(){
-      boolean magnetOn = (magnetRelay.get() == Value.kOn) ? true : false;
-      return magnetOn;
-    }
-  
+  public boolean getMagnetActivationStatus() {
+    boolean magnetOn = (magnetRelay.get() == Value.kOn) ? true : false;
+    return magnetOn;
+  }
 
-  @Logged (name = "hasClimbed")
+  @Logged(name = "hasClimbed")
   public boolean atTargetAngle() {
     boolean atAngle =
         Math.abs(getClimbAngle().in(Degrees) - ClimbConstants.kClimbTargetAngle.in(Degrees))
@@ -167,7 +166,7 @@ public class Climb extends SubsystemBase {
     return atAngle;
   }
 
-  @Logged (name = "pivotOut")
+  @Logged(name = "pivotOut")
   public boolean atPivotTargetAngle() {
     boolean atAngle =
         Math.abs(getPivotAngle().in(Degrees) - ClimbConstants.kPivotTargetAngle.in(Degrees))
@@ -179,7 +178,8 @@ public class Climb extends SubsystemBase {
     Voltage volts =
         Volts.of(
             climbController.calculate(getClimbAngle().in(Degrees), angle.in(Degrees))
-                + climbFeedforward.calculate(getClimbAngle().in(Degrees), getClimbVelocity().in(RPM)));
+                + climbFeedforward.calculate(
+                    getClimbAngle().in(Degrees), getClimbVelocity().in(RPM)));
     climbMotor.setVoltage(volts.in(Volts));
   }
 

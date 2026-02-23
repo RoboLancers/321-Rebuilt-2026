@@ -77,8 +77,8 @@ public class IntakeRollers extends SubsystemBase {
   }
 
   @Logged(name = "intakeRollersVelocity")
-  public double getRollerVelocity() {
-    return rollerMotor.getVelocity().getValueAsDouble();
+  public AngularVelocity getRollerVelocity() {
+    return rollerMotor.getVelocity().getValue();
   }
 
   @Logged(name = "intakeRollersAtTargetVelocity")
@@ -87,18 +87,17 @@ public class IntakeRollers extends SubsystemBase {
   }
 
   @Logged(name = "intakeRollersTargetVelocity")
-  public double getRollerTargetVelocity(){
-    return targetVelocity.in(RPM);
+  public AngularVelocity getRollerTargetVelocity() {
+    return targetVelocity;
   }
 
   @Logged(name = "intakeRollersVoltage")
-  public Voltage getVoltage(){
+  public Voltage getVoltage() {
     return rollerMotor.getMotorVoltage().getValue();
   }
 
-  @Logged (name = "intakeRollersCurrent")
-  public Current getCurrent(){
+  @Logged(name = "intakeRollersCurrent")
+  public Current getCurrent() {
     return rollerMotor.getStatorCurrent().getValue();
   }
-
 }

@@ -20,7 +20,6 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import edu.wpi.first.epilogue.Logged;
-import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -128,12 +127,12 @@ public class Hood extends SubsystemBase {
   }
 
   @Logged(name = "hoodVoltage")
-  public Voltage getVoltage(){
+  public Voltage getVoltage() {
     return hoodMotor.getMotorVoltage().getValue();
   }
 
-  @Logged (name = "hoodCurrent")
-  public Current getCurrent(){
+  @Logged(name = "hoodCurrent")
+  public Current getCurrent() {
     return hoodMotor.getStatorCurrent().getValue();
   }
 }

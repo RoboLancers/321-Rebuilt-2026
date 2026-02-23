@@ -95,7 +95,7 @@ public class Shooter extends SubsystemBase {
   }
 
   @Logged(name = "shooterCurrent")
-  public Current getCurrent(){
+  public Current getCurrent() {
     return motor.getStatorCurrent().getValue();
   }
 }

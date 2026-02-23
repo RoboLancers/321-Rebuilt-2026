@@ -77,8 +77,8 @@ public class Indexer extends SubsystemBase {
   public AngularVelocity getTargetVelocity() {
     return this.targetVelocity;
   }
-  
-@Logged(name = "indexerVelocity")
+
+  @Logged(name = "indexerVelocity")
   public AngularVelocity getVelocity() {
     return motor.getVelocity().getValue();
   }

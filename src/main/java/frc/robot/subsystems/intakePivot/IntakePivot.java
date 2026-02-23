@@ -2,7 +2,6 @@
 package frc.robot.subsystems.intakePivot;
 
 import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.DegreesPerSecond;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
@@ -18,7 +17,6 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -91,13 +89,13 @@ public class IntakePivot extends SubsystemBase {
     goToAngle(Degrees.of(angle));
   }
 
-  @Logged(name="intakePivotVOltage")
+  @Logged(name = "intakePivotVOltage")
   public Voltage getVoltage() {
     return intakePivotMotor.getMotorVoltage().getValue();
   }
 
   @Logged(name = "intakePivotTargetAngle")
-  public Angle getTargetAngle(){
+  public Angle getTargetAngle() {
     return targetAngle;
   }
 
@@ -106,9 +104,8 @@ public class IntakePivot extends SubsystemBase {
     return intakePivotMotor.getVelocity().getValueAsDouble();
   }
 
-@Logged(name ="intakePivotCurrent")
+  @Logged(name = "intakePivotCurrent")
   public Current getCurrent() {
     return intakePivotMotor.getStatorCurrent().getValue();
   }
-
 }
