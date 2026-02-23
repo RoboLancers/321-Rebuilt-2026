@@ -18,6 +18,7 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Relay.Value;
@@ -116,7 +117,7 @@ public class Climb extends SubsystemBase {
   }
 
   @Logged(name = "climbAngle")
-  public Angle getAngle() {
+  public Angle getClimbAngle() {
     Angle angle = Degrees.of(clawEncoder.getAbsolutePosition().getValueAsDouble());
     return angle;
   }
@@ -127,10 +128,34 @@ public class Climb extends SubsystemBase {
     return angle;
   }
 
+  @Logged(name = "climbPivotVoltage")
+  public Voltage getPivotVoltage(){
+    Voltage voltage = pivotClimbMotor.getMotorVoltage().getValue();
+    return voltage;
+  }
+
+  @Logged(name = "climbPivotCurrent")
+  public Current getPivotCurrent(){
+    Current current = pivotClimbMotor.getStatorCurrent().getValue();
+    return current;
+  }
+
+  @Logged(name = "climbVoltage")
+  public Voltage getClimbVoltage(){
+    Voltage voltage = climbMotor.getMotorVoltage().getValue();
+    return voltage;
+  }
+
+  @Logged(name = "climbCurrent")
+  public Current getClimbCurrent(){
+    Current current = climbMotor.getStatorCurrent().getValue();
+    return current;
+  }
+
   @Logged
   public boolean atTargetAngle() {
     boolean atAngle =
-        Math.abs(getAngle().in(Degrees) - ClimbConstants.kTargetAngle.in(Degrees))
+        Math.abs(getClimbAngle().in(Degrees) - ClimbConstants.kTargetAngle.in(Degrees))
             < ClimbConstants.kClimbAngleTolerance.in(Degrees);
     return atAngle;
   }
@@ -146,8 +171,8 @@ public class Climb extends SubsystemBase {
   public void goToAngle(Angle angle) {
     Voltage volts =
         Volts.of(
-            climbController.calculate(getAngle().in(Degrees), angle.in(Degrees))
-                + climbFeedforward.calculate(getAngle().in(Degrees), getClimbVelocity().in(RPM)));
+            climbController.calculate(getClimbAngle().in(Degrees), angle.in(Degrees))
+                + climbFeedforward.calculate(getClimbAngle().in(Degrees), getClimbVelocity().in(RPM)));
     climbMotor.setVoltage(volts.in(Volts));
   }
 
