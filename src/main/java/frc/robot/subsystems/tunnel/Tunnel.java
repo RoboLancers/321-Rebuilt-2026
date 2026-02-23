@@ -13,6 +13,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -22,11 +23,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 @Logged
 public class Tunnel extends SubsystemBase {
 
-  PIDController tunnelController = new PIDController(TunnelConstants.kP, 0, 0);
+  private PIDController tunnelController = new PIDController(TunnelConstants.kP, 0, 0);
 
-  SimpleMotorFeedforward tunnelFeedforward = new SimpleMotorFeedforward(0, TunnelConstants.kV, 0);
+  private SimpleMotorFeedforward tunnelFeedforward =
+      new SimpleMotorFeedforward(0, TunnelConstants.kV, 0);
 
-  @Logged TalonFX tunnelMotor = new TalonFX(TunnelConstants.kTunnelMotorId);
+  @Logged private TalonFX tunnelMotor = new TalonFX(TunnelConstants.kTunnelMotorId);
+
+  @NotLogged private AngularVelocity targetVelocity = RPM.of(0);
 
   public Tunnel() {
     tunnelMotorConfiguration();
@@ -60,13 +64,19 @@ public class Tunnel extends SubsystemBase {
     tunnelMotor.getConfigurator().apply(tunnelMotorConfiguration);
   }
 
-  @Logged(name = "tunnelVelocity")
+  @Logged(name = "velocity")
   public AngularVelocity getVelocity() {
     AngularVelocity velocity = RPM.of(tunnelMotor.getVelocity().getValueAsDouble());
     return velocity;
   }
 
+  @Logged(name = "targetVelocity")
+  public AngularVelocity getTargetVelocity() {
+    return this.targetVelocity;
+  }
+
   public void runAtVelocity(AngularVelocity velocity) {
+    this.targetVelocity = velocity;
     Voltage volts =
         Volts.of(
             tunnelController.calculate(getVelocity().in(RPM), velocity.in(RPM))
