@@ -23,7 +23,7 @@ public class Robot extends TimedRobot {
   private static final String kTopAuto = "Top Auto";
   private static final String kTopBumpAuto = "Top Bump Auto";
 
-  @Logged (name = "autonomousCommandName")
+  @Logged(name = "autonomousCommandName")
   public String getAutonomousCommand() {
     return chooser.getSelected();
   }

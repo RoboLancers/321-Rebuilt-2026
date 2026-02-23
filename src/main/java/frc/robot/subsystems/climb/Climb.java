@@ -24,7 +24,6 @@ import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Relay.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-@Logged
 public class Climb extends SubsystemBase {
 
   private TalonFX climbMotor = new TalonFX(ClimbConstants.kClimbMotorId);

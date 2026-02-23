@@ -6,7 +6,6 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.epilogue.Logged;
-import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -26,7 +25,7 @@ import java.util.function.Supplier;
 
 public class RobotContainer {
 
-    @Logged (name = "driverController")
+  @Logged(name = "driverController")
   private final CommandXboxController driver = new CommandXboxController(0);
 
   public Drivetrain drivetrain = Drivetrain.create();
@@ -64,7 +63,7 @@ public class RobotContainer {
                   ? 1.5
                   : DrivetrainConstants.kMaxLinearVelocity.in(MetersPerSecond));
 
-@Logged (name = "driverStrafeValue")
+  @Logged(name = "driverStrafeValue")
   private DoubleSupplier driverStrafe =
       () ->
           -MathUtil.applyDeadband(
@@ -75,7 +74,7 @@ public class RobotContainer {
                   ? 1.5
                   : DrivetrainConstants.kMaxLinearVelocity.in(MetersPerSecond));
 
-                  @Logged(name = "driverTurnValue")
+  @Logged(name = "driverTurnValue")
   private DoubleSupplier driverTurn =
       () ->
           -MathUtil.applyDeadband(driver.getRightX(), DrivetrainConstants.kRotationDeadband)
@@ -84,11 +83,11 @@ public class RobotContainer {
   private Supplier<Pose2d> currentRobotPose = () -> drivetrain.getPose();
 
   private Supplier<Rotation2d> hubHeading = () -> RebuiltUtil.getHubHeading(currentRobotPose);
-  
-    @Logged(name = "calculatedHubHeading")
-    public double getHubHeading(){
-        return hubHeading.get().getDegrees();
-    }
+
+  @Logged(name = "calculatedHubHeading")
+  public double getHubHeading() {
+    return hubHeading.get().getDegrees();
+  }
 
   public RobotContainer() {
     configureBindings();
@@ -126,7 +125,7 @@ public class RobotContainer {
     // driver.rightBumper().whileTrue(Score.feedFuel(shooter, hood, spindexer, tunnel));
   }
 
-  @Logged (name = "autonomousCommand")
+  @Logged(name = "autonomousCommand")
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
   }

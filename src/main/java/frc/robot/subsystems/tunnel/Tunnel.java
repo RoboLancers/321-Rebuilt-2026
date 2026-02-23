@@ -20,7 +20,6 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-@Logged
 public class Tunnel extends SubsystemBase {
 
   private PIDController tunnelController = new PIDController(TunnelConstants.kP, 0, 0);

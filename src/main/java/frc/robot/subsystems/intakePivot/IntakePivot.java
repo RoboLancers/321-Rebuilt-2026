@@ -22,7 +22,6 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-@Logged(name = "Intake Pivot")
 public class IntakePivot extends SubsystemBase {
 
   @Logged private TalonFX intakePivotMotor = new TalonFX(IntakeConstants.kPivotMotorId);
