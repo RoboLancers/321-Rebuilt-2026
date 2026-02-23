@@ -24,9 +24,9 @@ import frc.robot.util.RebuiltUtil;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
-@Logged
 public class RobotContainer {
 
+    @Logged (name = "driverController")
   private final CommandXboxController driver = new CommandXboxController(0);
 
   public Drivetrain drivetrain = Drivetrain.create();
@@ -41,7 +41,7 @@ public class RobotContainer {
                       est.standardDeviations(),
                       est.standardDeviations())));
 
-  @NotLogged private final SendableChooser<Command> autoChooser;
+  private final SendableChooser<Command> autoChooser;
   // private final IntakeRollers intakeRollers = new IntakeRollers();
   // private final IntakeFuel intakeFuel = new IntakeFuel(intakeRollers);
   // private final Shooter shooter = new Shooter();
@@ -53,6 +53,7 @@ public class RobotContainer {
 
   public Trigger slowMode = driver.b();
 
+  @Logged(name = "driverForwardValue")
   private DoubleSupplier driverForward =
       () ->
           -MathUtil.applyDeadband(
@@ -63,6 +64,7 @@ public class RobotContainer {
                   ? 1.5
                   : DrivetrainConstants.kMaxLinearVelocity.in(MetersPerSecond));
 
+@Logged (name = "driverStrafeValue")
   private DoubleSupplier driverStrafe =
       () ->
           -MathUtil.applyDeadband(
@@ -73,6 +75,7 @@ public class RobotContainer {
                   ? 1.5
                   : DrivetrainConstants.kMaxLinearVelocity.in(MetersPerSecond));
 
+                  @Logged(name = "driverTurnValue")
   private DoubleSupplier driverTurn =
       () ->
           -MathUtil.applyDeadband(driver.getRightX(), DrivetrainConstants.kRotationDeadband)
@@ -81,6 +84,11 @@ public class RobotContainer {
   private Supplier<Pose2d> currentRobotPose = () -> drivetrain.getPose();
 
   private Supplier<Rotation2d> hubHeading = () -> RebuiltUtil.getHubHeading(currentRobotPose);
+  
+    @Logged(name = "calculatedHubHeading")
+    public double getHubHeading(){
+        return hubHeading.get().getDegrees();
+    }
 
   public RobotContainer() {
     configureBindings();
@@ -118,6 +126,7 @@ public class RobotContainer {
     // driver.rightBumper().whileTrue(Score.feedFuel(shooter, hood, spindexer, tunnel));
   }
 
+  @Logged (name = "autonomousCommand")
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
   }
