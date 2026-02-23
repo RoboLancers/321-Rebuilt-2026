@@ -16,6 +16,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -78,16 +79,23 @@ public class Shooter extends SubsystemBase {
     motor.setControl(new MotionMagicVelocityVoltage(RPM.of(targetRPM)));
   }
 
-  @Logged(name = "TargetShooterVelocity")
+  @Logged(name = "targetShooterVelocity")
   public AngularVelocity getTargetShooterVelocity() {
     return this.targetShooterVelocity;
   }
 
-  public double getVelocity() {
-    return motor.getVelocity().getValueAsDouble();
+  @Logged(name = "shooterVelocity")
+  public AngularVelocity getVelocity() {
+    return motor.getVelocity().getValue();
   }
 
+  @Logged(name = "shooterVoltage")
   public Voltage getVoltage() {
     return motor.getMotorVoltage().getValue();
+  }
+
+  @Logged(name = "shooterCurrent")
+  public Current getCurrent(){
+    return motor.getStatorCurrent().getValue();
   }
 }
