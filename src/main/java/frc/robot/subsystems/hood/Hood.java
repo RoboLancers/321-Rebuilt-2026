@@ -108,7 +108,8 @@ public class Hood extends SubsystemBase {
     hoodMotor.setVoltage(volts.in(Volts));
   }
 
-  public boolean atTargetAngle(Angle targetAngle) {
+  @Logged(name = "hoodAtTargetAngle")
+  public boolean atTargetAngle() {
     boolean atTargetAngle =
         Math.abs(getAngle().in(Degrees) - targetAngle.in(Degrees))
             < HoodConstants.kAngleTolerance.in(Degrees);
