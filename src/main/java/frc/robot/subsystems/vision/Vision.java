@@ -3,6 +3,7 @@ package frc.robot.subsystems.vision;
 
 import static edu.wpi.first.units.Units.Meters;
 
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -52,10 +53,10 @@ public class Vision extends SubsystemBase {
 
   private PhotonCamera rightClimbCamera = new PhotonCamera(VisionConstants.kRightClimbCameraName);
 
-  private PhotonCamera leftShooterCamera =
-      new PhotonCamera(VisionConstants.kLeftShooterCameraName);
+  private PhotonCamera leftShooterCamera = new PhotonCamera(VisionConstants.kLeftShooterCameraName);
 
-  private PhotonCamera rightShooterCamera = new PhotonCamera(VisionConstants.kRightShooterCameraName);
+  private PhotonCamera rightShooterCamera =
+      new PhotonCamera(VisionConstants.kRightShooterCameraName);
 
   public List<PhotonCamera> cameras =
       List.of(leftClimbCamera, rightClimbCamera, leftShooterCamera, rightShooterCamera);
@@ -85,7 +86,11 @@ public class Vision extends SubsystemBase {
           VisionConstants.kRightShooterCameraTransform);
 
   public List<PhotonPoseEstimator> estimators =
-      List.of(leftClimbPoseEstimator, rightClimbPoseEstimator, leftShooterPoseEstimator, rightShooterPoseEstimator);
+      List.of(
+          leftClimbPoseEstimator,
+          rightClimbPoseEstimator,
+          leftShooterPoseEstimator,
+          rightShooterPoseEstimator);
 
   public static Vision create(Consumer<VisionEstimate> visionEstConsumer) {
     return new Vision(visionEstConsumer);
@@ -194,7 +199,32 @@ public class Vision extends SubsystemBase {
     }
   }
 
-  public boolean areCamerasConnected;
+  public boolean areCamerasConnected = false;
+
+  @Logged(name = "camerasAreConnected")
+  public boolean getCamerasConnected() {
+    return areCamerasConnected;
+  }
+
+  @Logged(name = "leftClimbCameraConnected")
+  public boolean getLeftClimbCameraConnected() {
+    return leftClimbCamera.isConnected();
+  }
+
+  @Logged(name = "rightClimbCameraConnected")
+  public boolean getRightClimbCameraConnected() {
+    return rightClimbCamera.isConnected();
+  }
+
+  @Logged(name = "leftShooterCameraConnected")
+  public boolean getLeftShooterCameraConnected() {
+    return leftShooterCamera.isConnected();
+  }
+
+  @Logged(name = "rightShooterCameraConnected")
+  public boolean getRightShooterCameraConnected() {
+    return rightShooterCamera.isConnected();
+  }
 
   @Override
   public void periodic() {
