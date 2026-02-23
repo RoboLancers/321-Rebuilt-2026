@@ -20,7 +20,6 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import edu.wpi.first.epilogue.Logged;
-import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -28,13 +27,12 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-@Logged
 public class Hood extends SubsystemBase {
 
   private DutyCycleEncoder absoluteEncoder = new DutyCycleEncoder(HoodConstants.kHoodEncoderId);
 
   private TalonFX hoodMotor = new TalonFX(HoodConstants.kHoodMotorId);
-  @NotLogged private Angle targetAngle = HoodConstants.kStartingAngle;
+  private Angle targetAngle = HoodConstants.kStartingAngle;
 
   public Hood() {
     configureMotors();
@@ -82,18 +80,15 @@ public class Hood extends SubsystemBase {
     hoodMotor.setControl(new MotionMagicVoltage(angle));
   }
 
-  @Logged(name = "currentPitch")
+  @Logged(name = "hoodPitch")
   public Angle getAngle() {
     Angle angle = Degrees.of(hoodMotor.getPosition().getValueAsDouble());
     return angle;
   }
 
+  @Logged(name = "hoodVelocity")
   public AngularVelocity getVelocity() {
     return hoodMotor.getVelocity().getValue();
-  }
-
-  public Current getCurrent() {
-    return hoodMotor.getStatorCurrent().getValue();
   }
 
   public boolean isHomedVelocity() {
@@ -113,7 +108,8 @@ public class Hood extends SubsystemBase {
     hoodMotor.setVoltage(volts.in(Volts));
   }
 
-  public boolean atTargetAngle(Angle targetAngle) {
+  @Logged(name = "hoodAtTargetAngle")
+  public boolean atTargetAngle() {
     boolean atTargetAngle =
         Math.abs(getAngle().in(Degrees) - targetAngle.in(Degrees))
             < HoodConstants.kAngleTolerance.in(Degrees);
@@ -125,8 +121,18 @@ public class Hood extends SubsystemBase {
     goToAngle(Degrees.of(targetAngle));
   }
 
-  @Logged(name = "targetAngle")
+  @Logged(name = "hoodTargetAngle")
   public Angle getTargetAngle() {
     return this.targetAngle;
+  }
+
+  @Logged(name = "hoodVoltage")
+  public Voltage getVoltage() {
+    return hoodMotor.getMotorVoltage().getValue();
+  }
+
+  @Logged(name = "hoodCurrent")
+  public Current getCurrent() {
+    return hoodMotor.getStatorCurrent().getValue();
   }
 }
