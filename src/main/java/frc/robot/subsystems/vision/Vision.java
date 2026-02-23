@@ -12,11 +12,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotConstants;
-import frc.robot.subsystems.vision.CameraStatusLED.StatusType;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Dictionary;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
@@ -30,7 +27,6 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class Vision extends SubsystemBase {
 
-  private CANdle LEDCandle;
   public double currentAmbiguity;
   public final int candlePort = 0;
   public Color status;
@@ -99,18 +95,12 @@ public class Vision extends SubsystemBase {
           leftShooterPoseEstimator,
           rightShooterPoseEstimator);
 
-  public static Vision create(Consumer<VisionEstimate> visionEstConsume, CANdle LEDCandle) {
-    return new Vision(visionEstConsume, LEDCandle);
+  public static Vision create(Consumer<VisionEstimate> visionEstConsume) {
+    return new Vision(visionEstConsume);
   }
 
-  public Vision(Consumer<VisionEstimate> visionEstConsumer, CANdle LEDCandle) {
+  public Vision(Consumer<VisionEstimate> visionEstConsumer) {
     this.visionEstConsumer = visionEstConsumer;
-    this.LEDCandle = LEDCandle;
-
-    cameraStatusLEDs.put(backLeftCamera, new CameraStatusLED(LEDCandle, 0, 1));
-    cameraStatusLEDs.put(frontLeftCamera, new CameraStatusLED(LEDCandle, 2, 3));
-    cameraStatusLEDs.put(backRightCamera, new CameraStatusLED(LEDCandle, 4, 5));
-    cameraStatusLEDs.put(frontRightCamera, new CameraStatusLED(LEDCandle, 6, 7));
   }
 
   private List<VisionEstimate> getVisionEstimates() {
@@ -121,11 +111,10 @@ public class Vision extends SubsystemBase {
 
     for (int i = 0; i < cameras.size(); i++) {
 
-      CameraStatusLED statusLED = cameraStatusLEDs.get(cameras.get(i));
       if (cameras.get(i) == null || !cameras.get(i).isConnected()) {
 
         // set the corresponding color to red
-        statusLED.updateStatusColor(StatusType.Error);
+        ;
         continue;
       }
 
@@ -134,12 +123,10 @@ public class Vision extends SubsystemBase {
 
       if (!latestResult.hasTargets() || unreadResults.isEmpty()) {
         // set corresponding color to white
-        statusLED.updateStatusColor(StatusType.NotDetected);
         continue;
       }
 
       // set correponding color to purple
-      statusLED.updateStatusColor(StatusType.Detected);
 
       EstimatedRobotPose estimatedPose =
           estimators
@@ -270,12 +257,6 @@ public class Vision extends SubsystemBase {
         break;
       }
     }
-
-    SmartDashboard.putString("Camera 1", cameraStatusLEDs.get(frontLeftCamera).getStatusColorHex());
-    SmartDashboard.putString(
-        "Camera 2 ", cameraStatusLEDs.get(frontRightCamera).getStatusColorHex());
-    SmartDashboard.putString("Camera 3", cameraStatusLEDs.get(backRightCamera).getStatusColorHex());
-    SmartDashboard.putString("Camera 4", cameraStatusLEDs.get(backLeftCamera).getStatusColorHex());
 
     SmartDashboard.putBoolean("Cameras Are Connected", areCamerasConnected);
 
