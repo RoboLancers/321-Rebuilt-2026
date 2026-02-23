@@ -36,13 +36,13 @@ public class ClimbConstants {
 
   public static final int kEncoderId = 0;
 
-  public static final double kClimbStatorLimit = 1;
+  public static final double kClimbStatorLimit = 40;
 
-  public static final double kClimbSupplyLimit = 1;
+  public static final double kClimbSupplyLimit = 40;
 
-  public static final double kPivotClimbStatorLimit = 1;
+  public static final double kPivotClimbStatorLimit = 40;
 
-  public static final double kPivotClimbSupplyLimit = 1;
+  public static final double kPivotClimbSupplyLimit = 40;
 
   public static final NeutralModeValue kClimbNeutralMode = NeutralModeValue.Brake;
 
