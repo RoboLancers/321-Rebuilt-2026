@@ -159,7 +159,7 @@ public class Climb extends SubsystemBase {
     }
   
 
-  @Logged
+  @Logged (name = "hasClimbed")
   public boolean atTargetAngle() {
     boolean atAngle =
         Math.abs(getClimbAngle().in(Degrees) - ClimbConstants.kClimbTargetAngle.in(Degrees))
@@ -167,7 +167,7 @@ public class Climb extends SubsystemBase {
     return atAngle;
   }
 
-  @Logged
+  @Logged (name = "pivotOut")
   public boolean atPivotTargetAngle() {
     boolean atAngle =
         Math.abs(getPivotAngle().in(Degrees) - ClimbConstants.kPivotTargetAngle.in(Degrees))
