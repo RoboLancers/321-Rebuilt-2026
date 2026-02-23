@@ -48,7 +48,6 @@ import java.util.Arrays;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
-@Logged
 public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> implements Subsystem {
   ChassisSpeeds speeds = new ChassisSpeeds();
 
@@ -96,6 +95,7 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
               DrivetrainConstants.kTuneHeadingGains.kD())
           .withRotationalDeadband(0.1);
 
+  @Logged(name = "drivetrainPoseField")
   public Field2d poseField = new Field2d();
 
   private AlignmentSetpoint alignmentSetpoint = new AlignmentSetpoint(Pose2d.kZero, true);

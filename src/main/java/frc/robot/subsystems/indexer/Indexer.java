@@ -1,8 +1,8 @@
 /* (C) RoboLancers 2026 */
 package frc.robot.subsystems.indexer;
 
+import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.RPM;
-import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
@@ -17,16 +17,13 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
-import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-@Logged
 public class Indexer extends SubsystemBase {
 
   @Logged private TalonFX motor = new TalonFX(IndexerConstants.kMotorID);
-  private Velocity targetVelocity;
-  private Voltage targetVoltage;
+  private AngularVelocity targetVelocity = DegreesPerSecond.of(0);
 
   public Indexer() {
     configureMotors();
@@ -66,11 +63,8 @@ public class Indexer extends SubsystemBase {
   }
 
   public void goToVelocity(AngularVelocity targetVelocity) {
+    this.targetVelocity = targetVelocity;
     motor.setControl(new MotionMagicVelocityVoltage(targetVelocity));
-  }
-
-  public void setVoltage(Voltage targetVoltage) {
-    motor.setVoltage(targetVoltage.in(Volts));
   }
 
   public void tune(double kP, double kD, double kV, double targetSpeed) {
@@ -79,23 +73,21 @@ public class Indexer extends SubsystemBase {
   }
 
   @Logged(name = "indexerTargetVelocity")
-  public Velocity getTargetVelocity() {
+  public AngularVelocity getTargetVelocity() {
     return this.targetVelocity;
   }
 
-  public double getVelocity() {
-    return motor.getVelocity().getValueAsDouble();
+  @Logged(name = "indexerVelocity")
+  public AngularVelocity getVelocity() {
+    return motor.getVelocity().getValue();
   }
 
-  @Logged(name = "IndexerTargetVoltage")
-  public Voltage getTargetVoltage() {
-    return this.targetVoltage;
-  }
-
+  @Logged(name = "indexerVoltage")
   public Voltage getVoltage() {
     return motor.getMotorVoltage().getValue();
   }
 
+  @Logged(name = "indexerCurrent")
   public Current getIndexerCurrent() {
     return motor.getStatorCurrent().getValue();
   }

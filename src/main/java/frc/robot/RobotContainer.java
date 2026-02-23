@@ -9,10 +9,12 @@ import com.ctre.phoenix6.configs.LEDConfigs;
 import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.signals.VBatOutputModeValue;
 import com.pathplanner.lib.auto.AutoBuilder;
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -42,6 +44,11 @@ public class RobotContainer {
 
   private final CommandXboxController driver = new CommandXboxController(0);
 
+  @Logged(name = "driverController")
+  public XboxController getDriverController() {
+    return driver.getHID();
+  }
+
   public Drivetrain drivetrain = Drivetrain.create();
   public Vision vision =
       Vision.create(
@@ -52,9 +59,9 @@ public class RobotContainer {
                   VecBuilder.fill(
                       est.standardDeviations(),
                       est.standardDeviations(),
-                      est.standardDeviations())),
-          candle);
-  private SendableChooser<Command> autoChooser;
+                      est.standardDeviations())));
+
+  private final SendableChooser<Command> autoChooser;
   // private final IntakeRollers intakeRollers = new IntakeRollers();
   // private final IntakeFuel intakeFuel = new IntakeFuel(intakeRollers);
   // private final Shooter shooter = new Shooter();
@@ -66,6 +73,7 @@ public class RobotContainer {
 
   public Trigger slowMode = driver.b();
 
+  @Logged(name = "driverForwardValue")
   private DoubleSupplier driverForward =
       () ->
           -MathUtil.applyDeadband(
@@ -76,6 +84,7 @@ public class RobotContainer {
                   ? 1.5
                   : DrivetrainConstants.kMaxLinearVelocity.in(MetersPerSecond));
 
+  @Logged(name = "driverStrafeValue")
   private DoubleSupplier driverStrafe =
       () ->
           -MathUtil.applyDeadband(
@@ -86,6 +95,7 @@ public class RobotContainer {
                   ? 1.5
                   : DrivetrainConstants.kMaxLinearVelocity.in(MetersPerSecond));
 
+  @Logged(name = "driverTurnValue")
   private DoubleSupplier driverTurn =
       () ->
           -MathUtil.applyDeadband(driver.getRightX(), DrivetrainConstants.kRotationDeadband)
@@ -94,6 +104,11 @@ public class RobotContainer {
   private Supplier<Pose2d> currentRobotPose = () -> drivetrain.getPose();
 
   private Supplier<Rotation2d> hubHeading = () -> RebuiltUtil.getHubHeading(currentRobotPose);
+
+  @Logged(name = "calculatedHubHeading")
+  public double getHubHeading() {
+    return hubHeading.get().getDegrees();
+  }
 
   public RobotContainer() {
     configureBindings();
@@ -131,6 +146,7 @@ public class RobotContainer {
     // driver.rightBumper().whileTrue(Score.feedFuel(shooter, hood, spindexer, tunnel));
   }
 
+  @Logged(name = "autonomousCommand")
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
   }

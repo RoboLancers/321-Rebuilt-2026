@@ -14,38 +14,45 @@ import frc.robot.RobotConstants;
 
 public class VisionConstants {
 
-  public static final String kBackLeftCameraName = "Back Left Swerve Module Camera";
+  public static final String kLeftClimbCameraName = "Left Climb Camera";
 
-  public static final String kFrontLeftCameraName = "Front Left Swerve Camera";
+  public static final String kRightClimbCameraName = "Right Climb Camera";
 
-  public static final String kFrontRightCameraName = "Front Right";
+  public static final String kLeftShooterCameraName = "Left Shooter Camera";
 
-  public static final String kBackRightCameraName = "Back Right Swerve Camera";
+  public static final String kRightShooterCameraName = "Right Shooter Camera";
 
   public static final double kMinimumConfidence = 0.85;
 
   public static final double kTargetConfidence = 0.95;
 
-  public static final Transform3d kTopElevatorTransform =
+  public static final Transform3d kLeftClimbCameraTransform =
       new Transform3d(
-          Meters.of(0.2314956),
-          Meters.of(-0.16764),
-          Meters.of(0.3103626),
-          new Rotation3d(Degrees.zero(), Degrees.of(-1), Degrees.of(48)));
+          Inches.of(-11.841),
+          Inches.of(10.010),
+          Inches.of(5.797),
+          new Rotation3d(Degrees.zero(), Degrees.of(15), Degrees.of(130)));
 
-  public static final Transform3d kBottomElevatorTransform =
+  public static final Transform3d kRightClimbCameraTransform =
       new Transform3d(
-          Meters.of(0.2280412),
-          Meters.of(-0.1723644),
-          Meters.of(0.2151634),
-          new Rotation3d(Degrees.zero(), Degrees.of(-18), Degrees.of(-10)));
+          Inches.of(-8.591),
+          Inches.of(11.797),
+          Inches.of(5.815),
+          new Rotation3d(Degrees.zero(), Degrees.of(20), Degrees.of(30)));
 
-  public static final Transform3d kBackLeftTransform =
+  public static final Transform3d kLeftShooterCameraTransform =
       new Transform3d(
-          Inches.of(-11.1),
-          Inches.of(8.7),
-          Inches.of(7.82 - 1.575),
-          new Rotation3d(Degrees.of(0), Degrees.of(-5.5), Degrees.of(-20)));
+          Inches.of(-9.026),
+          Inches.of(-11.559),
+          Inches.of(6.062),
+          new Rotation3d(Degrees.zero(), Degrees.of(45), Degrees.of(-65)));
+
+  public static final Transform3d kRightShooterCameraTransform =
+      new Transform3d(
+          Inches.of(-11.123),
+          Inches.of(-9.808),
+          Inches.of(6.084),
+          new Rotation3d(Degrees.zero(), Degrees.of(45), Degrees.of(-115)));
 
   public static final Distance kAllowedFieldDistance = Meters.of(2.5);
   public static final Distance kAllowedFieldHeight = Meters.of(1.25);
