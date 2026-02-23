@@ -152,6 +152,13 @@ public class Climb extends SubsystemBase {
     return current;
   }
 
+  @Logged(name = "magnetOn")
+    public boolean getMagnetActivationStatus(){
+      boolean magnetOn = (magnetRelay.get() == Value.kOn) ? true : false;
+      return magnetOn;
+    }
+  
+
   @Logged
   public boolean atTargetAngle() {
     boolean atAngle =
