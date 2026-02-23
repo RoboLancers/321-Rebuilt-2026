@@ -28,9 +28,9 @@ public class VisionConstants {
 
   public static final Transform3d kLeftClimbCameraTransform =
       new Transform3d(
-          Meters.of(-11.841),
-          Meters.of(10.010),
-          Meters.of(5.797),
+          Inches.of(-11.841),
+          Inches.of(10.010),
+          Inches.of(5.797),
           new Rotation3d(Degrees.zero(), Degrees.of(15), Degrees.of(130)));
 
   public static final Transform3d kRightClimbCameraTransform =
