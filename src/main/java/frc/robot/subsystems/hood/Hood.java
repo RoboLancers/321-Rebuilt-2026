@@ -19,6 +19,8 @@ import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -28,6 +30,7 @@ public class Hood extends SubsystemBase {
   private DutyCycleEncoder absoluteEncoder = new DutyCycleEncoder(HoodConstants.kHoodEncoderId);
 
   private TalonFX hoodMotor = new TalonFX(HoodConstants.kHoodMotorId);
+
   @NotLogged private Angle targetAngle;
 
   public Hood() {
@@ -70,6 +73,7 @@ public class Hood extends SubsystemBase {
   }
 
   public void goToAngle(Angle targetAngle) {
+    this.targetAngle = targetAngle;
     hoodMotor.setControl(new MotionMagicVoltage(targetAngle));
   }
 
@@ -98,5 +102,15 @@ public class Hood extends SubsystemBase {
   @Logged(name = "targetAngle")
   public Angle getTargetAngle() {
     return this.targetAngle;
+  }
+
+  @Logged(name = "voltage")
+  public Voltage getVoltage(){
+    return hoodMotor.getMotorVoltage().getValue();
+  }
+
+  @Logged (name = "current")
+  public Current getCurrent(){
+    return hoodMotor.getStatorCurrent().getValue();
   }
 }
