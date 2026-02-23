@@ -10,6 +10,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -25,8 +26,12 @@ import java.util.function.Supplier;
 
 public class RobotContainer {
 
-  @Logged(name = "driverController")
   private final CommandXboxController driver = new CommandXboxController(0);
+
+  @Logged(name = "driverController")
+  public XboxController getDriverController() {
+    return driver.getHID();
+  }
 
   public Drivetrain drivetrain = Drivetrain.create();
   public Vision vision =
