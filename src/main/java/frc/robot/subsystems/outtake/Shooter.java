@@ -79,7 +79,7 @@ public class Shooter extends SubsystemBase {
     motor.setControl(new MotionMagicVelocityVoltage(RPM.of(targetRPM)));
   }
 
-  @Logged(name = "targetShooterVelocity")
+  @Logged(name = "shooterTargetVelocity")
   public AngularVelocity getTargetShooterVelocity() {
     return this.targetShooterVelocity;
   }
