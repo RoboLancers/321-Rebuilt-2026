@@ -23,6 +23,7 @@ public class Robot extends TimedRobot {
   private static final String kCenterAuto = "Center Auto";
   private static final String kTopAuto = "Top Auto";
   private static final String kTopBumpAuto = "Top Bump Auto";
+  private static final String kDefaultAuto = "No Auto";
 
   public String getAutonomousCommand() {
     return chooser.getSelected();
@@ -42,6 +43,7 @@ public class Robot extends TimedRobot {
     chooser.addOption("Top Auto", kTopAuto);
     chooser.addOption("Bottom Bump Auto", kBottomBumpAuto);
     chooser.addOption("Top Bump Auto", kTopBumpAuto);
+    chooser.setDefaultOption("No Auto", kDefaultAuto);
 
     SmartDashboard.putData("Auto choices", chooser);
   }
