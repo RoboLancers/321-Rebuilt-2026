@@ -26,13 +26,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Climb extends SubsystemBase {
 
-  private TalonFX climbMotor = new TalonFX(ClimbConstants.kClimbMotorId);
+  @Logged private TalonFX climbMotor = new TalonFX(ClimbConstants.kClimbMotorId);
 
-  private TalonFX pivotClimbMotor = new TalonFX(ClimbConstants.kPivotClimbMotorId);
+  @Logged private TalonFX pivotClimbMotor = new TalonFX(ClimbConstants.kPivotClimbMotorId);
 
-  private Relay magnetRelay = new Relay(ClimbConstants.kMagnetId);
+  @Logged private Relay magnetRelay = new Relay(ClimbConstants.kMagnetId);
 
-  private CANcoder clawEncoder = new CANcoder(ClimbConstants.kEncoderId);
+  @Logged private CANcoder clawEncoder = new CANcoder(ClimbConstants.kEncoderId);
 
   private ArmFeedforward climbFeedforward = new ArmFeedforward(0, ClimbConstants.kG, 0, 0, 0);
 

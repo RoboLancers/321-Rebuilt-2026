@@ -23,7 +23,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Shooter extends SubsystemBase {
 
-  @Logged private TalonFX motor = new TalonFX(OuttakeConstants.kMotorID);
+  @Logged private TalonFX shooterMotor = new TalonFX(OuttakeConstants.kMotorID);
 
   @Logged private DigitalInput shooterBeamBreak = new DigitalInput(OuttakeConstants.kBeamBreakID);
 
@@ -61,24 +61,24 @@ public class Shooter extends SubsystemBase {
                     .withMotionMagicCruiseVelocity(OuttakeConstants.kMaxVelocity)
                     .withMotionMagicAcceleration(OuttakeConstants.kMaxAcceleration));
 
-    motor.getConfigurator().apply(configuration);
+    shooterMotor.getConfigurator().apply(configuration);
   }
 
   private void setPID(double kP, double kD, double kV) {
 
     Slot0Configs pid = new Slot0Configs().withKP(kP).withKD(kD).withKV(kV);
 
-    motor.getConfigurator().apply(pid);
+    shooterMotor.getConfigurator().apply(pid);
   }
 
   public void setVelocity(AngularVelocity rpm) {
     targetShooterVelocity = rpm;
-    motor.setControl(new MotionMagicVelocityVoltage(rpm.in(RPM)));
+    shooterMotor.setControl(new MotionMagicVelocityVoltage(rpm.in(RPM)));
   }
 
   public void tune(double kP, double kD, double kV, double targetRPM) {
     setPID(kP, kD, kV);
-    motor.setControl(new MotionMagicVelocityVoltage(RPM.of(targetRPM)));
+    shooterMotor.setControl(new MotionMagicVelocityVoltage(RPM.of(targetRPM)));
   }
 
   @Logged(name = "shooterTargetVelocity")
@@ -88,17 +88,17 @@ public class Shooter extends SubsystemBase {
 
   @Logged(name = "shooterVelocity")
   public AngularVelocity getVelocity() {
-    return motor.getVelocity().getValue();
+    return shooterMotor.getVelocity().getValue();
   }
 
   @Logged(name = "shooterVoltage")
   public Voltage getVoltage() {
-    return motor.getMotorVoltage().getValue();
+    return shooterMotor.getMotorVoltage().getValue();
   }
 
   @Logged(name = "shooterCurrent")
   public Current getCurrent() {
-    return motor.getStatorCurrent().getValue();
+    return shooterMotor.getStatorCurrent().getValue();
   }
 
   @Logged(name = "shooterHasFuel")

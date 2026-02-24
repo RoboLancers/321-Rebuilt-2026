@@ -60,12 +60,17 @@ public class HoodCommands {
   public static Command homeHoodVelocity(Hood hood) {
     return runVolts(hood, () -> HoodConstants.kHomingVoltage)
         .until(() -> hood.isHomedVelocity())
-        .andThen(() -> hood.zeroEncoder());
+        .andThen(() -> hood.zeroEncoder(HoodConstants.kZeroPosition));
   }
 
   public static Command homeHoodCurrent(Hood hood) {
     return runVolts(hood, () -> HoodConstants.kHomingVoltage)
         .until(() -> hood.isHomedCurrent())
-        .andThen(() -> hood.zeroEncoder());
+        .andThen(() -> hood.zeroEncoder(HoodConstants.kZeroPosition));
+  }
+
+  public static Command homeHoodMagnetic(Hood hood){
+    return runVolts(hood, ()->HoodConstants.kHomingVoltage)
+    .until(()->hood.getHoodAtHomedPosition()).andThen(()->hood.zeroEncoder(HoodConstants.kZeroPosition));
   }
 }
