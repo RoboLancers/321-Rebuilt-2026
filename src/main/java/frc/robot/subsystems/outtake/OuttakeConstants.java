@@ -46,4 +46,6 @@ public class OuttakeConstants {
   public static final AngularVelocity kMaxVelocity = RPM.of(3000);
 
   public static final AngularAcceleration kMaxAcceleration = RotationsPerSecondPerSecond.of(20);
+
+  public static final int kBeamBreakID = 0;
 }

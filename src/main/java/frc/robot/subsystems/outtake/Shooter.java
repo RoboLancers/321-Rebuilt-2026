@@ -18,11 +18,14 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Shooter extends SubsystemBase {
 
   @Logged private TalonFX motor = new TalonFX(OuttakeConstants.kMotorID);
+
+  @Logged private DigitalInput shooterBeamBreak = new DigitalInput(OuttakeConstants.kBeamBreakID);
 
   private AngularVelocity targetShooterVelocity = RPM.of(0);
 
@@ -96,5 +99,10 @@ public class Shooter extends SubsystemBase {
   @Logged(name = "shooterCurrent")
   public Current getCurrent() {
     return motor.getStatorCurrent().getValue();
+  }
+
+  @Logged(name = "shooterHasFuel")
+  public boolean getFuelInShooter(){
+    return shooterBeamBreak.get();
   }
 }
