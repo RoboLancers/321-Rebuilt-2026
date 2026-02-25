@@ -99,7 +99,7 @@ public class Hood extends SubsystemBase {
   }
 
   @Logged(name = "hoodAtHomedPosition")
-  public boolean getHoodAtHomedPosition(){
+  public boolean getHoodAtHomedPosition() {
     return hoodLimitSwitch.get();
   }
 

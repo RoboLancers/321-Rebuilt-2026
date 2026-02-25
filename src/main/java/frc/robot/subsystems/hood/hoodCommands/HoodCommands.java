@@ -69,8 +69,9 @@ public class HoodCommands {
         .andThen(() -> hood.zeroEncoder(HoodConstants.kZeroPosition));
   }
 
-  public static Command homeHoodMagnetic(Hood hood){
-    return runVolts(hood, ()->HoodConstants.kHomingVoltage)
-    .until(()->hood.getHoodAtHomedPosition()).andThen(()->hood.zeroEncoder(HoodConstants.kZeroPosition));
+  public static Command homeHoodMagnetic(Hood hood) {
+    return runVolts(hood, () -> HoodConstants.kHomingVoltage)
+        .until(() -> hood.getHoodAtHomedPosition())
+        .andThen(() -> hood.zeroEncoder(HoodConstants.kZeroPosition));
   }
 }

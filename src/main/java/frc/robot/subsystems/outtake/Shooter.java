@@ -102,7 +102,7 @@ public class Shooter extends SubsystemBase {
   }
 
   @Logged(name = "shooterHasFuel")
-  public boolean getFuelInShooter(){
+  public boolean getFuelInShooter() {
     return shooterBeamBreak.get();
   }
 }
