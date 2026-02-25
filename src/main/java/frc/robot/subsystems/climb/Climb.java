@@ -125,8 +125,7 @@ public class Climb extends SubsystemBase {
 
   @Logged(name = "climbPivotAngle")
   public Angle getPivotAngle() {
-    Angle angle = 
-    pivotEncoder.getPosition().getValue();
+    Angle angle = pivotEncoder.getPosition().getValue();
     return angle;
   }
 
