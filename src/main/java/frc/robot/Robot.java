@@ -43,7 +43,7 @@ public class Robot extends TimedRobot {
     chooser.addOption("Top Auto", kTopAuto);
     chooser.addOption("Bottom Bump Auto", kBottomBumpAuto);
     chooser.addOption("Top Bump Auto", kTopBumpAuto);
-    chooser.addOption("No Auto", kDefaultAuto);
+    chooser.setDefaultOption("No Auto", kDefaultAuto);
 
     SmartDashboard.putData("Auto choices", chooser);
   }
