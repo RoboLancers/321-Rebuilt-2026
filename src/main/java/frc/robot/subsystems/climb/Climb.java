@@ -32,7 +32,9 @@ public class Climb extends SubsystemBase {
 
   @Logged private Relay magnetRelay = new Relay(ClimbConstants.kMagnetId);
 
-  @Logged private CANcoder clawEncoder = new CANcoder(ClimbConstants.kEncoderId);
+  @Logged private CANcoder climbEncoder = new CANcoder(ClimbConstants.kClimbEncoderId);
+
+  @Logged private CANcoder pivotEncoder = new CANcoder(ClimbConstants.kPivotEncoderId);
 
   private ArmFeedforward climbFeedforward = new ArmFeedforward(0, ClimbConstants.kG, 0, 0, 0);
 
@@ -117,13 +119,14 @@ public class Climb extends SubsystemBase {
 
   @Logged(name = "climbAngle")
   public Angle getClimbAngle() {
-    Angle angle = Degrees.of(clawEncoder.getAbsolutePosition().getValueAsDouble());
+    Angle angle = climbEncoder.getAbsolutePosition().getValue();
     return angle;
   }
 
   @Logged(name = "climbPivotAngle")
   public Angle getPivotAngle() {
-    Angle angle = Degrees.of(pivotClimbMotor.getPosition().getValueAsDouble());
+    Angle angle = 
+    pivotEncoder.getPosition().getValue();
     return angle;
   }
 
