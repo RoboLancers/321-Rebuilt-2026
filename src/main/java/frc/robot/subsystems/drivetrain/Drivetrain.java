@@ -542,7 +542,7 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
 
     SmartDashboard.putNumber("Drivetrain Pose Yaw", getPose().getRotation().getDegrees());
 
-    //logSwerveMotorStates();
+    logSwerveMotorStates();
     poseField.setRobotPose(getPose());
     SmartDashboard.putData("Robot Pose Field", poseField);
   }
