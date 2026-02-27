@@ -55,7 +55,7 @@ public class RobotContainer {
   public Trigger slowMode = driver.b();
 
   @Logged(name = "driverForwardValue")
-  private double getDriverForward() {
+  public double getDriverForward() {
     double rawJoystick =
         -MathUtil.applyDeadband(
                 Math.pow(Math.hypot(driver.getLeftY(), driver.getLeftX()), 2),
@@ -69,7 +69,7 @@ public class RobotContainer {
   }
 
   @Logged(name = "driverStrafeValue")
-  private double getDriverStrafe() {
+  public double getDriverStrafe() {
     double rawJoystick =
         -MathUtil.applyDeadband(
                 Math.pow(Math.hypot(driver.getLeftY(), driver.getLeftX()), 2),
@@ -83,7 +83,7 @@ public class RobotContainer {
   }
 
   @Logged(name = "driverTurnValue")
-  private double getDriverTurn() {
+  public double getDriverTurn() {
     double rawJoystick =
         -MathUtil.applyDeadband(driver.getRightX(), DrivetrainConstants.kRotationDeadband)
             * DrivetrainConstants.kMaxAngularVelocity.in(RadiansPerSecond);
