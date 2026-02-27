@@ -45,7 +45,6 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.RobotConstants;
 import frc.robot.util.MyAlliance;
 import frc.robot.util.RebuiltUtil;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -192,7 +191,6 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
         : getPose().nearest(RebuiltUtil.blueTagPoses);
   }
 
-  
   public List<Double> getDriveVelocities() {
     List<Double> velocityList = new ArrayList<>();
     for (int i = 0; i < 4; i++) {
@@ -233,7 +231,6 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
           "Measured Position" + Integer.toString(getSteerPositions().indexOf(position)), position);
     }
   }
-
 
   // drive with heading controlled by PID
   public Command driveFixedHeading(
