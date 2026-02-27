@@ -19,6 +19,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Align;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainConstants;
+import frc.robot.subsystems.tunnel.Tunnel;
+import frc.robot.subsystems.tunnel.tunnelCommands.DefaultRpm;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.util.RebuiltUtil;
 import java.util.function.DoubleSupplier;
@@ -33,6 +35,7 @@ public class RobotContainer {
     return driver.getHID();
   }
 
+  public Tunnel tunnel = new Tunnel();
   public Drivetrain drivetrain = Drivetrain.create();
   public Vision vision =
       Vision.create(
@@ -106,6 +109,7 @@ public class RobotContainer {
 
   private void configureBindings() {
     drivetrain.setDefaultCommand(drivetrain.teleopDrive(driverForward, driverStrafe, driverTurn));
+    tunnel.setDefaultCommand(new DefaultRpm(tunnel));
     // intakeRollers.setDefaultCommand(
     //     Commands.run(() -> intakeRollers.setVoltage(Volts.of(0)), intakeRollers));
     // shooter.setDefaultCommand(ShootFuel.outtakeWithVoltage(shooter, () -> Volts.of(0)));
