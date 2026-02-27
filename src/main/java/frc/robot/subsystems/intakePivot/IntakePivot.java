@@ -25,7 +25,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class IntakePivot extends SubsystemBase {
 
   @Logged private TalonFX intakePivotMotor = new TalonFX(IntakeConstants.kPivotMotorId);
-  private DutyCycleEncoder absoluteEncoder = new DutyCycleEncoder(IntakeConstants.kEncoderID);
+  @Logged private DutyCycleEncoder intakeEncoder = new DutyCycleEncoder(IntakeConstants.kEncoderID);
 
   private TalonFXConfiguration talonConfigs = new TalonFXConfiguration();
   private MotorOutputConfigs motorConfigs = new MotorOutputConfigs();
@@ -71,7 +71,7 @@ public class IntakePivot extends SubsystemBase {
   }
 
   public void zeroEncoder() {
-    intakePivotMotor.setPosition(Degrees.of(absoluteEncoder.get()));
+    intakePivotMotor.setPosition(Degrees.of(intakeEncoder.get()));
   }
 
   @Logged(name = "intakePivotAtTargetAngle")
