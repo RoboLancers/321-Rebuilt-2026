@@ -25,9 +25,10 @@ public class CameraStatusLED {
     this.candle = candle;
     this.LEDStartIndex = LEDStartIndex;
     this.LEDEndIndex = LEDEndIndex;
+    statusColor = kDefaultColor;
 
     if (candle != null) {
-      this.candle.setControl(new SolidColor(LEDStartIndex, LEDEndIndex));
+      this.candle.setControl(new SolidColor(LEDStartIndex, LEDEndIndex).withColor(statusColor));
     }
   }
 
