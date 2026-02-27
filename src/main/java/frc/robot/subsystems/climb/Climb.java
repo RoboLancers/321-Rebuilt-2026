@@ -6,6 +6,7 @@ import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -79,7 +80,9 @@ public class Climb extends SubsystemBase {
             .withSlot0(
                 new Slot0Configs()
                     .withGravityType(ClimbConstants.kClimbGravityType)
-                    .withStaticFeedforwardSign(ClimbConstants.kClimbFeedForwardSign));
+                    .withStaticFeedforwardSign(ClimbConstants.kClimbFeedForwardSign))
+            .withFeedback(
+                new FeedbackConfigs().withSensorToMechanismRatio(ClimbConstants.kClawGearRatio));
 
     TalonFXConfiguration pivotClimbMotorConfiguration =
         new TalonFXConfiguration()
@@ -99,7 +102,10 @@ public class Climb extends SubsystemBase {
             .withMotionMagic(
                 new MotionMagicConfigs()
                     .withMotionMagicCruiseVelocity(ClimbConstants.kPivotClimbMaxVelocity)
-                    .withMotionMagicAcceleration(ClimbConstants.kPivotClimbMaxAcceleration));
+                    .withMotionMagicAcceleration(ClimbConstants.kPivotClimbMaxAcceleration))
+            .withFeedback(
+                new FeedbackConfigs()
+                    .withSensorToMechanismRatio(ClimbConstants.kClimbPivotGearRatio));
 
     climbMotor.getConfigurator().apply(climbMotorConfiguration);
     pivotClimbMotor.getConfigurator().apply(pivotClimbMotorConfiguration);
