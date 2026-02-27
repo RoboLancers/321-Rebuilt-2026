@@ -68,7 +68,8 @@ public class Hood extends SubsystemBase {
                 new Slot0Configs()
                     .withGravityType(GravityTypeValue.Arm_Cosine)
                     .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign))
-            .withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(HoodConstants.kHoodGearRatio));
+            .withFeedback(
+                new FeedbackConfigs().withSensorToMechanismRatio(HoodConstants.kHoodGearRatio));
 
     hoodMotor.getConfigurator().apply(hoodMotorConfigs);
   }

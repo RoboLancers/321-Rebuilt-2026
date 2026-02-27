@@ -79,7 +79,8 @@ public class Climb extends SubsystemBase {
                 new Slot0Configs()
                     .withGravityType(ClimbConstants.kClimbGravityType)
                     .withStaticFeedforwardSign(ClimbConstants.kClimbFeedForwardSign))
-              .withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(ClimbConstants.kClawGearRatio));
+            .withFeedback(
+                new FeedbackConfigs().withSensorToMechanismRatio(ClimbConstants.kClawGearRatio));
 
     TalonFXConfiguration pivotClimbMotorConfiguration =
         new TalonFXConfiguration()
@@ -100,7 +101,9 @@ public class Climb extends SubsystemBase {
                 new MotionMagicConfigs()
                     .withMotionMagicCruiseVelocity(ClimbConstants.kPivotClimbMaxVelocity)
                     .withMotionMagicAcceleration(ClimbConstants.kPivotClimbMaxAcceleration))
-                    .withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(ClimbConstants.kClimbPivotGearRatio));
+            .withFeedback(
+                new FeedbackConfigs()
+                    .withSensorToMechanismRatio(ClimbConstants.kClimbPivotGearRatio));
 
     climbMotor.getConfigurator().apply(climbMotorConfiguration);
     pivotClimbMotor.getConfigurator().apply(pivotClimbMotorConfiguration);

@@ -60,7 +60,8 @@ public class Tunnel extends SubsystemBase {
                         TunnelConstants.kTunnelMaxVelocity.in(DegreesPerSecond))
                     .withMotionMagicAcceleration(
                         TunnelConstants.kTunnelMaxAcceleration.in(DegreesPerSecondPerSecond)))
-                        .withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(TunnelConstants.kTunnelGearRatio));
+            .withFeedback(
+                new FeedbackConfigs().withSensorToMechanismRatio(TunnelConstants.kTunnelGearRatio));
 
     tunnelMotor.getConfigurator().apply(tunnelMotorConfiguration);
   }
