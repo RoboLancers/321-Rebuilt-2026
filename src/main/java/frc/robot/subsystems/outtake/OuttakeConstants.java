@@ -17,7 +17,9 @@ public class OuttakeConstants {
 
   public static final double kV = 0;
 
-  public static final int kMotorID = 0;
+  public static final int kTopMotorID = 0;
+
+  public static final int kBottomMotorID = 1;
 
   public static final Current kStatorLimit = Amps.of(40);
 
