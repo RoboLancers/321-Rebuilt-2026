@@ -3,6 +3,7 @@ package frc.robot.subsystems.vision;
 
 import static edu.wpi.first.units.Units.Meters;
 
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -48,36 +49,48 @@ public class Vision extends SubsystemBase {
 
   public Consumer<VisionEstimate> visionEstConsumer;
 
-  private PhotonCamera backLeftCamera = new PhotonCamera(VisionConstants.kBackLeftCameraName);
+  private PhotonCamera leftClimbCamera = new PhotonCamera(VisionConstants.kLeftClimbCameraName);
 
-  private PhotonCamera topElevatorCamera = new PhotonCamera(VisionConstants.kTopElevatorCameraName);
+  private PhotonCamera rightClimbCamera = new PhotonCamera(VisionConstants.kRightClimbCameraName);
 
-  private PhotonCamera bottomElevatorCamera =
-      new PhotonCamera(VisionConstants.kBottomElevatorCameraName);
+  private PhotonCamera leftShooterCamera = new PhotonCamera(VisionConstants.kLeftShooterCameraName);
+
+  private PhotonCamera rightShooterCamera =
+      new PhotonCamera(VisionConstants.kRightShooterCameraName);
 
   public List<PhotonCamera> cameras =
-      List.of(backLeftCamera, topElevatorCamera, bottomElevatorCamera);
+      List.of(leftClimbCamera, rightClimbCamera, leftShooterCamera, rightShooterCamera);
 
-  private PhotonPoseEstimator backLeftPoseEstimator =
+  private PhotonPoseEstimator leftClimbPoseEstimator =
       new PhotonPoseEstimator(
           RobotConstants.kAprilTagLayout,
           PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-          VisionConstants.kBackLeftTransform);
+          VisionConstants.kLeftClimbCameraTransform);
 
-  private PhotonPoseEstimator topElevatorPoseEstimator =
+  private PhotonPoseEstimator rightClimbPoseEstimator =
       new PhotonPoseEstimator(
           RobotConstants.kAprilTagLayout,
           PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-          VisionConstants.kTopElevatorTransform);
+          VisionConstants.kRightClimbCameraTransform);
 
-  private PhotonPoseEstimator bottomElevatorPoseEstimator =
+  private PhotonPoseEstimator leftShooterPoseEstimator =
       new PhotonPoseEstimator(
           RobotConstants.kAprilTagLayout,
           PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-          VisionConstants.kBottomElevatorTransform);
+          VisionConstants.kLeftShooterCameraTransform);
+
+  private PhotonPoseEstimator rightShooterPoseEstimator =
+      new PhotonPoseEstimator(
+          RobotConstants.kAprilTagLayout,
+          PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+          VisionConstants.kRightShooterCameraTransform);
 
   public List<PhotonPoseEstimator> estimators =
-      List.of(backLeftPoseEstimator, topElevatorPoseEstimator, bottomElevatorPoseEstimator);
+      List.of(
+          leftClimbPoseEstimator,
+          rightClimbPoseEstimator,
+          leftShooterPoseEstimator,
+          rightShooterPoseEstimator);
 
   public static Vision create(Consumer<VisionEstimate> visionEstConsumer) {
     return new Vision(visionEstConsumer);
@@ -186,7 +199,32 @@ public class Vision extends SubsystemBase {
     }
   }
 
-  public boolean areCamerasConnected;
+  public boolean areCamerasConnected = false;
+
+  @Logged(name = "camerasAreConnected")
+  public boolean getCamerasConnected() {
+    return areCamerasConnected;
+  }
+
+  @Logged(name = "leftClimbCameraConnected")
+  public boolean getLeftClimbCameraConnected() {
+    return leftClimbCamera.isConnected();
+  }
+
+  @Logged(name = "rightClimbCameraConnected")
+  public boolean getRightClimbCameraConnected() {
+    return rightClimbCamera.isConnected();
+  }
+
+  @Logged(name = "leftShooterCameraConnected")
+  public boolean getLeftShooterCameraConnected() {
+    return leftShooterCamera.isConnected();
+  }
+
+  @Logged(name = "rightShooterCameraConnected")
+  public boolean getRightShooterCameraConnected() {
+    return rightShooterCamera.isConnected();
+  }
 
   @Override
   public void periodic() {
