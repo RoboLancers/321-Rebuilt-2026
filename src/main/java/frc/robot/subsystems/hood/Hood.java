@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -66,7 +67,8 @@ public class Hood extends SubsystemBase {
             .withSlot0(
                 new Slot0Configs()
                     .withGravityType(GravityTypeValue.Arm_Cosine)
-                    .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign));
+                    .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign))
+            .withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(HoodConstants.kHoodGearRatio));
 
     hoodMotor.getConfigurator().apply(hoodMotorConfigs);
   }
