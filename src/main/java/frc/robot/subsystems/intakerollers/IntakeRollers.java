@@ -1,7 +1,7 @@
 /* (C) RoboLancers 2026 */
 package frc.robot.subsystems.intakerollers;
 
-import static edu.wpi.first.units.Units.Volts;
+import static edu.wpi.first.units.Units.RPM;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
@@ -13,11 +13,11 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.epilogue.Logged;
-import edu.wpi.first.units.measure.Velocity;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-@Logged
 public class IntakeRollers extends SubsystemBase {
 
   @Logged private TalonFX rollerMotor = new TalonFX(IntakeRollerConstants.kRollerMotorId);
@@ -27,8 +27,7 @@ public class IntakeRollers extends SubsystemBase {
   private FeedbackConfigs feedbackConfigs = new FeedbackConfigs();
   private Slot0Configs slot0Configs = new Slot0Configs();
 
-  private Velocity targetVelocity;
-  private Voltage targetVoltage;
+  private AngularVelocity targetVelocity = RPM.of(0);
 
   public IntakeRollers() {
     motorConfigurations();
@@ -56,12 +55,9 @@ public class IntakeRollers extends SubsystemBase {
     rollerMotor.getConfigurator().apply(feedbackConfigs);
   }
 
-  public void setVoltage(Voltage targetVoltage) {
-    rollerMotor.setVoltage(targetVoltage.in(Volts));
-  }
-
-  public void setVelocity(double targetVelocity) {
-    rollerMotor.setControl(new MotionMagicVelocityVoltage(targetVelocity));
+  public void setVelocity(AngularVelocity velocity) {
+    this.targetVelocity = velocity;
+    rollerMotor.setControl(new MotionMagicVelocityVoltage(velocity));
   }
 
   public void setPID(double kP, double kD, double kV, double kG) {
@@ -73,18 +69,34 @@ public class IntakeRollers extends SubsystemBase {
     rollerMotor.getConfigurator().apply(slot0Configs);
   }
 
-  public void tune(double kP, double kD, double kV, double kG, double rollerTargetVelocity) {
+  public void tune(
+      double kP, double kD, double kV, double kG, AngularVelocity rollerTargetVelocity) {
     setPID(kP, kD, kV, kG);
     setVelocity(rollerTargetVelocity);
   }
 
-  @Logged(name = "rollerVelocity")
-  public double getRollerVelocity() {
-    return rollerMotor.getVelocity().getValueAsDouble();
+  @Logged(name = "intakeRollersVelocity")
+  public AngularVelocity getRollerVelocity() {
+    return rollerMotor.getVelocity().getValue();
   }
 
-  @Logged(name = "atTargetRollerVelocity")
-  public boolean atTargetVoltage() {
+  @Logged(name = "intakeRollersAtTargetVelocity")
+  public boolean atTargetVelocity() {
     return rollerMotor.getVelocity().getValue() == targetVelocity;
+  }
+
+  @Logged(name = "intakeRollersTargetVelocity")
+  public AngularVelocity getRollerTargetVelocity() {
+    return targetVelocity;
+  }
+
+  @Logged(name = "intakeRollersVoltage")
+  public Voltage getVoltage() {
+    return rollerMotor.getMotorVoltage().getValue();
+  }
+
+  @Logged(name = "intakeRollersCurrent")
+  public Current getCurrent() {
+    return rollerMotor.getStatorCurrent().getValue();
   }
 }

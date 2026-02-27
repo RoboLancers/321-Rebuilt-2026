@@ -2,7 +2,6 @@
 package frc.robot.subsystems.outtake;
 
 import static edu.wpi.first.units.Units.RPM;
-import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
@@ -17,17 +16,15 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Velocity;
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-@Logged
 public class Shooter extends SubsystemBase {
 
   @Logged private TalonFX motor = new TalonFX(OuttakeConstants.kMotorID);
 
-  private Velocity targetShooterVelocity;
+  private AngularVelocity targetShooterVelocity = RPM.of(0);
 
   public Shooter() {
 
@@ -71,12 +68,9 @@ public class Shooter extends SubsystemBase {
     motor.getConfigurator().apply(pid);
   }
 
-  public Command setControl(AngularVelocity rpm) {
-    return run(() -> motor.setControl(new MotionMagicVelocityVoltage(rpm.in(RPM))));
-  }
-
-  public Command runVolts(Voltage volts) {
-    return run(() -> motor.setVoltage(volts.in(Volts)));
+  public void setVelocity(AngularVelocity rpm) {
+    targetShooterVelocity = rpm;
+    motor.setControl(new MotionMagicVelocityVoltage(rpm.in(RPM)));
   }
 
   public void tune(double kP, double kD, double kV, double targetRPM) {
@@ -84,16 +78,23 @@ public class Shooter extends SubsystemBase {
     motor.setControl(new MotionMagicVelocityVoltage(RPM.of(targetRPM)));
   }
 
-  @Logged(name = "TargetShooterVelocity")
-  public Velocity getTargetShooterVelocity() {
+  @Logged(name = "shooterTargetVelocity")
+  public AngularVelocity getTargetShooterVelocity() {
     return this.targetShooterVelocity;
   }
 
-  public double getVelocity() {
-    return motor.getVelocity().getValueAsDouble();
+  @Logged(name = "shooterVelocity")
+  public AngularVelocity getVelocity() {
+    return motor.getVelocity().getValue();
   }
 
+  @Logged(name = "shooterVoltage")
   public Voltage getVoltage() {
     return motor.getMotorVoltage().getValue();
+  }
+
+  @Logged(name = "shooterCurrent")
+  public Current getCurrent() {
+    return motor.getStatorCurrent().getValue();
   }
 }

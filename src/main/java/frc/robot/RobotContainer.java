@@ -9,10 +9,12 @@ import com.ctre.phoenix6.configs.LEDConfigs;
 import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.signals.VBatOutputModeValue;
 import com.pathplanner.lib.auto.AutoBuilder;
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -34,8 +36,24 @@ public class RobotContainer {
   public CANdle candle = new CANdle(0);
   private final CommandXboxController driver = new CommandXboxController(0);
 
+  @Logged(name = "driverController")
+  public XboxController getDriverController() {
+    return driver.getHID();
+  }
+
   public Drivetrain drivetrain = Drivetrain.create();
-  private SendableChooser<Command> autoChooser;
+  public Vision vision =
+      Vision.create(
+          est ->
+              drivetrain.addVisionMeasurement(
+                  est.estimatedPose().estimatedPose.toPose2d(),
+                  est.estimatedPose().timestampSeconds,
+                  VecBuilder.fill(
+                      est.standardDeviations(),
+                      est.standardDeviations(),
+                      est.standardDeviations())));
+
+  private final SendableChooser<Command> autoChooser;
   // private final IntakeRollers intakeRollers = new IntakeRollers();
   // private final IntakeFuel intakeFuel = new IntakeFuel(intakeRollers);
   // private final Shooter shooter = new Shooter();
@@ -47,15 +65,7 @@ public class RobotContainer {
 
   public Trigger slowMode = driver.b();
 
-  private Consumer<VisionEstimate> visionEstimate =
-      est ->
-          drivetrain.addVisionMeasurement(
-              est.estimatedPose().estimatedPose.toPose2d(),
-              est.estimatedPose().timestampSeconds,
-              VecBuilder.fill(
-                  est.standardDeviations(), est.standardDeviations(), est.standardDeviations()));
-  public Vision vision = Vision.create(visionEstimate, candle);
-
+  @Logged(name = "driverForwardValue")
   private DoubleSupplier driverForward =
       () ->
           -MathUtil.applyDeadband(
@@ -66,6 +76,7 @@ public class RobotContainer {
                   ? 1.5
                   : DrivetrainConstants.kMaxLinearVelocity.in(MetersPerSecond));
 
+  @Logged(name = "driverStrafeValue")
   private DoubleSupplier driverStrafe =
       () ->
           -MathUtil.applyDeadband(
@@ -76,6 +87,7 @@ public class RobotContainer {
                   ? 1.5
                   : DrivetrainConstants.kMaxLinearVelocity.in(MetersPerSecond));
 
+  @Logged(name = "driverTurnValue")
   private DoubleSupplier driverTurn =
       () ->
           -MathUtil.applyDeadband(driver.getRightX(), DrivetrainConstants.kRotationDeadband)
@@ -85,13 +97,9 @@ public class RobotContainer {
 
   private Supplier<Rotation2d> hubHeading = () -> RebuiltUtil.getHubHeading(currentRobotPose);
 
-  public void setupCandleConfiguration() {
-    LEDConfigs configs = new LEDConfigs();
-    CANdleFeaturesConfigs featuresConfigs = new CANdleFeaturesConfigs();
-    configs.BrightnessScalar = VisionConstants.brightnessScaler;
-    featuresConfigs.VBatOutputMode = VBatOutputModeValue.On;
-    candle.getConfigurator().apply(configs);
-    candle.getConfigurator().apply(featuresConfigs);
+  @Logged(name = "calculatedHubHeading")
+  public double getHubHeading() {
+    return hubHeading.get().getDegrees();
   }
 
   public RobotContainer() {
@@ -134,6 +142,7 @@ public class RobotContainer {
     // tunnel));
   }
 
+  @Logged(name = "autonomousCommand")
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
   }

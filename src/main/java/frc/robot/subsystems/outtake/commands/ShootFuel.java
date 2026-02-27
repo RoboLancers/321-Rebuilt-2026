@@ -2,20 +2,16 @@
 package frc.robot.subsystems.outtake.commands;
 
 import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.outtake.OuttakeConstants;
 import frc.robot.subsystems.outtake.Shooter;
 import java.util.function.Supplier;
 
 public class ShootFuel {
 
-  public static Command outtakeWithVoltage(Shooter outtake, Supplier<Voltage> volts) {
-    return outtake.runVolts(volts.get());
-  }
-
   public static Command outtakeWithVelocity(Shooter outtake, Supplier<AngularVelocity> rpm) {
-    return outtake.setControl(rpm.get());
+    return Commands.run(() -> outtake.setVelocity(rpm.get()));
   }
 
   public static Command feedNeutralZone(Shooter outtake) {

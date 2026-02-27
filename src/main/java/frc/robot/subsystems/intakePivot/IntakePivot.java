@@ -2,7 +2,6 @@
 package frc.robot.subsystems.intakePivot;
 
 import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
@@ -19,15 +18,15 @@ import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Current;
-import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-@Logged(name = "Intake Pivot")
 public class IntakePivot extends SubsystemBase {
 
   @Logged private TalonFX intakePivotMotor = new TalonFX(IntakeConstants.kPivotMotorId);
+  private DutyCycleEncoder absoluteEncoder = new DutyCycleEncoder(IntakeConstants.kEncoderID);
+
   private TalonFXConfiguration talonConfigs = new TalonFXConfiguration();
   private MotorOutputConfigs motorConfigs = new MotorOutputConfigs();
   private FeedbackConfigs feedbackConfigs = new FeedbackConfigs();
@@ -35,11 +34,7 @@ public class IntakePivot extends SubsystemBase {
   private VoltageConfigs voltageConfigs = new VoltageConfigs();
   private Slot0Configs slot0Configs = new Slot0Configs();
 
-  private Angle targetAngle;
-  private Voltage targetVoltage;
-  private Velocity targetVelocity;
-
-  private DutyCycleEncoder absoluteEncoder = new DutyCycleEncoder(IntakeConstants.kEncoderID);
+  private Angle targetAngle = IntakeConstants.kDefaultPosition;
 
   public IntakePivot() {
     motorConfigurations();
@@ -65,10 +60,12 @@ public class IntakePivot extends SubsystemBase {
   }
 
   public void goToAngle(Angle angle) {
+    targetAngle = angle;
     MotionMagicVoltage intakeVoltage = new MotionMagicVoltage(angle);
     intakePivotMotor.setControl(intakeVoltage);
   }
 
+  @Logged(name = "intakePivotAngle")
   public Angle getAngle() {
     return Degrees.of(intakePivotMotor.getPosition().getValueAsDouble());
   }
@@ -77,7 +74,7 @@ public class IntakePivot extends SubsystemBase {
     intakePivotMotor.setPosition(Degrees.of(absoluteEncoder.get()));
   }
 
-  @Logged(name = "atTargetAngle")
+  @Logged(name = "intakePivotAtTargetAngle")
   public boolean atTargetAngle() {
     return getAngle() == targetAngle;
   }
@@ -91,24 +88,23 @@ public class IntakePivot extends SubsystemBase {
     goToAngle(Degrees.of(angle));
   }
 
+  @Logged(name = "intakePivotVOltage")
   public Voltage getVoltage() {
     return intakePivotMotor.getMotorVoltage().getValue();
   }
 
-  public void setVoltage(Voltage targetVoltage) {
-    intakePivotMotor.setVoltage(targetVoltage.in(Volts));
+  @Logged(name = "intakePivotTargetAngle")
+  public Angle getTargetAngle() {
+    return targetAngle;
   }
 
+  @Logged(name = "intakePivotVelocity")
   public double getVelocity() {
     return intakePivotMotor.getVelocity().getValueAsDouble();
   }
 
-  public Current current() {
+  @Logged(name = "intakePivotCurrent")
+  public Current getCurrent() {
     return intakePivotMotor.getStatorCurrent().getValue();
-  }
-
-  @Logged(name = "AtTargetVelocity")
-  public boolean atTargetVelocity() {
-    return intakePivotMotor.getVelocity().getValue() == targetVelocity;
   }
 }

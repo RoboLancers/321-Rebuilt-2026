@@ -18,12 +18,12 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Relay.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-@Logged
 public class Climb extends SubsystemBase {
 
   private TalonFX climbMotor = new TalonFX(ClimbConstants.kClimbMotorId);
@@ -116,7 +116,7 @@ public class Climb extends SubsystemBase {
   }
 
   @Logged(name = "climbAngle")
-  public Angle getAngle() {
+  public Angle getClimbAngle() {
     Angle angle = Degrees.of(clawEncoder.getAbsolutePosition().getValueAsDouble());
     return angle;
   }
@@ -127,18 +127,48 @@ public class Climb extends SubsystemBase {
     return angle;
   }
 
-  @Logged
+  @Logged(name = "climbPivotVoltage")
+  public Voltage getPivotVoltage() {
+    Voltage voltage = pivotClimbMotor.getMotorVoltage().getValue();
+    return voltage;
+  }
+
+  @Logged(name = "climbPivotCurrent")
+  public Current getPivotCurrent() {
+    Current current = pivotClimbMotor.getStatorCurrent().getValue();
+    return current;
+  }
+
+  @Logged(name = "climbVoltage")
+  public Voltage getClimbVoltage() {
+    Voltage voltage = climbMotor.getMotorVoltage().getValue();
+    return voltage;
+  }
+
+  @Logged(name = "climbCurrent")
+  public Current getClimbCurrent() {
+    Current current = climbMotor.getStatorCurrent().getValue();
+    return current;
+  }
+
+  @Logged(name = "magnetOn")
+  public boolean getMagnetActivationStatus() {
+    boolean magnetOn = (magnetRelay.get() == Value.kOn) ? true : false;
+    return magnetOn;
+  }
+
+  @Logged(name = "hasClimbed")
   public boolean atTargetAngle() {
     boolean atAngle =
-        Math.abs(getAngle().in(Degrees) - ClimbConstants.kTargetAngle.in(Degrees))
+        Math.abs(getClimbAngle().in(Degrees) - ClimbConstants.kClimbTargetAngle.in(Degrees))
             < ClimbConstants.kClimbAngleTolerance.in(Degrees);
     return atAngle;
   }
 
-  @Logged
+  @Logged(name = "pivotOut")
   public boolean atPivotTargetAngle() {
     boolean atAngle =
-        Math.abs(getPivotAngle().in(Degrees) - ClimbConstants.kTargetPivotAngle.in(Degrees))
+        Math.abs(getPivotAngle().in(Degrees) - ClimbConstants.kPivotTargetAngle.in(Degrees))
             < ClimbConstants.kPivotClimbAngleTolerance.in(Degrees);
     return atAngle;
   }
@@ -146,8 +176,9 @@ public class Climb extends SubsystemBase {
   public void goToAngle(Angle angle) {
     Voltage volts =
         Volts.of(
-            climbController.calculate(getAngle().in(Degrees), angle.in(Degrees))
-                + climbFeedforward.calculate(getAngle().in(Degrees), getClimbVelocity().in(RPM)));
+            climbController.calculate(getClimbAngle().in(Degrees), angle.in(Degrees))
+                + climbFeedforward.calculate(
+                    getClimbAngle().in(Degrees), getClimbVelocity().in(RPM)));
     climbMotor.setVoltage(volts.in(Volts));
   }
 

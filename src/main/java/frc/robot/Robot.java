@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
-@Logged
 public class Robot extends TimedRobot {
   private String autoSelected;
   private SendableChooser<String> chooser = new SendableChooser<>();
@@ -23,7 +22,9 @@ public class Robot extends TimedRobot {
   private static final String kCenterAuto = "Center Auto";
   private static final String kTopAuto = "Top Auto";
   private static final String kTopBumpAuto = "Top Bump Auto";
+  private static final String kDefaultAuto = "No Auto";
 
+  @Logged(name = "autonomousCommandName")
   public String getAutonomousCommand() {
     return chooser.getSelected();
   }
@@ -42,6 +43,7 @@ public class Robot extends TimedRobot {
     chooser.addOption("Top Auto", kTopAuto);
     chooser.addOption("Bottom Bump Auto", kBottomBumpAuto);
     chooser.addOption("Top Bump Auto", kTopBumpAuto);
+    chooser.addOption("No Auto", kDefaultAuto);
 
     SmartDashboard.putData("Auto choices", chooser);
   }

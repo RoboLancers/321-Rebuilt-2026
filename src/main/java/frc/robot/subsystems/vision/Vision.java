@@ -3,7 +3,6 @@ package frc.robot.subsystems.vision;
 
 import static edu.wpi.first.units.Units.Meters;
 
-import com.ctre.phoenix6.hardware.CANdle;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -57,40 +56,52 @@ public class Vision extends SubsystemBase {
 
   public Consumer<VisionEstimate> visionEstConsumer;
 
-  private PhotonCamera backLeftCamera = new PhotonCamera(VisionConstants.kBackLeftCameraName);
-
-  private PhotonCamera frontLeftCamera = new PhotonCamera(VisionConstants.kFrontLeftCameraName);
-
-  private PhotonCamera frontRightCamera = new PhotonCamera(VisionConstants.kFrontRightCameraName);
-
-  private PhotonCamera backRightCamera = new PhotonCamera(VisionConstants.kBackRightCameraName);
-
-  private List<PhotonCamera> cameras =
-      List.of(backLeftCamera, frontLeftCamera, frontRightCamera, backRightCamera);
 
   private Dictionary<PhotonCamera, CameraStatusLED> cameraStatusLEDs =
       new Hashtable<PhotonCamera, CameraStatusLED>(4);
 
-  private PhotonPoseEstimator backLeftPoseEstimator =
-      new PhotonPoseEstimator(
-          RobotConstants.kAprilTagLayout,
-          PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-          VisionConstants.kBackLeftTransform);
+  private PhotonCamera leftClimbCamera = new PhotonCamera(VisionConstants.kLeftClimbCameraName);
 
-  private PhotonPoseEstimator topElevatorPoseEstimator =
-      new PhotonPoseEstimator(
-          RobotConstants.kAprilTagLayout,
-          PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-          VisionConstants.kTopElevatorTransform);
+  private PhotonCamera rightClimbCamera = new PhotonCamera(VisionConstants.kRightClimbCameraName);
 
-  private PhotonPoseEstimator bottomElevatorPoseEstimator =
+  private PhotonCamera leftShooterCamera = new PhotonCamera(VisionConstants.kLeftShooterCameraName);
+
+  private PhotonCamera rightShooterCamera =
+      new PhotonCamera(VisionConstants.kRightShooterCameraName);
+
+  public List<PhotonCamera> cameras =
+      List.of(leftClimbCamera, rightClimbCamera, leftShooterCamera, rightShooterCamera);
+
+  private PhotonPoseEstimator leftClimbPoseEstimator =
       new PhotonPoseEstimator(
           RobotConstants.kAprilTagLayout,
           PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-          VisionConstants.kBottomElevatorTransform);
+          VisionConstants.kLeftClimbCameraTransform);
+
+  private PhotonPoseEstimator rightClimbPoseEstimator =
+      new PhotonPoseEstimator(
+          RobotConstants.kAprilTagLayout,
+          PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+          VisionConstants.kRightClimbCameraTransform);
+
+  private PhotonPoseEstimator leftShooterPoseEstimator =
+      new PhotonPoseEstimator(
+          RobotConstants.kAprilTagLayout,
+          PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+          VisionConstants.kLeftShooterCameraTransform);
+
+  private PhotonPoseEstimator rightShooterPoseEstimator =
+      new PhotonPoseEstimator(
+          RobotConstants.kAprilTagLayout,
+          PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+          VisionConstants.kRightShooterCameraTransform);
 
   public List<PhotonPoseEstimator> estimators =
-      List.of(backLeftPoseEstimator, topElevatorPoseEstimator, bottomElevatorPoseEstimator);
+      List.of(
+          leftClimbPoseEstimator,
+          rightClimbPoseEstimator,
+          leftShooterPoseEstimator,
+          rightShooterPoseEstimator);
 
   public static Vision create(Consumer<VisionEstimate> visionEstConsume, CANdle LEDCandle) {
     return new Vision(visionEstConsume, LEDCandle);
@@ -100,10 +111,10 @@ public class Vision extends SubsystemBase {
     this.visionEstConsumer = visionEstConsumer;
     this.LEDCandle = LEDCandle;
 
-    cameraStatusLEDs.put(backLeftCamera, new CameraStatusLED(LEDCandle, 0, 1));
-    cameraStatusLEDs.put(frontLeftCamera, new CameraStatusLED(LEDCandle, 2, 3));
-    cameraStatusLEDs.put(backRightCamera, new CameraStatusLED(LEDCandle, 4, 5));
-    cameraStatusLEDs.put(frontRightCamera, new CameraStatusLED(LEDCandle, 6, 7));
+    cameraStatusLEDs.put(leftClimbCamera, new CameraStatusLED(LEDCandle, 0, 1));
+    cameraStatusLEDs.put(rightClimbCamera, new CameraStatusLED(LEDCandle, 2, 3));
+    cameraStatusLEDs.put(leftShooterCamera, new CameraStatusLED(LEDCandle, 4, 5));
+    cameraStatusLEDs.put(rightShooterCamera, new CameraStatusLED(LEDCandle, 6, 7));
   }
 
   private List<VisionEstimate> getVisionEstimates() {
@@ -219,6 +230,26 @@ public class Vision extends SubsystemBase {
       }
     }
     return true;
+  }
+
+  @Logged(name = "leftClimbCameraConnected")
+  public boolean getLeftClimbCameraConnected() {
+    return leftClimbCamera.isConnected();
+  }
+
+  @Logged(name = "rightClimbCameraConnected")
+  public boolean getRightClimbCameraConnected() {
+    return rightClimbCamera.isConnected();
+  }
+
+  @Logged(name = "leftShooterCameraConnected")
+  public boolean getLeftShooterCameraConnected() {
+    return leftShooterCamera.isConnected();
+  }
+
+  @Logged(name = "rightShooterCameraConnected")
+  public boolean getRightShooterCameraConnected() {
+    return rightShooterCamera.isConnected();
   }
 
   @Override
