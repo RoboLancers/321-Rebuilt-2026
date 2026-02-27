@@ -3,6 +3,7 @@ package frc.robot.subsystems.drivetrain;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Seconds;
 
@@ -44,7 +45,9 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.RobotConstants;
 import frc.robot.util.MyAlliance;
 import frc.robot.util.RebuiltUtil;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -186,6 +189,47 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
     return MyAlliance.isRed()
         ? getPose().nearest(RebuiltUtil.redTagPoses)
         : getPose().nearest(RebuiltUtil.blueTagPoses);
+  }
+
+  public List<Double> getDriveVelocities() {
+    List<Double> velocityList = new ArrayList<>();
+    for (int i = 0; i < 4; i++) {
+      velocityList.add(
+          i,
+          Arrays.asList(super.getModules())
+              .get(i)
+              .getDriveMotor()
+              .getVelocity()
+              .getValue()
+              .in(RPM));
+    }
+    return velocityList;
+  }
+
+  public List<Double> getSteerPositions() {
+    List<Double> positionList = new ArrayList<>();
+    for (int i = 0; i < 4; i++) {
+      positionList.add(
+          i,
+          Arrays.asList(super.getModules())
+              .get(i)
+              .getEncoder()
+              .getAbsolutePosition()
+              .getValue()
+              .in(Degrees));
+    }
+    return positionList;
+  }
+
+  public void logSwerveMotorStates() {
+    for (double velocity : getDriveVelocities()) {
+      SmartDashboard.putNumber(
+          "Measured Velocity" + Integer.toString(getDriveVelocities().indexOf(velocity)), velocity);
+    }
+    for (double position : getSteerPositions()) {
+      SmartDashboard.putNumber(
+          "Measured Position" + Integer.toString(getSteerPositions().indexOf(position)), position);
+    }
   }
 
   // drive with heading controlled by PID
@@ -495,39 +539,7 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
 
     SmartDashboard.putNumber("Drivetrain Pose Yaw", getPose().getRotation().getDegrees());
 
-    SmartDashboard.putNumber(
-        "Target Speed 1", Arrays.asList(getTargetModuleStates()).get(0).speedMetersPerSecond);
-    SmartDashboard.putNumber(
-        "Target Speed 2", Arrays.asList(getTargetModuleStates()).get(1).speedMetersPerSecond);
-    SmartDashboard.putNumber(
-        "Target Speed 3", Arrays.asList(getTargetModuleStates()).get(2).speedMetersPerSecond);
-    SmartDashboard.putNumber(
-        "Target Speed 4", Arrays.asList(getTargetModuleStates()).get(3).speedMetersPerSecond);
-    SmartDashboard.putNumber(
-        "Measured Speed 1", Arrays.asList(getMeasuredModuleStates()).get(0).speedMetersPerSecond);
-    SmartDashboard.putNumber(
-        "Measured Speed 2", Arrays.asList(getMeasuredModuleStates()).get(1).speedMetersPerSecond);
-    SmartDashboard.putNumber(
-        "Measured Speed 3", Arrays.asList(getMeasuredModuleStates()).get(2).speedMetersPerSecond);
-    SmartDashboard.putNumber(
-        "Measured Speed 4", Arrays.asList(getMeasuredModuleStates()).get(3).speedMetersPerSecond);
-    SmartDashboard.putNumber(
-        "Target Pos 1", Arrays.asList(getTargetModuleStates()).get(0).angle.getDegrees());
-    SmartDashboard.putNumber(
-        "Target Pos 2", Arrays.asList(getTargetModuleStates()).get(1).angle.getDegrees());
-    SmartDashboard.putNumber(
-        "Target Pos 3", Arrays.asList(getTargetModuleStates()).get(2).angle.getDegrees());
-    SmartDashboard.putNumber(
-        "Target Pos 4", Arrays.asList(getTargetModuleStates()).get(3).angle.getDegrees());
-    SmartDashboard.putNumber(
-        "Measured Pos 1", Arrays.asList(getMeasuredModuleStates()).get(0).angle.getDegrees());
-    SmartDashboard.putNumber(
-        "Measured Pos 2", Arrays.asList(getMeasuredModuleStates()).get(1).angle.getDegrees());
-    SmartDashboard.putNumber(
-        "Measured Pos 3", Arrays.asList(getMeasuredModuleStates()).get(2).angle.getDegrees());
-    SmartDashboard.putNumber(
-        "Measured Pos 4", Arrays.asList(getMeasuredModuleStates()).get(3).angle.getDegrees());
-
+    logSwerveMotorStates();
     poseField.setRobotPose(getPose());
     SmartDashboard.putData("Robot Pose Field", poseField);
   }
