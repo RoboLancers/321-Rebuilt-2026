@@ -15,6 +15,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.playingwithfusion.TimeOfFlight;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -25,6 +26,8 @@ public class Shooter extends SubsystemBase {
 
   @Logged private TalonFX topShooterMotor = new TalonFX(OuttakeConstants.kTopMotorID);
   @Logged private TalonFX bottomShooterMotor = new TalonFX(OuttakeConstants.kBottomMotorID);
+
+  @Logged private TimeOfFlight distanceSensor = new TimeOfFlight(OuttakeConstants.kTimeOfFlightID);
 
   private AngularVelocity targetShooterVelocity = RPM.of(0);
 
@@ -141,5 +144,10 @@ public class Shooter extends SubsystemBase {
   @Logged(name = "bottomShooterCurrent")
   public Current getCurrent() {
     return bottomShooterMotor.getStatorCurrent().getValue();
+  }
+
+  @Logged(name = "shooterHasFuel")
+  public boolean getFuelInShooter() {
+    return distanceSensor.getRange() < OuttakeConstants.kFuelRange;
   }
 }

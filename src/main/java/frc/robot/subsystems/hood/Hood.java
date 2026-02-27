@@ -25,20 +25,18 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Hood extends SubsystemBase {
 
-  private DutyCycleEncoder absoluteEncoder = new DutyCycleEncoder(HoodConstants.kHoodEncoderId);
-
-  private TalonFX hoodMotor = new TalonFX(HoodConstants.kHoodMotorId);
+  @Logged private TalonFX hoodMotor = new TalonFX(HoodConstants.kHoodMotorId);
+  @Logged private DigitalInput hoodLimitSwitch = new DigitalInput(HoodConstants.kLimitSwitchID);
   private Angle targetAngle = HoodConstants.kStartingAngle;
 
   public Hood() {
     configureMotors();
     setHoodPID(HoodConstants.kP, HoodConstants.kD, HoodConstants.kG);
-    zeroEncoder();
   }
 
   public void configureMotors() {
@@ -103,8 +101,13 @@ public class Hood extends SubsystemBase {
     return getCurrent().in(Amps) >= HoodConstants.kCurrentCeiling.in(Amps);
   }
 
+  @Logged(name = "hoodAtHomedPosition")
+  public boolean getHoodAtHomedPosition() {
+    return hoodLimitSwitch.get();
+  }
+
   public void zeroEncoder() {
-    hoodMotor.setPosition(absoluteEncoder.get());
+    hoodMotor.setPosition(HoodConstants.kZeroPosition);
   }
 
   public void runVolts(Voltage volts) {
