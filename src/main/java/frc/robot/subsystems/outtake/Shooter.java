@@ -99,7 +99,8 @@ public class Shooter extends SubsystemBase {
   public void setVelocity(AngularVelocity rpm) {
     targetShooterVelocity = rpm;
     topShooterMotor.setControl(new MotionMagicVelocityVoltage(rpm.in(RPM)));
-    bottomShooterMotor.setControl(new Follower(OuttakeConstants.kTopMotorID, OuttakeConstants.kFollowerReversed));
+    bottomShooterMotor.setControl(
+        new Follower(OuttakeConstants.kTopMotorID, OuttakeConstants.kFollowerReversed));
   }
 
   public void tune(double kP, double kD, double kV, double targetRPM) {
