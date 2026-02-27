@@ -103,8 +103,8 @@ public class Hood extends SubsystemBase {
     return hoodLimitSwitch.get();
   }
 
-  public void zeroEncoder(Angle angle) {
-    hoodMotor.setPosition(angle);
+  public void zeroEncoder() {
+    hoodMotor.setPosition(HoodConstants.kZeroPosition);
   }
 
   public void runVolts(Voltage volts) {
