@@ -11,7 +11,6 @@ import com.ctre.phoenix6.signals.VBatOutputModeValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -24,7 +23,6 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainConstants;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
-import frc.robot.subsystems.vision.VisionEstimate;
 import frc.robot.util.RebuiltUtil;
 
 public class RobotContainer {
@@ -38,15 +36,7 @@ public class RobotContainer {
     return driver.getHID();
   }
 
-  private Consumer<VisionEstimate> visionEstimate =
-      est ->
-          drivetrain.addVisionMeasurement(
-              est.estimatedPose().estimatedPose.toPose2d(),
-              est.estimatedPose().timestampSeconds,
-              VecBuilder.fill(
-                  est.standardDeviations(), est.standardDeviations(), est.standardDeviations()));
-
-  public Vision vision = Vision.create(visionEstimate, candle);
+  public Vision vision = Vision.create(drivetrain::addVisionMeasurement, candle);
 
   private final SendableChooser<Command> autoChooser;
   // private final IntakeRollers intakeRollers = new IntakeRollers();
