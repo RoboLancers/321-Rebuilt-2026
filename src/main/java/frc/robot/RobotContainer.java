@@ -105,7 +105,7 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    drivetrain.setDefaultCommand(drivetrain.teleopDrive(driverForward, driverStrafe, driverTurn));
+    drivetrain.setDefaultCommand(drivetrain.driveRobotCentric(driverForward, driverStrafe, driverTurn));
     // intakeRollers.setDefaultCommand(
     //     Commands.run(() -> intakeRollers.setVoltage(Volts.of(0)), intakeRollers));
     // shooter.setDefaultCommand(ShootFuel.outtakeWithVoltage(shooter, () -> Volts.of(0)));
