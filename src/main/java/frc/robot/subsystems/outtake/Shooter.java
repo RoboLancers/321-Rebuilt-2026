@@ -9,6 +9,7 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
@@ -98,7 +99,7 @@ public class Shooter extends SubsystemBase {
   public void setVelocity(AngularVelocity rpm) {
     targetShooterVelocity = rpm;
     topShooterMotor.setControl(new MotionMagicVelocityVoltage(rpm.in(RPM)));
-    bottomShooterMotor.setControl(new Follower())
+    bottomShooterMotor.setControl(new Follower(OuttakeConstants.kTopMotorID, OuttakeConstants.kFollowerReversed));
   }
 
   public void tune(double kP, double kD, double kV, double targetRPM) {

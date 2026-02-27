@@ -5,6 +5,8 @@ import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
+
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -48,4 +50,6 @@ public class OuttakeConstants {
   public static final AngularVelocity kMaxVelocity = RPM.of(3000);
 
   public static final AngularAcceleration kMaxAcceleration = RotationsPerSecondPerSecond.of(20);
+
+  public static final MotorAlignmentValue kFollowerReversed = MotorAlignmentValue.Opposed;
 }
