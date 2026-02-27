@@ -99,7 +99,8 @@ public class Climb extends SubsystemBase {
             .withMotionMagic(
                 new MotionMagicConfigs()
                     .withMotionMagicCruiseVelocity(ClimbConstants.kPivotClimbMaxVelocity)
-                    .withMotionMagicAcceleration(ClimbConstants.kPivotClimbMaxAcceleration));
+                    .withMotionMagicAcceleration(ClimbConstants.kPivotClimbMaxAcceleration))
+                    .withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(ClimbConstants.kClimbPivotGearRatio));
 
     climbMotor.getConfigurator().apply(climbMotorConfiguration);
     pivotClimbMotor.getConfigurator().apply(pivotClimbMotorConfiguration);
