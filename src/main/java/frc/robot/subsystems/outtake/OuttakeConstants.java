@@ -51,4 +51,8 @@ public class OuttakeConstants {
   public static final AngularAcceleration kMaxAcceleration = RotationsPerSecondPerSecond.of(20);
 
   public static final MotorAlignmentValue kFollowerReversed = MotorAlignmentValue.Opposed;
+
+  public static final int kTimeOfFlightID = 0;
+
+  public static final double kFuelRange = 1;
 }

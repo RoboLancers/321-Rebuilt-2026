@@ -64,4 +64,8 @@ public class HoodConstants {
   public static final AngularVelocity kHomingVelocityFloor = RPM.of(1);
 
   public static final double kHomingVelocityTolerance = 2;
+
+  public static final int kLimitSwitchID = 1;
+
+  public static final Angle kZeroPosition = Degrees.of(0);
 }

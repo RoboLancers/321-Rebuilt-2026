@@ -36,7 +36,9 @@ public class ClimbConstants {
 
   public static final int kMagnetId = 0;
 
-  public static final int kEncoderId = 0;
+  public static final int kClimbEncoderId = 0;
+
+  public static final int kPivotEncoderId = 1;
 
   public static final Current kClimbStatorLimit = Amps.of(40);
 
