@@ -35,23 +35,22 @@ public class RobotContainer {
 
   public CANdle candle = new CANdle(0);
   private final CommandXboxController driver = new CommandXboxController(0);
+  public Drivetrain drivetrain = Drivetrain.create();
 
   @Logged(name = "driverController")
   public XboxController getDriverController() {
     return driver.getHID();
   }
 
-  public Drivetrain drivetrain = Drivetrain.create();
-  public Vision vision =
-      Vision.create(
-          est ->
-              drivetrain.addVisionMeasurement(
-                  est.estimatedPose().estimatedPose.toPose2d(),
-                  est.estimatedPose().timestampSeconds,
-                  VecBuilder.fill(
-                      est.standardDeviations(),
-                      est.standardDeviations(),
-                      est.standardDeviations())));
+  private Consumer<VisionEstimate> visionEstimate =
+      est ->
+          drivetrain.addVisionMeasurement(
+              est.estimatedPose().estimatedPose.toPose2d(),
+              est.estimatedPose().timestampSeconds,
+              VecBuilder.fill(
+                  est.standardDeviations(), est.standardDeviations(), est.standardDeviations()));
+
+  public Vision vision = Vision.create(visionEstimate, candle);
 
   private final SendableChooser<Command> autoChooser;
   // private final IntakeRollers intakeRollers = new IntakeRollers();
@@ -100,6 +99,15 @@ public class RobotContainer {
   @Logged(name = "calculatedHubHeading")
   public double getHubHeading() {
     return hubHeading.get().getDegrees();
+  }
+
+  public void setupCandleConfiguration() {
+    LEDConfigs configs = new LEDConfigs();
+    CANdleFeaturesConfigs featuresConfigs = new CANdleFeaturesConfigs();
+    configs.BrightnessScalar = VisionConstants.brightnessScaler;
+    featuresConfigs.VBatOutputMode = VBatOutputModeValue.On;
+    candle.getConfigurator().apply(configs);
+    candle.getConfigurator().apply(featuresConfigs);
   }
 
   public RobotContainer() {

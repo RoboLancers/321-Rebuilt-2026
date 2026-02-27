@@ -3,6 +3,7 @@ package frc.robot.subsystems.vision;
 
 import static edu.wpi.first.units.Units.Meters;
 
+import com.ctre.phoenix6.hardware.CANdle;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -55,7 +56,6 @@ public class Vision extends SubsystemBase {
   }
 
   public Consumer<VisionEstimate> visionEstConsumer;
-
 
   private Dictionary<PhotonCamera, CameraStatusLED> cameraStatusLEDs =
       new Hashtable<PhotonCamera, CameraStatusLED>(4);
@@ -190,7 +190,7 @@ public class Vision extends SubsystemBase {
     return visionEstimates;
   }
 
-  //TODO: Update Standard Deviations
+  // TODO: Update Standard Deviations
   private double calculateStdDevs(EstimatedRobotPose estimatedPose) {
     double distance = 0;
 
@@ -265,15 +265,22 @@ public class Vision extends SubsystemBase {
     }
 
     SmartDashboard.putString(
-        "Front Left Cam", cameraStatusLEDs.get(frontLeftCamera).getStatusColorHex());
+        "Left Shooter Cam Status Color",
+        cameraStatusLEDs.get(leftShooterCamera).getStatusColorHex());
     SmartDashboard.putString(
-        "Front Right Cam", cameraStatusLEDs.get(frontRightCamera).getStatusColorHex());
+        "Right Shooter Cam Status Color",
+        cameraStatusLEDs.get(rightShooterCamera).getStatusColorHex());
     SmartDashboard.putString(
-        "Back Left Cam", cameraStatusLEDs.get(backLeftCamera).getStatusColorHex());
+        "Left Climb Cam Status Color", cameraStatusLEDs.get(leftClimbCamera).getStatusColorHex());
     SmartDashboard.putString(
-        "Back Right Cam", cameraStatusLEDs.get(backRightCamera).getStatusColorHex());
+        "Right Shooter Cam Status Color",
+        cameraStatusLEDs.get(rightShooterCamera).getStatusColorHex());
 
-    SmartDashboard.putBoolean("Cameras Are Connected", areCamerasConnected());
+    SmartDashboard.putBoolean("All Cameras Are Connected", areCamerasConnected());
+    SmartDashboard.putBoolean("Left Climb Camera Connected", getLeftClimbCameraConnected());
+    SmartDashboard.putBoolean("Right Climb Camera Connected", getRightClimbCameraConnected());
+    SmartDashboard.putBoolean("Left Shooter Camera Connected", getLeftShooterCameraConnected());
+    SmartDashboard.putBoolean("Right Shooter Camera Connected", getRightShooterCameraConnected());
 
     SmartDashboard.putNumber("Vision Pose X", getLatestBestPose().getX());
 
