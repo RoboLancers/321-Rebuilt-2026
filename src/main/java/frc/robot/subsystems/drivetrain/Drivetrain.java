@@ -24,7 +24,6 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.util.DriveFeedforwards;
 import edu.wpi.first.epilogue.Logged;
-import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -37,12 +36,12 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.RobotConstants;
+import frc.robot.util.AprilTagUtil;
 import frc.robot.util.MyAlliance;
 import frc.robot.util.RebuiltUtil;
 import java.util.ArrayList;
@@ -136,24 +135,13 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
         // ChassisSpeeds. Also optionally outputs individual module feedforwards
         ppHolonomicDriveController,
         config, // The robot configuration
-        this::flipAutoPath,
+        MyAlliance::isRed, // Red alliance means flip the direction
         this // Reference to this subsystem to set requirements
         );
   }
 
   void configurePoseControllers() {
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
-  }
-
-  ChassisSpeeds flipFieldSpeeds(ChassisSpeeds speeds) {
-    return MyAlliance.isRed()
-        ? new ChassisSpeeds(
-            -speeds.vxMetersPerSecond, -speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond)
-        : speeds;
-  }
-
-  Rotation2d flipRotation(Rotation2d rotation) {
-    return MyAlliance.isRed() ? rotation.plus(Rotation2d.k180deg) : rotation;
   }
 
   boolean atPoseSetpoint(Supplier<Pose2d> currentRobotPose) {
@@ -168,10 +156,14 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
     return atPoseSetpoint(currentRobotPose);
   }
 
-  public Pose2d getNearestApriltag() {
+  public Pose2d getNearestAllianceAprilTag() {
     return MyAlliance.isRed()
         ? getPose().nearest(RebuiltUtil.redTagPoses)
         : getPose().nearest(RebuiltUtil.blueTagPoses);
+  }
+
+  public Pose2d getNearestAprilTag() {
+    return getPose().nearest(AprilTagUtil.getAllAprilTagPoses());
   }
 
   public List<Double> getDriveVelocities() {
@@ -315,9 +307,11 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
     return run(
         () -> {
           Rotation2d desiredRotation =
-              flipRotation(
-                  Rotation2d.fromRadians(
-                      Math.atan2(rotationX.getAsDouble(), rotationY.getAsDouble())));
+              Rotation2d.fromRadians(Math.atan2(rotationX.getAsDouble(), rotationY.getAsDouble()));
+
+          if (MyAlliance.isRed()) {
+            desiredRotation = desiredRotation.plus(Rotation2d.k180deg);
+          }
 
           var speeds =
               ChassisSpeeds.discretize(
@@ -502,8 +496,6 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
         visionRobotPose, Utils.fpgaToCurrentTime(timeStampSeconds), standardDeviations);
   }
 
-  @NotLogged private Alliance lastAlliance;
-
   // PPHolonomicController is the built in controller for holonomic drive trains
   private PPHolonomicDriveController ppHolonomicDriveController =
       new PPHolonomicDriveController(
@@ -511,18 +503,21 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
           new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
           );
 
+  private boolean hasAppliedOperatorPerspective;
+
+  @Override
   public void periodic() {
 
-    if (DriverStation.isDisabled()) {
+    if (!hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
       DriverStation.getAlliance()
           .ifPresent(
               allianceColor -> {
-                if (lastAlliance == allianceColor) return;
                 setOperatorPerspectiveForward(
-                    allianceColor == Alliance.Red ? Rotation2d.k180deg : Rotation2d.kZero);
-                lastAlliance = allianceColor;
+                    MyAlliance.isBlue() ? Rotation2d.kZero : Rotation2d.k180deg);
               });
+      hasAppliedOperatorPerspective = true;
     }
+
     SmartDashboard.putNumber("Drivetrain Pose X", getPose().getX());
 
     SmartDashboard.putNumber("Drivetrain Pose Y", getPose().getY());
@@ -532,18 +527,5 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
     logSwerveMotorStates();
     poseField.setRobotPose(getPose());
     SmartDashboard.putData("Robot Pose Field", poseField);
-  }
-
-  private boolean flipAutoPath() {
-    // Boolean supplier that controls when the path will be mirrored for the red
-    // alliance
-    // This will flip the path being followed to the red side of the field.
-    // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-    var alliance = DriverStation.getAlliance();
-    if (alliance.isPresent()) {
-      return alliance.get() == DriverStation.Alliance.Red;
-    }
-    return false;
   }
 }
