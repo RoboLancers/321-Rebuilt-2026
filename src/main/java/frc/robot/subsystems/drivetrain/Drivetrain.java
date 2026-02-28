@@ -3,6 +3,7 @@ package frc.robot.subsystems.drivetrain;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Seconds;
 
@@ -44,6 +45,9 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.RobotConstants;
 import frc.robot.util.MyAlliance;
 import frc.robot.util.RebuiltUtil;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -128,28 +132,11 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
         this::resetPose, // Method to reset odometry (will be called if your auto has a starting
         // pose)
         this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-        (speeds, feedforwards) ->
-            driveRobotRelative(
-                speeds, feedforwards), // Method that will drive the robot given ROBOT RELATIVE
-        // ChassisSpeeds. Also optionally outputs individual module
-        // feedforwards
-        new PPHolonomicDriveController( // PPHolonomicController is the built in path following
-            // controller for holonomic drive trains
-            new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-            new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
-            ),
+        this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE
+        // ChassisSpeeds. Also optionally outputs individual module feedforwards
+        ppHolonomicDriveController,
         config, // The robot configuration
-        () -> {
-          // Boolean supplier that controls when the path will be mirrored for the red alliance
-          // This will flip the path being followed to the red side of the field.
-          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-          var alliance = DriverStation.getAlliance();
-          if (alliance.isPresent()) {
-            return alliance.get() == DriverStation.Alliance.Red;
-          }
-          return false;
-        },
+        this::flipAutoPath,
         this // Reference to this subsystem to set requirements
         );
   }
@@ -185,6 +172,47 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
     return MyAlliance.isRed()
         ? getPose().nearest(RebuiltUtil.redTagPoses)
         : getPose().nearest(RebuiltUtil.blueTagPoses);
+  }
+
+  public List<Double> getDriveVelocities() {
+    List<Double> velocityList = new ArrayList<>();
+    for (int i = 0; i < 4; i++) {
+      velocityList.add(
+          i,
+          Arrays.asList(super.getModules())
+              .get(i)
+              .getDriveMotor()
+              .getVelocity()
+              .getValue()
+              .in(RPM));
+    }
+    return velocityList;
+  }
+
+  public List<Double> getSteerPositions() {
+    List<Double> positionList = new ArrayList<>();
+    for (int i = 0; i < 4; i++) {
+      positionList.add(
+          i,
+          Arrays.asList(super.getModules())
+              .get(i)
+              .getEncoder()
+              .getAbsolutePosition()
+              .getValue()
+              .in(Degrees));
+    }
+    return positionList;
+  }
+
+  public void logSwerveMotorStates() {
+    for (double velocity : getDriveVelocities()) {
+      SmartDashboard.putNumber(
+          "Measured Velocity" + Integer.toString(getDriveVelocities().indexOf(velocity)), velocity);
+    }
+    for (double position : getSteerPositions()) {
+      SmartDashboard.putNumber(
+          "Measured Position" + Integer.toString(getSteerPositions().indexOf(position)), position);
+    }
   }
 
   // drive with heading controlled by PID
@@ -476,6 +504,13 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
 
   @NotLogged private Alliance lastAlliance;
 
+  // PPHolonomicController is the built in controller for holonomic drive trains
+  private PPHolonomicDriveController ppHolonomicDriveController =
+      new PPHolonomicDriveController(
+          new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+          new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+          );
+
   public void periodic() {
 
     if (DriverStation.isDisabled()) {
@@ -494,7 +529,21 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
 
     SmartDashboard.putNumber("Drivetrain Pose Yaw", getPose().getRotation().getDegrees());
 
+    logSwerveMotorStates();
     poseField.setRobotPose(getPose());
     SmartDashboard.putData("Robot Pose Field", poseField);
+  }
+
+  private boolean flipAutoPath() {
+    // Boolean supplier that controls when the path will be mirrored for the red
+    // alliance
+    // This will flip the path being followed to the red side of the field.
+    // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+    var alliance = DriverStation.getAlliance();
+    if (alliance.isPresent()) {
+      return alliance.get() == DriverStation.Alliance.Red;
+    }
+    return false;
   }
 }
