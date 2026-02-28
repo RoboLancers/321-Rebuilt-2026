@@ -18,6 +18,16 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Align;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainConstants;
+import frc.robot.subsystems.hood.Hood;
+import frc.robot.subsystems.hood.hoodCommands.HoodCommands;
+import frc.robot.subsystems.indexer.Indexer;
+import frc.robot.subsystems.indexer.indexerCommands.IndexerDefaultVelocity;
+import frc.robot.subsystems.intakePivot.IntakePivot;
+import frc.robot.subsystems.intakePivot.intakePivotCommands.GoToDefaultPosition;
+import frc.robot.subsystems.intakerollers.IntakeRollers;
+import frc.robot.subsystems.intakerollers.rolllercommands.IntakeDefaultVelocity;
+import frc.robot.subsystems.outtake.Shooter;
+import frc.robot.subsystems.outtake.commands.ShooterDefaultVelocity;
 import frc.robot.subsystems.tunnel.Tunnel;
 import frc.robot.subsystems.tunnel.tunnelCommands.DefaultRpm;
 import frc.robot.subsystems.vision.Vision;
@@ -33,6 +43,11 @@ public class RobotContainer {
   }
 
   public Tunnel tunnel = new Tunnel();
+  public IntakeRollers intakeRollers = new IntakeRollers();
+  public Indexer indexer = new Indexer();
+  public IntakePivot intakePivot = new IntakePivot();
+  public Hood hood = new Hood();
+  public Shooter shooter = new Shooter();
   public Drivetrain drivetrain = Drivetrain.create();
   public Vision vision =
       Vision.create(
@@ -114,17 +129,15 @@ configureTuningBindings();
   }
 
   private void configureBindings() {
+    tunnel.setDefaultCommand(new DefaultRpm(tunnel));
+    intakeRollers.setDefaultCommand(new IntakeDefaultVelocity(intakeRollers));
+    indexer.setDefaultCommand(new IndexerDefaultVelocity(indexer));
+    intakePivot.setDefaultCommand(new GoToDefaultPosition(intakePivot));
+    hood.setDefaultCommand(HoodCommands.goToTravelAngle(hood));
+    shooter.setDefaultCommand(new ShooterDefaultVelocity(shooter));
+
     drivetrain.setDefaultCommand(
         drivetrain.teleopDrive(this::getDriverForward, this::getDriverStrafe, this::getDriverTurn));
-    // intakeRollers.setDefaultCommand(
-    // Commands.run(() -> intakeRollers.setVoltage(Volts.of(0)), intakeRollers));
-    // shooter.setDefaultCommand(ShootFuel.outtakeWithVoltage(shooter, () ->
-    // Volts.of(0)));
-    // hood.setDefaultCommand(HoodCommands.goToTravelAngle(hood));
-    // intakePivot.setDefaultCommand(new GoToDefaultPosition(intakePivot));
-    // spindexer.setDefaultCommand(Index.setVoltage(spindexer, () -> Volts.of(0)));
-    // tunnel.setDefaultCommand(new RunAtVelocity(tunnel, RPM.of(0)));
-
     // driver
     // .leftBumper()
     // .whileTrue(new GoToIntakePosition(intakePivot).andThen(new
