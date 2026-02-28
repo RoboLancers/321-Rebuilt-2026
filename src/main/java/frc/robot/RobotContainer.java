@@ -30,6 +30,7 @@ import frc.robot.subsystems.outtake.Shooter;
 import frc.robot.subsystems.outtake.commands.ShooterDefaultVelocity;
 import frc.robot.subsystems.tunnel.Tunnel;
 import frc.robot.subsystems.tunnel.tunnelCommands.DefaultRpm;
+import frc.robot.subsystems.tunnel.tunnelCommands.TuneTunnel;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.util.RebuiltUtil;
 
@@ -115,13 +116,19 @@ public class RobotContainer {
   }
 
   public RobotContainer() {
-    configureBindings();
+    // configureBindings();
+    configureTuningBindings();
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
     // NamedCommands.registerCommand("IntakeFuel", intakeFuel);
     // NamedCommands.registerCommand("ShootFuel", shootFuel.releaseFuel(shooter));
+  }
+
+  private void configureTuningBindings() {
+    tunnel.setDefaultCommand(new DefaultRpm(tunnel));
+    driver.a().whileTrue(new TuneTunnel(tunnel));
   }
 
   private void configureBindings() {

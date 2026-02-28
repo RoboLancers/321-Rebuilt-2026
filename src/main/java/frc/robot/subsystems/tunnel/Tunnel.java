@@ -19,6 +19,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Tunnel extends SubsystemBase {
@@ -108,5 +109,9 @@ public class Tunnel extends SubsystemBase {
   @Logged(name = "tunnelCurrent")
   public Current getCurrent() {
     return tunnelMotor.getStatorCurrent().getValue();
+  }
+
+  public void periodic() {
+    SmartDashboard.putNumber("Tunnel Velocity", tunnelMotor.getVelocity().getValueAsDouble());
   }
 }
