@@ -20,6 +20,7 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainConstants;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.hood.hoodCommands.HoodCommands;
+import frc.robot.subsystems.hood.hoodCommands.TuneHood;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.indexerCommands.IndexerDefaultVelocity;
 import frc.robot.subsystems.intakePivot.IntakePivot;
@@ -115,13 +116,18 @@ public class RobotContainer {
   }
 
   public RobotContainer() {
-    configureBindings();
+    // configureBindings();
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
     // NamedCommands.registerCommand("IntakeFuel", intakeFuel);
     // NamedCommands.registerCommand("ShootFuel", shootFuel.releaseFuel(shooter));
+  }
+
+  private void configureTuningBindings() {
+    hood.setDefaultCommand(HoodCommands.goToTravelAngle(hood));
+    driver.a().whileTrue(new TuneHood(hood));
   }
 
   private void configureBindings() {

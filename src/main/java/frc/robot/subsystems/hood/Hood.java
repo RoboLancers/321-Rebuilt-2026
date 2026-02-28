@@ -26,6 +26,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Hood extends SubsystemBase {
@@ -140,5 +141,9 @@ public class Hood extends SubsystemBase {
   @Logged(name = "hoodCurrent")
   public Current getCurrent() {
     return hoodMotor.getStatorCurrent().getValue();
+  }
+
+  public void periodic() {
+    SmartDashboard.putNumber("Hood Angle", hoodMotor.getPosition().getValueAsDouble());
   }
 }
