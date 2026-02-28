@@ -20,6 +20,7 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Shooter extends SubsystemBase {
@@ -149,5 +150,13 @@ public class Shooter extends SubsystemBase {
   @Logged(name = "shooterHasFuel")
   public boolean getFuelInShooter() {
     return distanceSensor.getRange() < OuttakeConstants.kFuelRange;
+  }
+
+  @Override
+  public void periodic() {
+    SmartDashboard.putNumber(
+        "Top Motor Velocity", topShooterMotor.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber(
+        "Bottom Motor Velocity", bottomShooterMotor.getVelocity().getValueAsDouble());
   }
 }

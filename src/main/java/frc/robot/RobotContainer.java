@@ -28,6 +28,7 @@ import frc.robot.subsystems.intakerollers.IntakeRollers;
 import frc.robot.subsystems.intakerollers.rolllercommands.IntakeDefaultVelocity;
 import frc.robot.subsystems.outtake.Shooter;
 import frc.robot.subsystems.outtake.commands.ShooterDefaultVelocity;
+import frc.robot.subsystems.outtake.commands.TuneOuttake;
 import frc.robot.subsystems.tunnel.Tunnel;
 import frc.robot.subsystems.tunnel.tunnelCommands.DefaultRpm;
 import frc.robot.subsystems.vision.Vision;
@@ -115,8 +116,8 @@ public class RobotContainer {
   }
 
   public RobotContainer() {
-  //  configureBindings();
-configureTuningBindings();
+    //  configureBindings();
+    configureTuningBindings();
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -124,8 +125,10 @@ configureTuningBindings();
     // NamedCommands.registerCommand("ShootFuel", shootFuel.releaseFuel(shooter));
   }
 
-  private void configureTuningBindings(){
-    drivetrain.setDefaultCommand(drivetrain.teleopDrive(()->0,()->0,()->0));
+  private void configureTuningBindings() {
+    drivetrain.setDefaultCommand(drivetrain.teleopDrive(() -> 0, () -> 0, () -> 0));
+    shooter.setDefaultCommand(new ShooterDefaultVelocity(shooter));
+    driver.a().whileTrue(new TuneOuttake(shooter));
   }
 
   private void configureBindings() {
