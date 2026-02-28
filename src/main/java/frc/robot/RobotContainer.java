@@ -98,13 +98,17 @@ public class RobotContainer {
   }
 
   public RobotContainer() {
-    configureBindings();
-
+  //  configureBindings();
+configureTuningBindings();
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
     // NamedCommands.registerCommand("IntakeFuel", intakeFuel);
     // NamedCommands.registerCommand("ShootFuel", shootFuel.releaseFuel(shooter));
+  }
+
+  private void configureTuningBindings(){
+    drivetrain.setDefaultCommand(drivetrain.teleopDrive(()->0,()->0,()->0));
   }
 
   private void configureBindings() {
