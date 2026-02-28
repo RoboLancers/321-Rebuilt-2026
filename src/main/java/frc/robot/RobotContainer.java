@@ -132,7 +132,6 @@ public class RobotContainer {
     hood.setDefaultCommand(HoodCommands.goToTravelAngle(hood));
     shooter.setDefaultCommand(new ShooterDefaultVelocity(shooter));
 
-
     drivetrain.setDefaultCommand(
         drivetrain.teleopDrive(this::getDriverForward, this::getDriverStrafe, this::getDriverTurn));
     // driver
