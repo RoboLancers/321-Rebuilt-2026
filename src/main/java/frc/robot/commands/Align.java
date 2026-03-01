@@ -56,7 +56,7 @@ public final class Align {
 
   public static Command alignToNearestApriltag(Drivetrain drivetrain, Supplier<Pose2d> robotPose) {
 
-    Pose2d apriltagPose = drivetrain.getNearestApriltag().plus(alignmentTransform);
+    Pose2d apriltagPose = drivetrain.getNearestAllianceAprilTag().plus(alignmentTransform);
 
     return drivetrain.driveToFieldPoseCommand(() -> apriltagPose, robotPose);
   }
@@ -90,9 +90,9 @@ public final class Align {
       hubScoringPose = redHubScoringPoseRight;
     } else if (MyAlliance.isRed() && !robotOnRightSide(robotPose)) {
       hubScoringPose = redHubScoringPoseLeft;
-    } else if (!MyAlliance.isRed() && robotOnRightSide(robotPose)) {
+    } else if (MyAlliance.isBlue() && robotOnRightSide(robotPose)) {
       hubScoringPose = blueHubScoringPoseLeft;
-    } else if (!MyAlliance.isRed() && !robotOnRightSide(robotPose)) {
+    } else if (MyAlliance.isBlue() && !robotOnRightSide(robotPose)) {
       hubScoringPose = blueHubScoringPoseRight;
     }
 
