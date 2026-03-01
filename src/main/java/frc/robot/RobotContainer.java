@@ -30,7 +30,6 @@ import frc.robot.subsystems.intakerollers.IntakeRollers;
 import frc.robot.subsystems.intakerollers.rolllercommands.IntakeDefaultVelocity;
 import frc.robot.subsystems.outtake.Shooter;
 import frc.robot.subsystems.outtake.commands.ShooterDefaultVelocity;
-import frc.robot.subsystems.outtake.commands.TuneOuttake;
 import frc.robot.subsystems.tunnel.Tunnel;
 import frc.robot.subsystems.tunnel.tunnelCommands.TuneTunnel;
 import frc.robot.subsystems.vision.Vision;
