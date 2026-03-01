@@ -14,11 +14,11 @@ public class DefaultRpm extends Command {
     this.tunnel = tunnel;
   }
 
-  public void excute() {
+  public void execute() {
     tunnel.runAtVelocity(RPM.of(0));
   }
 
   public boolean isFinished() {
-    return tunnel.getVelocity() == (RPM.of(0));
+    return false;
   }
 }

@@ -32,7 +32,7 @@ import frc.robot.subsystems.outtake.Shooter;
 import frc.robot.subsystems.outtake.commands.ShooterDefaultVelocity;
 import frc.robot.subsystems.outtake.commands.TuneOuttake;
 import frc.robot.subsystems.tunnel.Tunnel;
-import frc.robot.subsystems.tunnel.tunnelCommands.DefaultRpm;
+import frc.robot.subsystems.tunnel.tunnelCommands.TuneTunnel;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.util.RebuiltUtil;
 
@@ -118,7 +118,7 @@ public class RobotContainer {
   }
 
   public RobotContainer() {
-    //  configureBindings();
+    // configureBindings();
     configureTuningBindings();
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -128,13 +128,12 @@ public class RobotContainer {
   }
 
   private void configureTuningBindings() {
-    drivetrain.setDefaultCommand(drivetrain.teleopDrive(() -> 0, () -> 0, () -> 0));
-    shooter.setDefaultCommand(Commands.run(() -> shooter.setVelocity(RPM.of(0)), shooter));
-    driver.a().whileTrue(new TuneOuttake(shooter));
+    tunnel.setDefaultCommand(Commands.run(() -> tunnel.runAtVelocity(RPM.of(0)), tunnel));
+    driver.a().whileTrue(new TuneTunnel(tunnel));
   }
 
   private void configureBindings() {
-    tunnel.setDefaultCommand(new DefaultRpm(tunnel));
+    tunnel.setDefaultCommand(Commands.run(() -> tunnel.runAtVelocity(RPM.of(0)), tunnel));
     intakeRollers.setDefaultCommand(new IntakeDefaultVelocity(intakeRollers));
     indexer.setDefaultCommand(new IndexerDefaultVelocity(indexer));
     intakePivot.setDefaultCommand(new GoToDefaultPosition(intakePivot));
