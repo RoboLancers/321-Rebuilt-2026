@@ -111,7 +111,9 @@ public class Tunnel extends SubsystemBase {
     return tunnelMotor.getStatorCurrent().getValue();
   }
 
+  @Override
   public void periodic() {
     SmartDashboard.putNumber("Tunnel Velocity", tunnelMotor.getVelocity().getValue().in(RPM));
+    SmartDashboard.putNumber("Tunnel Voltage", getVoltage().in(Volts));
   }
 }

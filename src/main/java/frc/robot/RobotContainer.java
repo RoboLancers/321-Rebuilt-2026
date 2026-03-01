@@ -2,6 +2,7 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
@@ -14,6 +15,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Align;
@@ -128,12 +130,12 @@ public class RobotContainer {
   }
 
   private void configureTuningBindings() {
-    tunnel.setDefaultCommand(new DefaultRpm(tunnel));
+       tunnel.setDefaultCommand(Commands.run(()->tunnel.runAtVelocity(RPM.of(0)), tunnel));
     driver.a().whileTrue(new TuneTunnel(tunnel));
   }
 
   private void configureBindings() {
-    tunnel.setDefaultCommand(new DefaultRpm(tunnel));
+    tunnel.setDefaultCommand(Commands.run(()->tunnel.runAtVelocity(RPM.of(0)), tunnel));
     intakeRollers.setDefaultCommand(new IntakeDefaultVelocity(intakeRollers));
     indexer.setDefaultCommand(new IndexerDefaultVelocity(indexer));
     intakePivot.setDefaultCommand(new GoToDefaultPosition(intakePivot));

@@ -18,7 +18,7 @@ public class TunnelConstants {
 
   public static final double kD = 0;
 
-  public static final double kV = 0;
+  public static final double kV = 0.01815;
 
   public static final double kTunnelGearRatio = 9 / 1;
 
@@ -34,7 +34,7 @@ public class TunnelConstants {
 
   public static final AngularVelocity kPassFuelRPM = RPM.of(1);
 
-  public static final AngularVelocity kTunnelMaxVelocity = RPM.of(2000);
+  public static final AngularVelocity kTunnelMaxVelocity = RPM.of(700);
 
   public static final AngularAcceleration kTunnelMaxAcceleration =
       RotationsPerSecondPerSecond.of(1000);
