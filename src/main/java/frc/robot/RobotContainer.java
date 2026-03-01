@@ -3,6 +3,7 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.Volts;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.epilogue.Logged;
@@ -126,8 +127,9 @@ public class RobotContainer {
   }
 
   private void configureTuningBindings() {
-    hood.setDefaultCommand(HoodCommands.goToTravelAngle(hood));
+    hood.setDefaultCommand(hood.setVoltageCommand(Volts.of(0)));
     driver.a().whileTrue(new TuneHood(hood));
+    driver.y().whileTrue(hood.homeHoodMagnetic());
   }
 
   private void configureBindings() {

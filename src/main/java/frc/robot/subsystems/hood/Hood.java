@@ -3,41 +3,52 @@ package frc.robot.subsystems.hood;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
+import com.ctre.phoenix6.configs.CANdiConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.DigitalInputsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.hardware.CANdi;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.S1CloseStateValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.util.TunableConstant;
 
 public class Hood extends SubsystemBase {
 
   @Logged private TalonFX hoodMotor = new TalonFX(HoodConstants.kHoodMotorId);
   @Logged private DigitalInput hoodLimitSwitch = new DigitalInput(HoodConstants.kLimitSwitchID);
+  @Logged private CANdi magneticLimitSwitch = new CANdi(0);
   private Angle targetAngle = HoodConstants.kStartingAngle;
+
+  public PIDController pidController = new PIDController(0, 0, 0);
+
+  public ArmFeedforward armFeedforward = new ArmFeedforward(0, 0, 0);
 
   public Hood() {
     configureMotors();
     setHoodPID(HoodConstants.kP, HoodConstants.kD, HoodConstants.kG);
+    magneticLimitSwitch.getConfigurator().apply(candiConfigs);
   }
 
   public void configureMotors() {
@@ -59,10 +70,8 @@ public class Hood extends SubsystemBase {
                     .withNeutralMode(NeutralModeValue.Brake))
             .withMotionMagic(
                 new MotionMagicConfigs()
-                    .withMotionMagicCruiseVelocity(
-                        HoodConstants.kHoodMotorMaxVelocity.in(MetersPerSecond))
-                    .withMotionMagicAcceleration(
-                        HoodConstants.kHoodMotorMaxAcceleration.in(MetersPerSecondPerSecond)))
+                    .withMotionMagicCruiseVelocity(HoodConstants.kHoodMotorMaxVelocity)
+                    .withMotionMagicAcceleration(HoodConstants.kHoodMotorMaxAcceleration))
             .withSlot0(
                 new Slot0Configs()
                     .withGravityType(GravityTypeValue.Arm_Cosine)
@@ -73,18 +82,27 @@ public class Hood extends SubsystemBase {
     hoodMotor.getConfigurator().apply(hoodMotorConfigs);
   }
 
+  public CANdiConfiguration candiConfigs =
+      new CANdiConfiguration()
+          .withDigitalInputs(
+              new DigitalInputsConfigs().withS1CloseState(S1CloseStateValue.CloseWhenLow));
+
   public void setHoodPID(double kP, double kD, double kG) {
-    hoodMotor.getConfigurator().apply(new Slot0Configs().withKP(kP).withKD(kD).withKG(kG));
+    pidController.setP(kP);
+    pidController.setD(kD);
+    armFeedforward.setKg(kG);
   }
 
   public void goToAngle(Angle angle) {
     this.targetAngle = angle;
-    hoodMotor.setControl(new MotionMagicVoltage(angle));
+    hoodMotor.setVoltage(
+        pidController.calculate(getAngle().in(Degrees), angle.in(Degrees))
+            + armFeedforward.calculate(angle.in(Degrees), 0));
   }
 
   @Logged(name = "hoodPitch")
   public Angle getAngle() {
-    Angle angle = Degrees.of(hoodMotor.getPosition().getValueAsDouble());
+    Angle angle = hoodMotor.getPosition().getValue();
     return angle;
   }
 
@@ -102,9 +120,8 @@ public class Hood extends SubsystemBase {
     return getCurrent().in(Amps) >= HoodConstants.kCurrentCeiling.in(Amps);
   }
 
-  @Logged(name = "hoodAtHomedPosition")
-  public boolean getHoodAtHomedPosition() {
-    return hoodLimitSwitch.get();
+  public boolean getAtHoodHomedPosition() {
+    return magneticLimitSwitch.getS1Closed(true).getValue();
   }
 
   public void zeroEncoder() {
@@ -128,6 +145,14 @@ public class Hood extends SubsystemBase {
     goToAngle(Degrees.of(targetAngle));
   }
 
+  TunableConstant kHomingVoltage = new TunableConstant("Homing voltage", 0);
+
+  public Command homeHoodMagnetic() {
+    return run(() -> hoodMotor.setVoltage(kHomingVoltage.get()))
+        .until(() -> getAtHoodHomedPosition())
+        .andThen(() -> zeroEncoder());
+  }
+
   @Logged(name = "hoodTargetAngle")
   public Angle getTargetAngle() {
     return this.targetAngle;
@@ -143,7 +168,14 @@ public class Hood extends SubsystemBase {
     return hoodMotor.getStatorCurrent().getValue();
   }
 
+  @Override
   public void periodic() {
-    SmartDashboard.putNumber("Hood Angle", hoodMotor.getPosition().getValueAsDouble());
+    SmartDashboard.putNumber("Hood Angle", hoodMotor.getPosition().getValue().in(Degrees));
+    SmartDashboard.putBoolean("Hood Is At Homed Position", getAtHoodHomedPosition());
+    SmartDashboard.putNumber("Hood Voltage", getVoltage().in(Volts));
+  }
+
+  public Command setVoltageCommand(Voltage volts) {
+    return run(() -> hoodMotor.setVoltage(volts.in(Volts)));
   }
 }
