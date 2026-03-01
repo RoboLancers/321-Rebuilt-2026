@@ -4,7 +4,6 @@ package frc.robot;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
-import static edu.wpi.first.units.Units.Volts;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.epilogue.Logged;
@@ -23,7 +22,6 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainConstants;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.hood.hoodCommands.HoodCommands;
-import frc.robot.subsystems.hood.hoodCommands.TuneHood;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.indexerCommands.IndexerDefaultVelocity;
 import frc.robot.subsystems.intakePivot.IntakePivot;
@@ -33,7 +31,6 @@ import frc.robot.subsystems.intakerollers.rolllercommands.IntakeDefaultVelocity;
 import frc.robot.subsystems.outtake.Shooter;
 import frc.robot.subsystems.outtake.commands.ShooterDefaultVelocity;
 import frc.robot.subsystems.tunnel.Tunnel;
-import frc.robot.subsystems.tunnel.tunnelCommands.DefaultRpm;
 import frc.robot.subsystems.tunnel.tunnelCommands.TuneTunnel;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.util.RebuiltUtil;
@@ -130,12 +127,12 @@ public class RobotContainer {
   }
 
   private void configureTuningBindings() {
-       tunnel.setDefaultCommand(Commands.run(()->tunnel.runAtVelocity(RPM.of(0)), tunnel));
+    tunnel.setDefaultCommand(Commands.run(() -> tunnel.runAtVelocity(RPM.of(0)), tunnel));
     driver.a().whileTrue(new TuneTunnel(tunnel));
   }
 
   private void configureBindings() {
-    tunnel.setDefaultCommand(Commands.run(()->tunnel.runAtVelocity(RPM.of(0)), tunnel));
+    tunnel.setDefaultCommand(Commands.run(() -> tunnel.runAtVelocity(RPM.of(0)), tunnel));
     intakeRollers.setDefaultCommand(new IntakeDefaultVelocity(intakeRollers));
     indexer.setDefaultCommand(new IndexerDefaultVelocity(indexer));
     intakePivot.setDefaultCommand(new GoToDefaultPosition(intakePivot));
