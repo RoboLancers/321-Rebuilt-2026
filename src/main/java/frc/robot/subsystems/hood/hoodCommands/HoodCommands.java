@@ -2,6 +2,7 @@
 package frc.robot.subsystems.hood.hoodCommands;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Voltage;
@@ -18,7 +19,8 @@ public class HoodCommands {
         .until(
             () ->
                 Math.abs(angle.get().in(Degrees) - hood.getAngle().in(Degrees))
-                    <= HoodConstants.kAngleTolerance.in(Degrees));
+                    <= HoodConstants.kAngleTolerance.in(Degrees))
+                    .andThen(runVolts(hood,() -> Volts.of(0)));
   }
 
   public static Command runVolts(Hood hood, Supplier<Voltage> volts) {
@@ -72,6 +74,10 @@ public class HoodCommands {
   public static Command homeHoodMagnetic(Hood hood) {
     return runVolts(hood, () -> HoodConstants.kHomingVoltage)
         .until(() -> hood.getAtHoodHomedPosition())
-        .andThen(() -> hood.zeroEncoder());
+        .andThen(() ->{
+          hood.runVolts(Volts.of(0));
+           hood.zeroEncoder();
+        });
+        
   }
 }

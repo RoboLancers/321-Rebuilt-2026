@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.Volts;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.epilogue.Logged;
@@ -130,7 +131,7 @@ public class RobotContainer {
   }
 
   private void configureTuningBindings() {
-    hood.setDefaultCommand(HoodCommands.goToTravelAngle(hood));
+    hood.setDefaultCommand(HoodCommands.runVolts(hood, () -> Volts.of(0)));
     shooter.setDefaultCommand(Commands.run(() -> shooter.setVelocity(RPM.of(0)), shooter));
     tunnel.setDefaultCommand(Commands.run(() -> tunnel.runAtVelocity(RPM.of(0)), tunnel));
 
@@ -138,13 +139,14 @@ public class RobotContainer {
     TunableConstant shooterVelocity = new TunableConstant("RobotContainer/shooterVelocity/", 0);
     TunableConstant tunnelVelocity = new TunableConstant("RobotContainer/tunnelVelocity", 0);
 
-    driver.y().whileTrue(HoodCommands.homeHoodMagnetic(hood));
+    driver.y().onTrue(HoodCommands.homeHoodMagnetic(hood));
     driver
         .rightTrigger()
         .whileTrue(
             HoodCommands.goToAngle(hood, () -> Degrees.of(hoodPitch.get()))
-                .andThen(
-                    new RunAtVelocity(tunnel, RPM.of(tunnelVelocity.get()))
+                .alongWith(
+                    // new RunAtVelocity(tunnel, () -> RPM.of(tunnelVelocity.get()))
+                    Commands.run(() -> tunnel.runAtVelocity(RPM.of(600)), tunnel)
                         .alongWith(
                             ShootFuel.outtakeWithVelocity(
                                 shooter, () -> RPM.of(shooterVelocity.get())))));
@@ -154,7 +156,7 @@ public class RobotContainer {
         .whileTrue(
             HoodCommands.goToAngle(hood, () -> Degrees.of(hoodPitch.get()))
                 .andThen(
-                    new RunAtVelocity(tunnel, RPM.of(tunnelVelocity.get()))
+                    new RunAtVelocity(tunnel, () -> RPM.of(tunnelVelocity.get()))
                         .andThen(
                             ShootFuel.outtakeWithVelocity(
                                 shooter, () -> RPM.of(shooterVelocity.get())))));

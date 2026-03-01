@@ -174,8 +174,4 @@ public class Hood extends SubsystemBase {
     SmartDashboard.putBoolean("Hood Is At Homed Position", getAtHoodHomedPosition());
     SmartDashboard.putNumber("Hood Voltage", getVoltage().in(Volts));
   }
-
-  public Command setVoltageCommand(Voltage volts) {
-    return run(() -> hoodMotor.setVoltage(volts.in(Volts)));
-  }
 }

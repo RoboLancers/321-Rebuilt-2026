@@ -35,7 +35,7 @@ public class Tunnel extends SubsystemBase {
 
   public Tunnel() {
     tunnelMotorConfiguration();
-    setTunnelPID(TunnelConstants.kP, 0, 0,TunnelConstants.kV);
+    setTunnelPID(TunnelConstants.kP, 0, 0, TunnelConstants.kV);
   }
 
   private void tunnelMotorConfiguration() {
