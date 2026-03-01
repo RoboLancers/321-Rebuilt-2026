@@ -2,6 +2,7 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -13,6 +14,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Align;
@@ -127,7 +129,7 @@ public class RobotContainer {
 
   private void configureTuningBindings() {
     drivetrain.setDefaultCommand(drivetrain.teleopDrive(() -> 0, () -> 0, () -> 0));
-    shooter.setDefaultCommand(new ShooterDefaultVelocity(shooter));
+    shooter.setDefaultCommand(Commands.run(() -> shooter.setVelocity(RPM.of(0)), shooter));
     driver.a().whileTrue(new TuneOuttake(shooter));
   }
 

@@ -12,15 +12,15 @@ import edu.wpi.first.units.measure.Current;
 
 public class OuttakeConstants {
 
-  public static final double kP = 0;
+  public static final double kP = 0.015;
 
   public static final double kD = 0;
 
-  public static final double kV = 0;
+  public static final double kV = 0.00477;
 
-  public static final int kTopMotorID = 0;
+  public static final int kTopMotorID = 14;
 
-  public static final int kBottomMotorID = 1;
+  public static final int kBottomMotorID = 12;
 
   public static final Current kStatorLimit = Amps.of(40);
 
@@ -46,9 +46,9 @@ public class OuttakeConstants {
 
   public static final AngularVelocity kReleaseRPM = RPM.of(0);
 
-  public static final AngularVelocity kMaxVelocity = RPM.of(3000);
+  public static final AngularVelocity kMaxVelocity = RPM.of(2000);
 
-  public static final AngularAcceleration kMaxAcceleration = RotationsPerSecondPerSecond.of(20);
+  public static final AngularAcceleration kMaxAcceleration = RotationsPerSecondPerSecond.of(1000);
 
   public static final MotorAlignmentValue kFollowerReversed = MotorAlignmentValue.Opposed;
 
