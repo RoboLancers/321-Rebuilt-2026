@@ -57,7 +57,7 @@ public class HoodConstants {
 
   public static final Angle kTravelAngle = Degrees.of(0);
 
-  public static final Voltage kHomingVoltage = Volts.of(-0.01);
+  public static final Voltage kHomingVoltage = Volts.of(-1);
 
   public static final Current kCurrentCeiling = Amps.of(20);
 

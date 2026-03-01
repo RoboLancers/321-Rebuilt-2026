@@ -1,6 +1,7 @@
 /* (C) RoboLancers 2026 */
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
@@ -29,11 +30,15 @@ import frc.robot.subsystems.intakePivot.intakePivotCommands.GoToDefaultPosition;
 import frc.robot.subsystems.intakerollers.IntakeRollers;
 import frc.robot.subsystems.intakerollers.rolllercommands.IntakeDefaultVelocity;
 import frc.robot.subsystems.outtake.Shooter;
+import frc.robot.subsystems.outtake.commands.ShootFuel;
 import frc.robot.subsystems.outtake.commands.ShooterDefaultVelocity;
 import frc.robot.subsystems.tunnel.Tunnel;
+import frc.robot.subsystems.tunnel.tunnelCommands.PassFuel;
+import frc.robot.subsystems.tunnel.tunnelCommands.RunAtVelocity;
 import frc.robot.subsystems.tunnel.tunnelCommands.TuneTunnel;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.util.RebuiltUtil;
+import frc.robot.util.TunableConstant;
 
 public class RobotContainer {
 
@@ -127,8 +132,29 @@ public class RobotContainer {
   }
 
   private void configureTuningBindings() {
-    tunnel.setDefaultCommand(Commands.run(() -> tunnel.runAtVelocity(RPM.of(0)), tunnel));
-    driver.a().whileTrue(new TuneTunnel(tunnel));
+    hood.setDefaultCommand(HoodCommands.goToTravelAngle(hood));
+    shooter.setDefaultCommand(Commands.run(()->shooter.setVelocity(RPM.of(0)), shooter));
+    tunnel.setDefaultCommand(Commands.run(()->tunnel.runAtVelocity(RPM.of(0)),tunnel));
+
+    TunableConstant hoodPitch = new TunableConstant("RobotContainer/hoodPitch/", 0);
+    TunableConstant shooterVelocity = new TunableConstant("RobotContainer/shooterVelocity/", 0);
+    TunableConstant tunnelVelocity = new TunableConstant("RobotContainer/tunnelVelocity", 0);
+
+    driver.y().whileTrue(HoodCommands.homeHoodMagnetic(hood));
+    driver.rightTrigger().whileTrue(HoodCommands.goToAngle(hood, () -> Degrees.of(hoodPitch.get()))
+        .andThen(
+          new RunAtVelocity(tunnel, RPM.of(tunnelVelocity.get()))
+                .alongWith(
+                    ShootFuel.outtakeWithVelocity(shooter, () -> RPM.of(shooterVelocity.get()))))
+    );
+
+    driver.leftTrigger().whileTrue(HoodCommands.goToAngle(hood, () -> Degrees.of(hoodPitch.get()))
+        .andThen(
+          new RunAtVelocity(tunnel, RPM.of(tunnelVelocity.get()))
+                .andThen(
+                    ShootFuel.outtakeWithVelocity(shooter, () -> RPM.of(shooterVelocity.get()))))
+    );
+
   }
 
   private void configureBindings() {
