@@ -3,6 +3,7 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.Volts;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.epilogue.Logged;
@@ -20,6 +21,7 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainConstants;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.hood.hoodCommands.HoodCommands;
+import frc.robot.subsystems.hood.hoodCommands.TuneHood;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.indexerCommands.IndexerDefaultVelocity;
 import frc.robot.subsystems.intakePivot.IntakePivot;
@@ -115,13 +117,19 @@ public class RobotContainer {
   }
 
   public RobotContainer() {
-    configureBindings();
-
+    // configureBindings();
+    configureTuningBindings();
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
     // NamedCommands.registerCommand("IntakeFuel", intakeFuel);
     // NamedCommands.registerCommand("ShootFuel", shootFuel.releaseFuel(shooter));
+  }
+
+  private void configureTuningBindings() {
+    hood.setDefaultCommand(hood.setVoltageCommand(Volts.of(0)));
+    driver.a().whileTrue(new TuneHood(hood));
+    driver.y().whileTrue(hood.homeHoodMagnetic());
   }
 
   private void configureBindings() {
