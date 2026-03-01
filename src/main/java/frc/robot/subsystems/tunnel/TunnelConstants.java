@@ -22,7 +22,7 @@ public class TunnelConstants {
 
   public static final double kTunnelGearRatio = 9 / 1;
 
-  public static final int kTunnelMotorId = 1;
+  public static final int kTunnelMotorId = 13;
 
   public static final Current kTunnelStatorLimit = Amps.of(40);
 
@@ -30,12 +30,12 @@ public class TunnelConstants {
 
   public static final NeutralModeValue kTunnelNeutralMode = NeutralModeValue.Brake;
 
-  public static final boolean kTunnelInverted = false;
+  public static final boolean kTunnelInverted = true;
 
   public static final AngularVelocity kPassFuelRPM = RPM.of(1);
 
-  public static final AngularVelocity kTunnelMaxVelocity = RPM.of(1);
+  public static final AngularVelocity kTunnelMaxVelocity = RPM.of(2000);
 
   public static final AngularAcceleration kTunnelMaxAcceleration =
-      RotationsPerSecondPerSecond.of(1);
+      RotationsPerSecondPerSecond.of(1000);
 }

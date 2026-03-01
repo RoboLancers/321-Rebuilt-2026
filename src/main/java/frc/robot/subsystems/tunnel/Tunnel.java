@@ -69,7 +69,7 @@ public class Tunnel extends SubsystemBase {
 
   @Logged(name = "tunnelVelocity")
   public AngularVelocity getVelocity() {
-    AngularVelocity velocity = RPM.of(tunnelMotor.getVelocity().getValueAsDouble());
+    AngularVelocity velocity = tunnelMotor.getVelocity().getValue();
     return velocity;
   }
 
@@ -112,6 +112,6 @@ public class Tunnel extends SubsystemBase {
   }
 
   public void periodic() {
-    SmartDashboard.putNumber("Tunnel Velocity", tunnelMotor.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Tunnel Velocity", tunnelMotor.getVelocity().getValue().in(RPM));
   }
 }
