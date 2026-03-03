@@ -7,6 +7,7 @@ import static edu.wpi.first.units.Units.Radians;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.measure.Distance;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -47,5 +48,11 @@ public class RebuiltUtil {
                             / (getHubPose().getX() - robotPose.get().getX()))));
 
     return rotationToHub;
+  }
+
+  public static Distance getHubDistance(Supplier<Pose2d> robotPose) {
+    Distance distance =
+        Meters.of(robotPose.get().getTranslation().getDistance(getHubPose().getTranslation()));
+    return distance;
   }
 }

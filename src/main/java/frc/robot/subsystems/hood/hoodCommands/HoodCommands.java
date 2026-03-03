@@ -20,7 +20,7 @@ public class HoodCommands {
             () ->
                 Math.abs(angle.get().in(Degrees) - hood.getAngle().in(Degrees))
                     <= HoodConstants.kAngleTolerance.in(Degrees))
-                    .andThen(runVolts(hood,() -> Volts.of(0)));
+        .andThen(runVolts(hood, () -> Volts.of(0)));
   }
 
   public static Command runVolts(Hood hood, Supplier<Voltage> volts) {
@@ -73,11 +73,11 @@ public class HoodCommands {
 
   public static Command homeHoodMagnetic(Hood hood) {
     return runVolts(hood, () -> HoodConstants.kHomingVoltage)
-        .until(() -> hood.getAtHoodHomedPosition())
-        .andThen(() ->{
-          hood.runVolts(Volts.of(0));
-           hood.zeroEncoder();
-        });
-        
+        .until(() -> hood.atHomedPosition())
+        .andThen(
+            () -> {
+              hood.runVolts(Volts.of(0));
+              hood.zeroEncoder();
+            });
   }
 }

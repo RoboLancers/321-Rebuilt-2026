@@ -32,7 +32,7 @@ public class TunnelConstants {
 
   public static final boolean kTunnelInverted = true;
 
-  public static final AngularVelocity kPassFuelRPM = RPM.of(1);
+  public static final AngularVelocity kPassFuelRPM = RPM.of(600);
 
   public static final AngularVelocity kTunnelMaxVelocity = RPM.of(700);
 
