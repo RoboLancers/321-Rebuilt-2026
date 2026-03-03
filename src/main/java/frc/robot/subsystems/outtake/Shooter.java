@@ -122,7 +122,7 @@ public class Shooter extends SubsystemBase {
 
   public AngularVelocity getScoreVelocity(Distance hubDistance) {
     double rpm = 0;
-    rpm = 522.6426 + Math.pow(1.00266, hubDistance.in(Inches));
+    rpm = 522.6426 * Math.pow(1.00266, hubDistance.in(Inches));
     return RPM.of(rpm);
   }
 
