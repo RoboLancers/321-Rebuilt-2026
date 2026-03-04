@@ -12,13 +12,16 @@ public class IntakeDefaultVelocity extends Command {
 
   public IntakeDefaultVelocity(IntakeRollers intakeRollers) {
     this.intakeRollers = intakeRollers;
+    addRequirements(intakeRollers);
   }
 
+  @Override
   public void execute() {
     intakeRollers.setVelocity(RPM.of(0));
   }
 
+  @Override
   public boolean isFinished() {
-    return intakeRollers.getRollerVelocity() == (RPM.of(0));
+    return false;
   }
 }

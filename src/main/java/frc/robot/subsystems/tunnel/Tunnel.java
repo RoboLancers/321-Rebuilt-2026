@@ -35,7 +35,7 @@ public class Tunnel extends SubsystemBase {
 
   public Tunnel() {
     tunnelMotorConfiguration();
-    setTunnelPID(TunnelConstants.kP, 0, TunnelConstants.kV);
+    setTunnelPID(TunnelConstants.kP, 0, 0, TunnelConstants.kV);
   }
 
   private void tunnelMotorConfiguration() {
@@ -88,8 +88,9 @@ public class Tunnel extends SubsystemBase {
     tunnelMotor.setVoltage(volts.in(Volts));
   }
 
-  public void setTunnelPID(double kP, double kI, double kD) {
+  public void setTunnelPID(double kP, double kI, double kD, double kV) {
     tunnelController.setPID(kP, kI, kD);
+    tunnelFeedforward.setKv(kV);
   }
 
   public void tuneTunnel(double kP, double kD, double kV, double targetVelocity) {

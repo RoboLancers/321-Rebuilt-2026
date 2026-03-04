@@ -37,9 +37,9 @@ public class HoodConstants {
   public static final AngularAcceleration kHoodMotorMaxAcceleration =
       RotationsPerSecondPerSecond.of(0.16);
 
-  public static final Angle kStartingAngle = Degrees.of(60);
+  public static final Angle kStartingAngle = Degrees.of(0);
 
-  public static final Angle kAngleTolerance = Degrees.of(1);
+  public static final Angle kAngleTolerance = Degrees.of(0.5);
 
   public static final Angle kSetScoreAngle = Degrees.of(0);
 
@@ -57,7 +57,7 @@ public class HoodConstants {
 
   public static final Angle kTravelAngle = Degrees.of(0);
 
-  public static final Voltage kHomingVoltage = Volts.of(-0.01);
+  public static final Voltage kHomingVoltage = Volts.of(-1);
 
   public static final Current kCurrentCeiling = Amps.of(20);
 

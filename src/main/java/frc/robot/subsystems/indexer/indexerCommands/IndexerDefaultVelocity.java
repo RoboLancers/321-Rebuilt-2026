@@ -12,6 +12,7 @@ public class IndexerDefaultVelocity extends Command {
 
   public IndexerDefaultVelocity(Indexer indexer) {
     this.indexer = indexer;
+    addRequirements(indexer);
   }
 
   public void execute() {
@@ -19,6 +20,6 @@ public class IndexerDefaultVelocity extends Command {
   }
 
   public boolean isFinished() {
-    return indexer.getVelocity() == (RPM.of(0));
+    return false;
   }
 }

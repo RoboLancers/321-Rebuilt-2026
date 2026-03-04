@@ -1,6 +1,7 @@
 /* (C) RoboLancers 2026 */
 package frc.robot.subsystems.outtake;
 
+import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
@@ -20,6 +21,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -111,6 +113,17 @@ public class Shooter extends SubsystemBase {
     topShooterMotor.setVoltage(volts);
     bottomShooterMotor.setControl(
         new Follower(OuttakeConstants.kTopMotorID, OuttakeConstants.kFollowerReversed));
+  }
+
+  public void setVoltage(Voltage volts) {
+    topShooterMotor.setVoltage(volts.in(Volts));
+    bottomShooterMotor.setVoltage(volts.in(Volts));
+  }
+
+  public AngularVelocity getScoreVelocity(Distance hubDistance) {
+    double rpm = 0;
+    rpm = 522.6426 * Math.pow(1.00266, hubDistance.in(Inches));
+    return RPM.of(rpm);
   }
 
   public void tune(double kP, double kD, double kV, double targetRPM) {

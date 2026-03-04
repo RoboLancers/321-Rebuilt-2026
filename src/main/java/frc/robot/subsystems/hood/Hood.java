@@ -3,6 +3,7 @@ package frc.robot.subsystems.hood;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
@@ -27,6 +28,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -100,6 +102,12 @@ public class Hood extends SubsystemBase {
             + armFeedforward.calculate(angle.in(Degrees), 0));
   }
 
+  public Angle getScoreAngle(Distance hubDistance) {
+    double pitch = 0;
+    pitch = -37.69619 + 9.35374 * Math.log(hubDistance.in(Inches));
+    return Degrees.of(pitch);
+  }
+
   @Logged(name = "hoodPitch")
   public Angle getAngle() {
     Angle angle = hoodMotor.getPosition().getValue();
@@ -120,7 +128,7 @@ public class Hood extends SubsystemBase {
     return getCurrent().in(Amps) >= HoodConstants.kCurrentCeiling.in(Amps);
   }
 
-  public boolean getAtHoodHomedPosition() {
+  public boolean atHomedPosition() {
     return magneticLimitSwitch.getS1Closed(true).getValue();
   }
 
@@ -140,6 +148,13 @@ public class Hood extends SubsystemBase {
     return atTargetAngle;
   }
 
+  public boolean atAngle(Angle angle) {
+    boolean atAngle =
+        Math.abs(getAngle().in(Degrees) - angle.in(Degrees))
+            < HoodConstants.kAngleTolerance.in(Degrees);
+    return atAngle;
+  }
+
   public void tune(double kP, double kD, double kG, double targetAngle) {
     setHoodPID(kP, kD, kG);
     goToAngle(Degrees.of(targetAngle));
@@ -149,7 +164,7 @@ public class Hood extends SubsystemBase {
 
   public Command homeHoodMagnetic() {
     return run(() -> hoodMotor.setVoltage(kHomingVoltage.get()))
-        .until(() -> getAtHoodHomedPosition())
+        .until(() -> atHomedPosition())
         .andThen(() -> zeroEncoder());
   }
 
@@ -171,11 +186,7 @@ public class Hood extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Hood Angle", hoodMotor.getPosition().getValue().in(Degrees));
-    SmartDashboard.putBoolean("Hood Is At Homed Position", getAtHoodHomedPosition());
+    SmartDashboard.putBoolean("Hood Is At Homed Position", atHomedPosition());
     SmartDashboard.putNumber("Hood Voltage", getVoltage().in(Volts));
-  }
-
-  public Command setVoltageCommand(Voltage volts) {
-    return run(() -> hoodMotor.setVoltage(volts.in(Volts)));
   }
 }

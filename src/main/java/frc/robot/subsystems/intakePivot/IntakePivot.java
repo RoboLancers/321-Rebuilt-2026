@@ -2,6 +2,7 @@
 package frc.robot.subsystems.intakePivot;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
@@ -21,6 +22,7 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotConstants;
 
 public class IntakePivot extends SubsystemBase {
 
@@ -65,6 +67,10 @@ public class IntakePivot extends SubsystemBase {
     intakePivotMotor.setControl(intakeVoltage);
   }
 
+  public void setVoltage(Voltage volts) {
+    intakePivotMotor.setVoltage(volts.in(Volts));
+  }
+
   @Logged(name = "intakePivotAngle")
   public Angle getAngle() {
     return Degrees.of(intakePivotMotor.getPosition().getValueAsDouble());
@@ -76,7 +82,12 @@ public class IntakePivot extends SubsystemBase {
 
   @Logged(name = "intakePivotAtTargetAngle")
   public boolean atTargetAngle() {
-    return getAngle() == targetAngle;
+    return atAngle(targetAngle);
+  }
+
+  public boolean atAngle(Angle angle) {
+    return Math.abs(getAngle().in(Degrees) - angle.in(Degrees))
+        < RobotConstants.kAngleTolerance.in(Degrees);
   }
 
   public void setPID(double kP, double kD, double kG) {
