@@ -53,8 +53,8 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
 
-    if(m_robotContainer != null){
-      if(m_robotContainer.drivetrain != null){
+    if (m_robotContainer != null) {
+      if (m_robotContainer.drivetrain != null) {
         m_robotContainer.drivetrain.driveTrainPeriodic();
       }
     }

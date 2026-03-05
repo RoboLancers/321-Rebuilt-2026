@@ -529,7 +529,6 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
     poseField.setRobotPose(getPose());
     SmartDashboard.putData("Robot Pose Field", poseField);
 
-
     if (!hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
       DriverStation.getAlliance()
           .ifPresent(
@@ -539,7 +538,5 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
               });
       hasAppliedOperatorPerspective = true;
     }
-
-
   }
 }

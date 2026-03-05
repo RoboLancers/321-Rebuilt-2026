@@ -4,6 +4,7 @@ package frc.robot.subsystems.vision;
 import com.ctre.phoenix6.controls.SolidColor;
 import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.signals.RGBWColor;
+import edu.wpi.first.wpilibj.util.Color;
 
 public class CameraStatusLED {
 
@@ -13,10 +14,10 @@ public class CameraStatusLED {
     Error
   }
 
-  private final RGBWColor kDetectedColor = new RGBWColor(191, 64, 191, 255); // purple
-  private final RGBWColor kErrorColor = new RGBWColor(255, 0, 0, 255); // red
-  private final RGBWColor kDefaultColor = new RGBWColor(255, 255, 255, 255); // white
-  private RGBWColor statusColor = kDefaultColor;
+  private final Color kDetectedColor = new Color(191, 64, 191); // purple
+  private final Color kErrorColor = new Color(255, 0, 0); // red
+  private final Color kDefaultColor = new Color(255, 255, 255); // white
+  private Color statusColor = kDefaultColor;
   private CANdle candle;
   private int LEDStartIndex;
   private int LEDEndIndex;
@@ -28,7 +29,8 @@ public class CameraStatusLED {
     statusColor = kDefaultColor;
 
     if (candle != null) {
-      this.candle.setControl(new SolidColor(LEDStartIndex, LEDEndIndex).withColor(statusColor));
+      this.candle.setControl(
+          new SolidColor(LEDStartIndex, LEDEndIndex).withColor(new RGBWColor(statusColor)));
     }
   }
 
@@ -46,11 +48,12 @@ public class CameraStatusLED {
         break;
     }
     if (candle != null) {
-      this.candle.setControl(new SolidColor(LEDStartIndex, LEDEndIndex).withColor(statusColor));
+      this.candle.setControl(
+          new SolidColor(LEDStartIndex, LEDEndIndex).withColor(new RGBWColor(statusColor)));
     }
   }
 
-  public RGBWColor getStatusColor() {
+  public Color getStatusColor() {
     return this.statusColor;
   }
 
