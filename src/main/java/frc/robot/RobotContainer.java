@@ -186,6 +186,8 @@ public class RobotContainer {
 
     indexer.setDefaultCommand(Commands.run(() -> indexer.setVoltage(Volts.of(0)), indexer));
 
+    driver.y().whileTrue(Commands.run(() -> indexer.setVoltage(Volts.of(1))));
+
     driver.a().whileTrue(new TuneIndexer(indexer));
   }
 
