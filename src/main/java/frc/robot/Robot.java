@@ -52,6 +52,12 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+
+    if(m_robotContainer != null){
+      if(m_robotContainer.drivetrain != null){
+        m_robotContainer.drivetrain.driveTrainPeriodic();
+      }
+    }
   }
 
   @Override

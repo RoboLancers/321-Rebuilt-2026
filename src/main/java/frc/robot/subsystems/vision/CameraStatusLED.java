@@ -13,9 +13,9 @@ public class CameraStatusLED {
     Error
   }
 
-  private final RGBWColor kDetectedColor = new RGBWColor(191, 64, 191, 0); // purple
-  private final RGBWColor kErrorColor = new RGBWColor(255, 0, 0, 0); // red
-  private final RGBWColor kDefaultColor = new RGBWColor(255, 255, 255, 0); // white
+  private final RGBWColor kDetectedColor = new RGBWColor(191, 64, 191, 255); // purple
+  private final RGBWColor kErrorColor = new RGBWColor(255, 0, 0, 255); // red
+  private final RGBWColor kDefaultColor = new RGBWColor(255, 255, 255, 255); // white
   private RGBWColor statusColor = kDefaultColor;
   private CANdle candle;
   private int LEDStartIndex;

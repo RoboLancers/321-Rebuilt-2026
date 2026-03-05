@@ -117,7 +117,7 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
     configNeutralMode(NeutralModeValue.Brake);
     configurePoseControllers();
 
-    SmartDashboard.putData("Drivetrain Pose Field", poseField);
+    // SmartDashboard.putData("Drivetrain Pose Field", poseField);
 
     RobotConfig config = null;
     try {
@@ -517,8 +517,18 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
             estimate.standardDeviations()));
   }
 
-  @Override
-  public void periodic() {
+  public void driveTrainPeriodic() {
+
+    SmartDashboard.putNumber("Drivetrain Pose X", getPose().getX());
+
+    SmartDashboard.putNumber("Drivetrain Pose Y", getPose().getY());
+
+    SmartDashboard.putNumber("Drivetrain Pose Yaw", getPose().getRotation().getDegrees());
+
+    logSwerveMotorStates();
+    poseField.setRobotPose(getPose());
+    SmartDashboard.putData("Robot Pose Field", poseField);
+
 
     if (!hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
       DriverStation.getAlliance()
@@ -530,14 +540,6 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
       hasAppliedOperatorPerspective = true;
     }
 
-    SmartDashboard.putNumber("Drivetrain Pose X", getPose().getX());
 
-    SmartDashboard.putNumber("Drivetrain Pose Y", getPose().getY());
-
-    SmartDashboard.putNumber("Drivetrain Pose Yaw", getPose().getRotation().getDegrees());
-
-    logSwerveMotorStates();
-    poseField.setRobotPose(getPose());
-    SmartDashboard.putData("Robot Pose Field", poseField);
   }
 }
