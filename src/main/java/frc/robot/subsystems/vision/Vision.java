@@ -132,6 +132,9 @@ public class Vision extends SubsystemBase {
       }
 
       List<PhotonPipelineResult> unreadResults = cameras.get(i).getAllUnreadResults();
+      if (unreadResults.size() == 0) {
+        continue;
+      }
       PhotonPipelineResult latestResult = unreadResults.get(unreadResults.size() - 1);
 
       if (!latestResult.hasTargets() || unreadResults.isEmpty()) {
