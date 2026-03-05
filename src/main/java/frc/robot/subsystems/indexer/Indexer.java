@@ -19,6 +19,7 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Indexer extends SubsystemBase {
@@ -45,8 +46,8 @@ public class Indexer extends SubsystemBase {
                     .withNeutralMode(NeutralModeValue.Brake)
                     .withInverted(
                         IndexerConstants.kInverted
-                            ? InvertedValue.CounterClockwise_Positive
-                            : InvertedValue.Clockwise_Positive))
+                            ? InvertedValue.Clockwise_Positive
+                            : InvertedValue.CounterClockwise_Positive))
             .withFeedback(
                 new FeedbackConfigs().withSensorToMechanismRatio(IndexerConstants.kGearing))
             .withMotionMagic(
@@ -95,5 +96,10 @@ public class Indexer extends SubsystemBase {
   @Logged(name = "indexerCurrent")
   public Current getIndexerCurrent() {
     return motor.getStatorCurrent().getValue();
+  }
+
+  public void periodic() {
+    SmartDashboard.putNumber("Spindexer Velocity", getVelocity().in(RPM));
+    SmartDashboard.putNumber("Spindexer Voltage", getVoltage().in(Volts));
   }
 }

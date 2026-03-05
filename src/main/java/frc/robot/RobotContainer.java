@@ -1,7 +1,6 @@
 /* (C) RoboLancers 2026 */
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
@@ -28,11 +27,11 @@ import frc.robot.commands.ShootToHub;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainConstants;
 import frc.robot.subsystems.hood.Hood;
-import frc.robot.subsystems.hood.hoodCommands.HoodCommands;
 import frc.robot.subsystems.hood.hoodCommands.SetHoodAngle;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerConstants;
 import frc.robot.subsystems.indexer.indexerCommands.SetIndexerVelocity;
+import frc.robot.subsystems.indexer.indexerCommands.TuneIndexer;
 import frc.robot.subsystems.intakePivot.IntakeConstants;
 import frc.robot.subsystems.intakePivot.IntakePivot;
 import frc.robot.subsystems.intakePivot.intakePivotCommands.GoToAngle;
@@ -41,11 +40,9 @@ import frc.robot.subsystems.intakerollers.rolllercommands.IntakeDefaultVelocity;
 import frc.robot.subsystems.intakerollers.rolllercommands.IntakeFuel;
 import frc.robot.subsystems.outtake.Shooter;
 import frc.robot.subsystems.outtake.commands.SetShooterVelocity;
-import frc.robot.subsystems.outtake.commands.ShootFuel;
 import frc.robot.subsystems.tunnel.Tunnel;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.util.RebuiltUtil;
-import frc.robot.util.TunableConstant;
 
 public class RobotContainer {
 
@@ -154,28 +151,42 @@ public class RobotContainer {
   }
 
   private void configureTuningBindings() {
-    hood.setDefaultCommand(HoodCommands.runVolts(hood, () -> Volts.of(0)));
-    shooter.setDefaultCommand(Commands.run(() -> shooter.setVelocity(RPM.of(0)), shooter));
-    tunnel.setDefaultCommand(Commands.run(() -> tunnel.runAtVelocity(RPM.of(0)), tunnel));
+    // hood.setDefaultCommand(HoodCommands.runVolts(hood, () -> Volts.of(0)));
+    // shooter.setDefaultCommand(Commands.run(() -> shooter.setVelocity(RPM.of(0)), shooter));
+    // tunnel.setDefaultCommand(Commands.run(() -> tunnel.runAtVelocity(RPM.of(0)), tunnel));
 
-    TunableConstant hoodPitch = new TunableConstant("RobotContainer/hoodPitch/", 0);
-    TunableConstant shooterVelocity = new TunableConstant("RobotContainer/shooterVelocity/", 0);
-    TunableConstant tunnelVelocity = new TunableConstant("RobotContainer/tunnelVelocity", 0);
+    // TunableConstant hoodPitch = new TunableConstant("RobotContainer/hoodPitch/", 0);
+    // TunableConstant shooterVelocity = new TunableConstant("RobotContainer/shooterVelocity/", 0);
+    // TunableConstant tunnelVelocity = new TunableConstant("RobotContainer/tunnelVelocity", 0);
 
-    driver.y().onTrue(HoodCommands.homeHoodMagnetic(hood));
+    // driver.y().onTrue(HoodCommands.homeHoodMagnetic(hood));
 
-    driver
-        .rightTrigger()
-        .whileTrue(
-            HoodCommands.goToAngle(hood, () -> Degrees.of(hoodPitch.get()))
-                .alongWith(
-                    // new RunAtVelocity(tunnel, () -> RPM.of(tunnelVelocity.get()))
-                    Commands.run(() -> tunnel.runAtVelocity(RPM.of(600)), tunnel)
-                        .alongWith(
-                            ShootFuel.outtakeWithVelocity(
-                                shooter, () -> RPM.of(shooterVelocity.get())))));
+    // driver
+    //     .rightTrigger()
+    //     .whileTrue(
+    //         HoodCommands.goToAngle(hood, () -> Degrees.of(hoodPitch.get()))
+    //             .alongWith(
+    //                 // new RunAtVelocity(tunnel, () -> RPM.of(tunnelVelocity.get()))
+    //                 Commands.run(() -> tunnel.runAtVelocity(RPM.of(600)), tunnel)
+    //                     .alongWith(
+    //                         ShootFuel.outtakeWithVelocity(
+    //                             shooter, () -> RPM.of(shooterVelocity.get())))));
 
-    driver.leftTrigger().whileTrue(new ShootToHub(tunnel, shooter, hood, this::getHubDistance));
+    // driver.leftTrigger().whileTrue(new ShootToHub(tunnel, shooter, hood, this::getHubDistance));
+
+    intakeRollers.setDefaultCommand(
+        Commands.run(() -> intakeRollers.setVoltage(Volts.of(0)), intakeRollers));
+
+    intakePivot.setDefaultCommand(
+        Commands.run(() -> intakePivot.setVoltage(Volts.of(0)), intakePivot));
+
+    // driver.a().whileTrue(new Tune(intakePivot));
+
+    // driver.y().whileTrue(new HomeIntakePivot(intakePivot));
+
+    indexer.setDefaultCommand(Commands.run(() -> indexer.setVoltage(Volts.of(0)), indexer));
+
+    driver.a().whileTrue(new TuneIndexer(indexer));
   }
 
   private void configureBindings() {

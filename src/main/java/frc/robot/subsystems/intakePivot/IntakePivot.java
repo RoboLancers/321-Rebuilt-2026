@@ -1,11 +1,13 @@
 /* (C) RoboLancers 2026 */
 package frc.robot.subsystems.intakePivot;
 
+import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -21,6 +23,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotConstants;
 
@@ -35,6 +38,7 @@ public class IntakePivot extends SubsystemBase {
   private CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
   private VoltageConfigs voltageConfigs = new VoltageConfigs();
   private Slot0Configs slot0Configs = new Slot0Configs();
+  private MotionMagicConfigs motionMagicConfigs = new MotionMagicConfigs();
 
   private Angle targetAngle = IntakeConstants.kDefaultPosition;
 
@@ -55,10 +59,13 @@ public class IntakePivot extends SubsystemBase {
 
     feedbackConfigs.withSensorToMechanismRatio(IntakeConstants.kSensorToMechanismRatio);
 
+    motionMagicConfigs.withMotionMagicCruiseVelocity(IntakeConstants.kMaxVelocity);
+
     intakePivotMotor.getConfigurator().apply(motorConfigs);
     intakePivotMotor.getConfigurator().apply(currentLimitsConfigs);
     intakePivotMotor.getConfigurator().apply(slot0Configs);
     intakePivotMotor.getConfigurator().apply(feedbackConfigs);
+    intakePivotMotor.getConfigurator().apply(motionMagicConfigs);
   }
 
   public void goToAngle(Angle angle) {
@@ -73,7 +80,7 @@ public class IntakePivot extends SubsystemBase {
 
   @Logged(name = "intakePivotAngle")
   public Angle getAngle() {
-    return Degrees.of(intakePivotMotor.getPosition().getValueAsDouble());
+    return intakePivotMotor.getPosition().getValue();
   }
 
   public void zeroEncoder() {
@@ -117,5 +124,16 @@ public class IntakePivot extends SubsystemBase {
   @Logged(name = "intakePivotCurrent")
   public Current getCurrent() {
     return intakePivotMotor.getStatorCurrent().getValue();
+  }
+
+  public boolean atHomedPosition() {
+    return false;
+  }
+
+  public void periodic() {
+
+    SmartDashboard.putNumber("Intake Pivot Angle", getAngle().in(Degrees));
+    SmartDashboard.putNumber("Intake Pivot Voltage", getVoltage().in(Volts));
+    SmartDashboard.putNumber("Intake Pivot Current", getCurrent().in(Amps));
   }
 }
