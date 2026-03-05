@@ -52,8 +52,7 @@ public class Indexer extends SubsystemBase {
                             ? InvertedValue.Clockwise_Positive
                             : InvertedValue.CounterClockwise_Positive))
             .withFeedback(
-                new FeedbackConfigs()
-                    .withSensorToMechanismRatio(IndexerConstants.kGearing))
+                new FeedbackConfigs().withSensorToMechanismRatio(IndexerConstants.kGearing))
             .withMotionMagic(
                 new MotionMagicConfigs()
                     .withMotionMagicCruiseVelocity(IndexerConstants.kMaxVelocity)
@@ -119,6 +118,7 @@ public class Indexer extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("Spindexer Velocity", motor.getVelocity().getValue().in(RPM));
     SmartDashboard.putNumber("Spindexer Voltage", motor.getMotorVoltage().getValue().in(Volts));
-    SmartDashboard.putNumber("Spindexer motor velocity", motor.getRotorVelocity().getValue().in(RPM));
+    SmartDashboard.putNumber(
+        "Spindexer motor velocity", motor.getRotorVelocity().getValue().in(RPM));
   }
 }
