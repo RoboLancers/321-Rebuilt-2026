@@ -3,6 +3,7 @@ package frc.robot.subsystems.indexer;
 
 import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
@@ -65,6 +66,10 @@ public class Indexer extends SubsystemBase {
   public void goToVelocity(AngularVelocity targetVelocity) {
     this.targetVelocity = targetVelocity;
     motor.setControl(new MotionMagicVelocityVoltage(targetVelocity));
+  }
+
+  public void setVoltage(Voltage volts) {
+    motor.setVoltage(volts.in(Volts));
   }
 
   public void tune(double kP, double kD, double kV, double targetSpeed) {

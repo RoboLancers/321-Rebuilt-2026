@@ -7,6 +7,7 @@ import static edu.wpi.first.units.Units.Radians;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.measure.Distance;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -17,8 +18,8 @@ public class RebuiltUtil {
   public static final List<Integer> blueApriltagIDs =
       List.of(17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32);
 
-  public static final List<Pose2d> redTagPoses = AprilTagUtil.apriltagIDsToPoses(redApriltagIDs);
-  public static final List<Pose2d> blueTagPoses = AprilTagUtil.apriltagIDsToPoses(blueApriltagIDs);
+  public static final List<Pose2d> redTagPoses = AprilTagUtil.aprilTagIDsToPoses(redApriltagIDs);
+  public static final List<Pose2d> blueTagPoses = AprilTagUtil.aprilTagIDsToPoses(blueApriltagIDs);
 
   public static final Pose2d redHubPose =
       new Pose2d(Meters.of(11.9231), Meters.of(4.03), Rotation2d.kZero);
@@ -47,5 +48,11 @@ public class RebuiltUtil {
                             / (getHubPose().getX() - robotPose.get().getX()))));
 
     return rotationToHub;
+  }
+
+  public static Distance getHubDistance(Supplier<Pose2d> robotPose) {
+    Distance distance =
+        Meters.of(robotPose.get().getTranslation().getDistance(getHubPose().getTranslation()));
+    return distance;
   }
 }

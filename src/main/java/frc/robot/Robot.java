@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.hood.hoodCommands.HomeHood;
 
 public class Robot extends TimedRobot {
   private String autoSelected;
@@ -71,6 +72,12 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       CommandScheduler.getInstance().schedule(m_autonomousCommand);
     }
+
+    CommandScheduler.getInstance().schedule((new HomeHood(m_robotContainer.hood)));
+  }
+
+  @Override
+  public void autonomousPeriodic() {
     switch (autoSelected) {
       case kCenterDepotAuto:
       case kTopDepotAuto:
@@ -83,9 +90,6 @@ public class Robot extends TimedRobot {
         break;
     }
   }
-
-  @Override
-  public void autonomousPeriodic() {}
 
   @Override
   public void autonomousExit() {}

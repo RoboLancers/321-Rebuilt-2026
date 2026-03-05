@@ -2,6 +2,7 @@
 package frc.robot.subsystems.intakerollers;
 
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
@@ -67,6 +68,10 @@ public class IntakeRollers extends SubsystemBase {
     slot0Configs.withKV(kV);
 
     rollerMotor.getConfigurator().apply(slot0Configs);
+  }
+
+  public void setVoltage(Voltage volts) {
+    rollerMotor.setVoltage(volts.in(Volts));
   }
 
   public void tune(
