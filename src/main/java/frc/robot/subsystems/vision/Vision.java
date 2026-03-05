@@ -3,16 +3,21 @@ package frc.robot.subsystems.vision;
 
 import static edu.wpi.first.units.Units.Meters;
 
+import com.ctre.phoenix6.hardware.CANdle;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotConstants;
+import frc.robot.subsystems.vision.CameraStatusLED.StatusType;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
@@ -26,7 +31,10 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class Vision extends SubsystemBase {
 
+  private CANdle LEDCandle;
   public double currentAmbiguity;
+  public final int candlePort = 0;
+  public Color status;
 
   public double getAmbiguityFromSupplier(DoubleSupplier ambiguity) {
     return ambiguity.getAsDouble();
@@ -48,6 +56,9 @@ public class Vision extends SubsystemBase {
   }
 
   public Consumer<VisionEstimate> visionEstConsumer;
+
+  private Dictionary<PhotonCamera, CameraStatusLED> cameraStatusLEDs =
+      new Hashtable<PhotonCamera, CameraStatusLED>(4);
 
   private PhotonCamera leftClimbCamera = new PhotonCamera(VisionConstants.kLeftClimbCameraName);
 
@@ -92,12 +103,18 @@ public class Vision extends SubsystemBase {
           leftShooterPoseEstimator,
           rightShooterPoseEstimator);
 
-  public static Vision create(Consumer<VisionEstimate> visionEstConsumer) {
-    return new Vision(visionEstConsumer);
+  public static Vision create(Consumer<VisionEstimate> visionEstConsume, CANdle LEDCandle) {
+    return new Vision(visionEstConsume, LEDCandle);
   }
 
-  public Vision(Consumer<VisionEstimate> visionEstConsumer) {
+  public Vision(Consumer<VisionEstimate> visionEstConsumer, CANdle LEDCandle) {
     this.visionEstConsumer = visionEstConsumer;
+    this.LEDCandle = LEDCandle;
+
+    cameraStatusLEDs.put(leftClimbCamera, new CameraStatusLED(LEDCandle, 0, 1));
+    cameraStatusLEDs.put(rightClimbCamera, new CameraStatusLED(LEDCandle, 2, 3));
+    cameraStatusLEDs.put(leftShooterCamera, new CameraStatusLED(LEDCandle, 4, 5));
+    cameraStatusLEDs.put(rightShooterCamera, new CameraStatusLED(LEDCandle, 6, 7));
   }
 
   private List<VisionEstimate> getVisionEstimates() {
@@ -108,15 +125,21 @@ public class Vision extends SubsystemBase {
 
     for (int i = 0; i < cameras.size(); i++) {
 
-      if (cameras.get(i) == null || !cameras.get(i).isConnected()) continue;
+      CameraStatusLED statusLED = cameraStatusLEDs.get(cameras.get(i));
+      if (cameras.get(i) == null || !cameras.get(i).isConnected()) {
+        statusLED.updateStatusColor(StatusType.Error);
+        continue;
+      }
 
       List<PhotonPipelineResult> unreadResults = cameras.get(i).getAllUnreadResults();
-
-      if (unreadResults.isEmpty()) continue;
-
       PhotonPipelineResult latestResult = unreadResults.get(unreadResults.size() - 1);
 
-      if (!latestResult.hasTargets()) continue;
+      if (!latestResult.hasTargets() || unreadResults.isEmpty()) {
+        statusLED.updateStatusColor(StatusType.NotDetected);
+        continue;
+      }
+
+      statusLED.updateStatusColor(StatusType.Detected);
 
       EstimatedRobotPose estimatedPose =
           estimators
@@ -167,8 +190,8 @@ public class Vision extends SubsystemBase {
     return visionEstimates;
   }
 
+  // TODO: Update Standard Deviations
   private double calculateStdDevs(EstimatedRobotPose estimatedPose) {
-
     double distance = 0;
 
     if (estimatedPose == null) return 1;
@@ -199,11 +222,14 @@ public class Vision extends SubsystemBase {
     }
   }
 
-  public boolean areCamerasConnected = false;
-
-  @Logged(name = "camerasAreConnected")
-  public boolean getCamerasConnected() {
-    return areCamerasConnected;
+  @Logged
+  public boolean areCamerasConnected() {
+    for (PhotonCamera camera : cameras) {
+      if (!camera.isConnected()) {
+        return false;
+      }
+    }
+    return true;
   }
 
   @Logged(name = "leftClimbCameraConnected")
@@ -238,16 +264,23 @@ public class Vision extends SubsystemBase {
       }
     }
 
-    for (PhotonCamera camera : cameras) {
-      if (camera.isConnected()) {
-        areCamerasConnected = true;
-      } else {
-        areCamerasConnected = false;
-        break;
-      }
-    }
+    SmartDashboard.putString(
+        "Left Shooter Cam Status Color",
+        cameraStatusLEDs.get(leftShooterCamera).getStatusColorHex());
+    SmartDashboard.putString(
+        "Right Shooter Cam Status Color",
+        cameraStatusLEDs.get(rightShooterCamera).getStatusColorHex());
+    SmartDashboard.putString(
+        "Left Climb Cam Status Color", cameraStatusLEDs.get(leftClimbCamera).getStatusColorHex());
+    SmartDashboard.putString(
+        "Right Shooter Cam Status Color",
+        cameraStatusLEDs.get(rightShooterCamera).getStatusColorHex());
 
-    SmartDashboard.putBoolean("Cameras Are Connected", areCamerasConnected);
+    SmartDashboard.putBoolean("All Cameras Are Connected", areCamerasConnected());
+    SmartDashboard.putBoolean("Left Climb Camera Connected", getLeftClimbCameraConnected());
+    SmartDashboard.putBoolean("Right Climb Camera Connected", getRightClimbCameraConnected());
+    SmartDashboard.putBoolean("Left Shooter Camera Connected", getLeftShooterCameraConnected());
+    SmartDashboard.putBoolean("Right Shooter Camera Connected", getRightShooterCameraConnected());
 
     SmartDashboard.putNumber("Vision Pose X", getLatestBestPose().getX());
 
