@@ -254,5 +254,8 @@ public class Vision extends SubsystemBase {
     SmartDashboard.putNumber("Vision Pose Y", getLatestBestPose().getY());
 
     SmartDashboard.putNumber("Vision Pose Yaw", getLatestBestPose().getRotation().getDegrees());
+
+    SmartDashboard.putBoolean("right climb cam connected", getRightClimbCameraConnected());
+    SmartDashboard.putBoolean("left shooter cam connected", getLeftShooterCameraConnected());
   }
 }

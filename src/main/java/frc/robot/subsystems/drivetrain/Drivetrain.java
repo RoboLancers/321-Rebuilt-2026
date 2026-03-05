@@ -2,6 +2,7 @@
 package frc.robot.subsystems.drivetrain;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Radians;
@@ -527,5 +528,7 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
     logSwerveMotorStates();
     poseField.setRobotPose(getPose());
     SmartDashboard.putData("Robot Pose Field", poseField);
+
+    SmartDashboard.putNumber("hub distance", RebuiltUtil.getHubDistance(()->getPose()).in(Inches));
   }
 }
