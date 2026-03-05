@@ -2,7 +2,6 @@
 package frc.robot.subsystems.drivetrain;
 
 import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Radians;
@@ -26,6 +25,7 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.util.DriveFeedforwards;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -42,6 +42,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.RobotConstants;
+import frc.robot.subsystems.vision.VisionEstimate;
 import frc.robot.util.AprilTagUtil;
 import frc.robot.util.MyAlliance;
 import frc.robot.util.RebuiltUtil;
@@ -116,7 +117,7 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
     configNeutralMode(NeutralModeValue.Brake);
     configurePoseControllers();
 
-    SmartDashboard.putData("Drivetrain Pose Field", poseField);
+    // SmartDashboard.putData("Drivetrain Pose Field", poseField);
 
     RobotConfig config = null;
     try {
@@ -506,18 +507,17 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
 
   private boolean hasAppliedOperatorPerspective;
 
-  @Override
-  public void periodic() {
+  public void addVisionMeasurement(VisionEstimate estimate) {
+    addVisionMeasurement(
+        estimate.estimatedPose().estimatedPose.toPose2d(),
+        estimate.estimatedPose().timestampSeconds,
+        VecBuilder.fill(
+            estimate.standardDeviations(),
+            estimate.standardDeviations(),
+            estimate.standardDeviations()));
+  }
 
-    if (!hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
-      DriverStation.getAlliance()
-          .ifPresent(
-              allianceColor -> {
-                setOperatorPerspectiveForward(
-                    MyAlliance.isBlue() ? Rotation2d.kZero : Rotation2d.k180deg);
-              });
-      hasAppliedOperatorPerspective = true;
-    }
+  public void driveTrainPeriodic() {
 
     SmartDashboard.putNumber("Drivetrain Pose X", getPose().getX());
 
@@ -529,6 +529,14 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
     poseField.setRobotPose(getPose());
     SmartDashboard.putData("Robot Pose Field", poseField);
 
-    SmartDashboard.putNumber("hub distance", RebuiltUtil.getHubDistance(()->getPose()).in(Inches));
+    if (!hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
+      DriverStation.getAlliance()
+          .ifPresent(
+              allianceColor -> {
+                setOperatorPerspectiveForward(
+                    MyAlliance.isBlue() ? Rotation2d.kZero : Rotation2d.k180deg);
+              });
+      hasAppliedOperatorPerspective = true;
+    }
   }
 }

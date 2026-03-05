@@ -132,6 +132,9 @@ public class Vision extends SubsystemBase {
       }
 
       List<PhotonPipelineResult> unreadResults = cameras.get(i).getAllUnreadResults();
+      if (unreadResults.size() == 0) {
+        continue;
+      }
       PhotonPipelineResult latestResult = unreadResults.get(unreadResults.size() - 1);
 
       if (!latestResult.hasTargets() || unreadResults.isEmpty()) {
@@ -268,8 +271,7 @@ public class Vision extends SubsystemBase {
         "Left Shooter Cam Status Color",
         cameraStatusLEDs.get(leftShooterCamera).getStatusColorHex());
     SmartDashboard.putString(
-        "Right Shooter Cam Status Color",
-        cameraStatusLEDs.get(rightShooterCamera).getStatusColorHex());
+        "Right Climb Cam Status Color", cameraStatusLEDs.get(rightClimbCamera).getStatusColorHex());
     SmartDashboard.putString(
         "Left Climb Cam Status Color", cameraStatusLEDs.get(leftClimbCamera).getStatusColorHex());
     SmartDashboard.putString(
