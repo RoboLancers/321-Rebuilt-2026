@@ -28,7 +28,7 @@ public class Indexer extends SubsystemBase {
   private AngularVelocity targetVelocity = DegreesPerSecond.of(0);
 
   private PIDController indexerController = new PIDController(0, 0, 0);
-  private SimpleMotorFeedforward indexerFeedforward = new SimpleMotorFeedforward(0, 0);
+  private SimpleMotorFeedforward indexerFeedforward = new SimpleMotorFeedforward(0.50, 0.00795);
 
   public Indexer() {
     configureMotors();

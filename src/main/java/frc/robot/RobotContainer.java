@@ -26,11 +26,11 @@ import frc.robot.commands.ShootToHub;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainConstants;
 import frc.robot.subsystems.hood.Hood;
+import frc.robot.subsystems.hood.hoodCommands.HomeHood;
 import frc.robot.subsystems.hood.hoodCommands.SetHoodAngle;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerConstants;
 import frc.robot.subsystems.indexer.indexerCommands.SetIndexerVelocity;
-import frc.robot.subsystems.indexer.indexerCommands.TuneIndexer;
 import frc.robot.subsystems.intakePivot.IntakeConstants;
 import frc.robot.subsystems.intakePivot.IntakePivot;
 import frc.robot.subsystems.intakePivot.intakePivotCommands.GoToAngle;
@@ -39,7 +39,6 @@ import frc.robot.subsystems.intakePivot.intakePivotCommands.Tune;
 import frc.robot.subsystems.intakerollers.IntakeRollers;
 import frc.robot.subsystems.intakerollers.rolllercommands.IntakeDefaultVelocity;
 import frc.robot.subsystems.intakerollers.rolllercommands.IntakeFuel;
-import frc.robot.subsystems.intakerollers.rolllercommands.IntakeRollerTune;
 import frc.robot.subsystems.outtake.Shooter;
 import frc.robot.subsystems.outtake.commands.SetShooterVelocity;
 import frc.robot.subsystems.tunnel.Tunnel;
@@ -148,10 +147,10 @@ public class RobotContainer {
     // shooter.setDefaultCommand(Commands.run(() -> shooter.setVelocity(RPM.of(0)), shooter));
     // tunnel.setDefaultCommand(Commands.run(() -> tunnel.runAtVelocity(RPM.of(0)), tunnel));
 
-     drivetrain.setDefaultCommand(
+    drivetrain.setDefaultCommand(
         drivetrain.teleopDrive(this::getDriverForward, this::getDriverStrafe, this::getDriverTurn));
 
-        driver
+    driver
         .leftTrigger()
         .whileTrue(
             Align.rotateToHubWhileDriving(
@@ -191,19 +190,19 @@ public class RobotContainer {
     hood.setDefaultCommand(new SetHoodAngle(hood, hood::getTargetAngle));
     shooter.setDefaultCommand(new SetShooterVelocity(shooter, () -> RPM.of(0)));
 
-
-
-     driver
+    driver
         .rightTrigger()
         .whileTrue(
-            new SetIndexerVelocity(indexer, () -> IndexerConstants.kIndexVelocity)
-                .alongWith(new ShootToHub(tunnel, shooter, hood, this::getHubDistance)));
+            
+                (new ShootToHub(tunnel, shooter, hood, this::getHubDistance)));
 
-    driver.y().whileTrue(new HomeIntakePivot(intakePivot));
-tunnel.setDefaultCommand(Commands.run(() -> tunnel.runAtVelocity(RPM.of(0)), tunnel));
+    driver.y().whileTrue(new HomeHood(hood));
+    tunnel.setDefaultCommand(Commands.run(() -> tunnel.runAtVelocity(RPM.of(0)), tunnel));
     indexer.setDefaultCommand(Commands.run(() -> indexer.setVoltage(Volts.of(0)), indexer));
 
     driver.a().whileTrue(new Tune(intakePivot));
+
+    driver.x().whileTrue(new SetIndexerVelocity(indexer, () -> IndexerConstants.kIndexVelocity));
   }
 
   private void configureBindings() {
