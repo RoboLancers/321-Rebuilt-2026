@@ -105,7 +105,14 @@ public final class Align {
 
   public static Command rotateToHub(
       Drivetrain drivetrain, Supplier<Rotation2d> hubHeading, Supplier<Pose2d> robotPose) {
-    return rotateToHubWhileDriving(drivetrain, () -> 0, () -> 0, ()-> new Rotation2d(Degrees.of(hubHeading.get().getDegrees()+shooterFaceOffset.in(Degrees))), robotPose);
+    return rotateToHubWhileDriving(
+        drivetrain,
+        () -> 0,
+        () -> 0,
+        () ->
+            new Rotation2d(
+                Degrees.of(hubHeading.get().getDegrees() + shooterFaceOffset.in(Degrees))),
+        robotPose);
   }
 
   public static Command rotateToHubWhileDriving(
@@ -114,7 +121,12 @@ public final class Align {
       DoubleSupplier translationY,
       Supplier<Rotation2d> hubHeading,
       Supplier<Pose2d> robotPose) {
-    return drivetrain.driveFixedHeading(translationX, translationY, ()-> new Rotation2d(Degrees.of(hubHeading.get().getDegrees()+shooterFaceOffset.in(Degrees))));
+    return drivetrain.driveFixedHeading(
+        translationX,
+        translationY,
+        () ->
+            new Rotation2d(
+                Degrees.of(hubHeading.get().getDegrees() + shooterFaceOffset.in(Degrees))));
   }
 
   public static Command alignLeftClimb(Drivetrain drivetrain, Supplier<Pose2d> robotPose) {

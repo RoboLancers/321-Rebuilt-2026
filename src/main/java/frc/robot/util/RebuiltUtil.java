@@ -39,9 +39,8 @@ public class RebuiltUtil {
   }
 
   public static TunableConstant xTransform = new TunableConstant("X Transform", 0);
-   public static TunableConstant yTransform = new TunableConstant("Y Transform", 0);
-  
-  
+  public static TunableConstant yTransform = new TunableConstant("Y Transform", 0);
+
   public static Rotation2d getHubHeading(Supplier<Pose2d> robotPose) {
 
     Rotation2d rotationToHub =
@@ -50,9 +49,20 @@ public class RebuiltUtil {
                 Math.PI
                     + getHubPose().getRotation().getRadians()
                     + Math.atan(
-                        (getHubPose().getY() - (robotPose.get().plus(new Transform2d(Inches.of(-8.0), Inches.of(2.5), Rotation2d.kZero))).getY())
-                            / (getHubPose().getX() - (robotPose.get().plus(new Transform2d(Inches.of(-8.0), Inches.of(2.5), Rotation2d.kZero))).getX()))));
-                          
+                        (getHubPose().getY()
+                                - (robotPose
+                                        .get()
+                                        .plus(
+                                            new Transform2d(
+                                                Inches.of(-8.0), Inches.of(2.5), Rotation2d.kZero)))
+                                    .getY())
+                            / (getHubPose().getX()
+                                - (robotPose
+                                        .get()
+                                        .plus(
+                                            new Transform2d(
+                                                Inches.of(-8.0), Inches.of(2.5), Rotation2d.kZero)))
+                                    .getX()))));
 
     return rotationToHub;
   }
