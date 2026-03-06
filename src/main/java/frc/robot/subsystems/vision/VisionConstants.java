@@ -62,4 +62,6 @@ public class VisionConstants {
           new Translation2d(
               RobotConstants.kAprilTagLayout.getFieldLength() + kAllowedFieldDistance.in(Meters),
               RobotConstants.kAprilTagLayout.getFieldWidth() + kAllowedFieldDistance.in(Meters)));
+
+  public static final int brightnessScaler = 0;
 }

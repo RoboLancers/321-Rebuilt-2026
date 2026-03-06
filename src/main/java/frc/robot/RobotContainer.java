@@ -10,7 +10,6 @@ import static edu.wpi.first.units.Units.Volts;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -63,16 +62,7 @@ public class RobotContainer {
   public Hood hood = new Hood();
   public Shooter shooter = new Shooter();
   public Drivetrain drivetrain = Drivetrain.create();
-  public Vision vision =
-      Vision.create(
-          est ->
-              drivetrain.addVisionMeasurement(
-                  est.estimatedPose().estimatedPose.toPose2d(),
-                  est.estimatedPose().timestampSeconds,
-                  VecBuilder.fill(
-                      est.standardDeviations(),
-                      est.standardDeviations(),
-                      est.standardDeviations())));
+  public Vision vision = Vision.create(drivetrain::addVisionMeasurement, null);
 
   private final SendableChooser<Command> autoChooser;
   // private final IntakeRollers intakeRollers = new IntakeRollers();
