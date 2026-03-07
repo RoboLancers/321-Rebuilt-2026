@@ -13,7 +13,7 @@ import edu.wpi.first.units.measure.Voltage;
 
 public class IntakeConstants {
   public static final int kPivotMotorId = 16;
-  public static final Current kCurrentLimit = Amps.of(40);
+  public static final Current kCurrentLimit = Amps.of(60);
   public static final boolean kCurrentLimitEnable = true;
   public static final boolean kInverted = true;
   public static double kG = 0;

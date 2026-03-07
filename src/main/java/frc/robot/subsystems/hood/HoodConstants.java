@@ -28,9 +28,9 @@ public class HoodConstants {
 
   public static final boolean kHoodMotorInverted = true;
 
-  public static final Current kHoodStatorCurrentLimit = Amps.of(40);
+  public static final Current kHoodStatorCurrentLimit = Amps.of(60);
 
-  public static final Current kHoodSupplyCurrentLimit = Amps.of(40);
+  public static final Current kHoodSupplyCurrentLimit = Amps.of(60);
 
   public static final AngularVelocity kHoodMotorMaxVelocity = RotationsPerSecond.of(0.16);
 
