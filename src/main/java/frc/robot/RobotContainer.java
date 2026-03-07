@@ -40,6 +40,7 @@ import frc.robot.subsystems.intakePivot.intakePivotCommands.Tune;
 import frc.robot.subsystems.intakerollers.IntakeRollers;
 import frc.robot.subsystems.intakerollers.rolllercommands.IntakeDefaultVelocity;
 import frc.robot.subsystems.intakerollers.rolllercommands.IntakeFuel;
+import frc.robot.subsystems.intakerollers.rolllercommands.IntakeWithVoltage;
 import frc.robot.subsystems.outtake.Shooter;
 import frc.robot.subsystems.outtake.commands.SetShooterVelocity;
 import frc.robot.subsystems.tunnel.Tunnel;
@@ -146,60 +147,20 @@ public class RobotContainer {
   }
 
   private void configureTuningBindings() {
-    // hood.setDefaultCommand(HoodCommands.runVolts(hood, () -> Volts.of(0)));
-    // shooter.setDefaultCommand(Commands.run(() -> shooter.setVelocity(RPM.of(0)), shooter));
-    // tunnel.setDefaultCommand(Commands.run(() -> tunnel.runAtVelocity(RPM.of(0)), tunnel));
-
     drivetrain.setDefaultCommand(
         drivetrain.driveRobotCentric(this::getDriverForward, this::getDriverStrafe, this::getDriverTurn));
-
-    driver
-        .leftTrigger()
-        .whileTrue(
-            Align.rotateToHubWhileDriving(
-                drivetrain,
-                this::getDriverForward,
-                this::getDriverStrafe,
-                this::getHubHeading,
-                drivetrain::getPose));
-
-    // // TunableConstant hoodPitch = new TunableConstant("RobotContainer/hoodPitch/", 0);
-    // // TunableConstant shooterVelocity = new TunableConstant("RobotContainer/shooterVelocity/", 0);
-    // // TunableConstant tunnelVelocity = new TunableConstant("RobotContainer/tunnelVelocity", 0);
-
-    // // driver.y().onTrue(HoodCommands.homeHoodMagnetic(hood));
-
-    // // driver
-    // //     .rightTrigger()
-    // //     .whileTrue(
-    // //         HoodCommands.goToAngle(hood, () -> Degrees.of(hoodPitch.get()))
-    // //             .alongWith(
-    // //                 // new RunAtVelocity(tunnel, () -> RPM.of(tunnelVelocity.get()))
-    // //                 Commands.run(() -> tunnel.runAtVelocity(RPM.of(600)), tunnel)
-    // //                     .alongWith(
-    // //                         ShootFuel.outtakeWithVelocity(
-    // //                             shooter, () -> RPM.of(shooterVelocity.get())))));
-
-    // // driver.leftTrigger().whileTrue(new ShootToHub(tunnel, shooter, hood, this::getHubDistance));
 
     // intakeRollers.setDefaultCommand(
     //     Commands.run(() -> intakeRollers.setVoltage(Volts.of(0)), intakeRollers));
 
-    // intakePivot.setDefaultCommand(
-    //     Commands.run(() -> intakePivot.setVoltage(Volts.of(0)), intakePivot));
+    intakePivot.setDefaultCommand(
+        Commands.run(() -> intakePivot.setVoltage(Volts.of(0)), intakePivot));
 
-    // hood.setDefaultCommand(new SetHoodAngle(hood, hood::getTargetAngle));
-    // shooter.setDefaultCommand(new SetShooterVelocity(shooter, () -> RPM.of(0)));
-
-    // driver.rightTrigger().whileTrue((new ShootToHub(tunnel, shooter, hood, this::getHubDistance)));
-
-    // driver.y().whileTrue(new HomeHood(hood));
-    // tunnel.setDefaultCommand(Commands.run(() -> tunnel.runAtVelocity(RPM.of(0)), tunnel));
     // indexer.setDefaultCommand(Commands.run(() -> indexer.setVoltage(Volts.of(0)), indexer));
 
-    // driver.a().whileTrue(new Tune(intakePivot));
+    driver.a().whileTrue(new Tune(intakePivot));
 
-    // driver.y().whileTrue(new HomeIntakePivot(intakePivot));
+    driver.y().whileTrue(new HomeIntakePivot(intakePivot));
 
     // driver.x().whileTrue(new SetIndexerVelocity(indexer, () -> IndexerConstants.kIndexVelocity));
   }
@@ -220,9 +181,11 @@ public class RobotContainer {
     // .whileTrue(new GoToIntakePosition(intakePivot).andThen(new
     // IntakeFuel(intakeRollers)));
 
-    driver.y().onTrue(new GoToAngle(intakePivot, () -> IntakeConstants.kIntakePosition));
+    driver.leftBumper().whileTrue(new IntakeWithVoltage(intakeRollers));
 
-    driver.a().onTrue(new GoToAngle(intakePivot, () -> IntakeConstants.kDefaultPosition));
+    // driver.y().onTrue(new GoToAngle(intakePivot, () -> IntakeConstants.kIntakePosition));
+
+    // driver.a().onTrue(new GoToAngle(intakePivot, () -> IntakeConstants.kDefaultPosition));
 
     driver.leftBumper().whileTrue(new IntakeFuel(intakeRollers));
 
