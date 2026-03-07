@@ -71,6 +71,7 @@ public class IntakePivot extends SubsystemBase {
   public ArmFeedforward pivotFeedforward = new ArmFeedforward(0,0,0);
 
   public void goToAngle(Angle angle) {
+    this.targetAngle = angle;
    double volts = pivotController.calculate(getAngle().in(Degrees), angle.in(Degrees)) + pivotFeedforward.calculate(angle.in(Degrees), 0);
     intakePivotMotor.setVoltage(volts);
   }

@@ -11,7 +11,6 @@ public class IntakeRollerTune extends Command {
   IntakeRollers intakeRollers;
   TunableConstant kP = new TunableConstant("IntakeRollers/kP", 0);
   TunableConstant kD = new TunableConstant("IntakeRollers/kD", 0);
-  TunableConstant kG = new TunableConstant("IntakeRollers/kG", 0);
   TunableConstant kV = new TunableConstant("IntakeRollers/kV", 0);
   TunableConstant rollerTargetVelocityRPM =
       new TunableConstant("IntakeRollers/rollerTargetVelocityRPM", 0);
@@ -22,7 +21,7 @@ public class IntakeRollerTune extends Command {
 
   public void execute() {
     intakeRollers.tune(
-        kP.get(), kD.get(), kV.get(), kG.get(), RPM.of(rollerTargetVelocityRPM.get()));
+        kP.get(), kD.get(), kV.get(), RPM.of(rollerTargetVelocityRPM.get()));
   }
 
   public boolean isFinished() {
