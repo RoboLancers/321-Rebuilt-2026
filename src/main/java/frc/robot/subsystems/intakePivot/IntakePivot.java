@@ -56,8 +56,6 @@ public class IntakePivot extends SubsystemBase {
     currentLimitsConfigs.withStatorCurrentLimitEnable(IntakeConstants.kCurrentLimitEnable);
     currentLimitsConfigs.withStatorCurrentLimit(IntakeConstants.kCurrentLimit);
 
-    slot0Configs.withGravityType(GravityTypeValue.Arm_Cosine);
-    slot0Configs.withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
 
     feedbackConfigs.withSensorToMechanismRatio(IntakeConstants.kSensorToMechanismRatio);
 
@@ -65,7 +63,6 @@ public class IntakePivot extends SubsystemBase {
 
     intakePivotMotor.getConfigurator().apply(motorConfigs);
     intakePivotMotor.getConfigurator().apply(currentLimitsConfigs);
-    intakePivotMotor.getConfigurator().apply(slot0Configs);
     intakePivotMotor.getConfigurator().apply(feedbackConfigs);
     intakePivotMotor.getConfigurator().apply(motionMagicConfigs);
   }
@@ -74,9 +71,8 @@ public class IntakePivot extends SubsystemBase {
   public ArmFeedforward pivotFeedforward = new ArmFeedforward(0,0,0);
 
   public void goToAngle(Angle angle) {
-    targetAngle = angle;
-    MotionMagicVoltage intakeVoltage = new MotionMagicVoltage(angle);
-    intakePivotMotor.setControl(intakeVoltage);
+   double volts = pivotController.calculate(getAngle().in(Degrees), angle.in(Degrees)) + pivotFeedforward.calculate(angle.in(Degrees), 0);
+    intakePivotMotor.setVoltage(volts);
   }
 
   public void setVoltage(Voltage volts) {
