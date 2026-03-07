@@ -19,6 +19,8 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
@@ -68,6 +70,9 @@ public class IntakePivot extends SubsystemBase {
     intakePivotMotor.getConfigurator().apply(motionMagicConfigs);
   }
 
+  public PIDController pivotController = new PIDController(0,0,0);
+  public ArmFeedforward pivotFeedforward = new ArmFeedforward(0,0,0);
+
   public void goToAngle(Angle angle) {
     targetAngle = angle;
     MotionMagicVoltage intakeVoltage = new MotionMagicVoltage(angle);
@@ -98,7 +103,9 @@ public class IntakePivot extends SubsystemBase {
   }
 
   public void setPID(double kP, double kD, double kG) {
-    intakePivotMotor.getConfigurator().apply(new Slot0Configs().withKP(kP).withKD(kD).withKG(kG));
+    pivotController.setP(kP);
+    pivotController.setD(kD);
+    pivotFeedforward.setKg(kG);
   }
 
   public void tune(double kP, double kD, double kG, double angle) {
