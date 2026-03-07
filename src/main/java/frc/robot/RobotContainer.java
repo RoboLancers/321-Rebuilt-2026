@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Align;
 import frc.robot.commands.Feed;
+import frc.robot.commands.Release;
 import frc.robot.commands.ShootToHub;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainConstants;
@@ -163,6 +164,8 @@ public class RobotContainer {
     driver.y().whileTrue(new HomeIntakePivot(intakePivot));
 
     // driver.x().whileTrue(new SetIndexerVelocity(indexer, () -> IndexerConstants.kIndexVelocity));
+
+    // driver.rightTrigger().whileTrue(new Release(tunnel, shooter, hood));
   }
 
   private void configureBindings() {
