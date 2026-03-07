@@ -49,7 +49,7 @@ public class HoodConstants {
 
   public static final Angle kRegion3ScoreAngle = Degrees.of(0);
 
-  public static final Angle kNeutralFeedAngle = Degrees.of(0);
+  public static final Angle kNeutralFeedAngle = Degrees.of(15);
 
   public static final Angle kOppositeFeedAngle = Degrees.of(0);
 

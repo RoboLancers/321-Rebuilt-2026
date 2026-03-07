@@ -63,7 +63,7 @@ public class RobotContainer {
   public Shooter shooter = new Shooter();
   public Drivetrain drivetrain = Drivetrain.create();
   public Vision vision = Vision.create(drivetrain::addVisionMeasurement, null);
-  
+
   private final SendableChooser<Command> autoChooser;
   // private final IntakeRollers intakeRollers = new IntakeRollers();
   // private final IntakeFuel intakeFuel = new IntakeFuel(intakeRollers);
@@ -235,25 +235,15 @@ public class RobotContainer {
                 this::getDriverStrafe,
                 this::getHubHeading,
                 drivetrain::getPose));
+
+   driver.rightTrigger().whileTrue((new ShootToHub(tunnel, shooter, hood, this::getHubDistance)));
+
+    driver.x().whileTrue(new SetIndexerVelocity(indexer, () -> IndexerConstants.kIndexVelocity));
+
     // driver
-    // .rightTrigger()
-    // .whileTrue(
-    // Score.shootFuelFromAnywhere(
-    // drivetrain, shooter, hood, spindexer, tunnel, currentRobotPose));
-    // driver.rightBumper().whileTrue(Score.feedFuel(shooter, hood, spindexer,
-    // tunnel));
-
-    driver
-        .rightTrigger()
-        .whileTrue(
-            new SetIndexerVelocity(indexer, () -> IndexerConstants.kIndexVelocity)
-                .alongWith(new ShootToHub(tunnel, shooter, hood, this::getHubDistance)));
-
-    driver
-        .rightBumper()
-        .whileTrue(
-            new SetIndexerVelocity(indexer, () -> IndexerConstants.kIndexVelocity)
-                .alongWith(new Feed(tunnel, shooter, hood)));
+    //     .rightBumper()
+    //     .whileTrue(
+    //         new Feed(tunnel, shooter, hood));
   }
 
   @Logged(name = "autonomousCommand")
