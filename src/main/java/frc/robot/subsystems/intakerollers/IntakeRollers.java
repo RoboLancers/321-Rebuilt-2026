@@ -6,6 +6,7 @@ import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.VoltageConfigs;
@@ -17,6 +18,7 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakeRollers extends SubsystemBase {
@@ -27,6 +29,7 @@ public class IntakeRollers extends SubsystemBase {
   private VoltageConfigs voltageConfigs = new VoltageConfigs();
   private FeedbackConfigs feedbackConfigs = new FeedbackConfigs();
   private Slot0Configs slot0Configs = new Slot0Configs();
+  private MotionMagicConfigs motionMagicConfigs = new MotionMagicConfigs();
 
   private AngularVelocity targetVelocity = RPM.of(0);
 
@@ -40,9 +43,9 @@ public class IntakeRollers extends SubsystemBase {
   }
 
   public void motorConfigurations() {
-    motorConfigs.withInverted(InvertedValue.Clockwise_Positive);
+    motorConfigs.withInverted(InvertedValue.CounterClockwise_Positive);
     motorConfigs.withNeutralMode(NeutralModeValue.Brake);
-    feedbackConfigs.withSensorToMechanismRatio(IntakeRollerConstants.kSensorToMechanismRatio);
+    feedbackConfigs.withSensorToMechanismRatio(IntakeRollerConstants.kIntakeRollerGearRatio);
 
     currentLimitsConfigs.withStatorCurrentLimitEnable(
         IntakeRollerConstants.kStatorCurrentLimitsEnable);
@@ -50,10 +53,14 @@ public class IntakeRollers extends SubsystemBase {
     currentLimitsConfigs.withSupplyCurrentLimitEnable(
         IntakeRollerConstants.kSupplyCurrentLimitsEnable);
     currentLimitsConfigs.withSupplyCurrentLimit(IntakeRollerConstants.kSupplyCurrentLimit);
+    motionMagicConfigs
+        .withMotionMagicCruiseVelocity(IntakeRollerConstants.kMaxVelocity)
+        .withMotionMagicAcceleration(IntakeRollerConstants.kMaxAcceleration);
 
     rollerMotor.getConfigurator().apply(motorConfigs);
     rollerMotor.getConfigurator().apply(currentLimitsConfigs);
     rollerMotor.getConfigurator().apply(feedbackConfigs);
+    rollerMotor.getConfigurator().apply(motionMagicConfigs);
   }
 
   public void setVelocity(AngularVelocity velocity) {
@@ -103,5 +110,10 @@ public class IntakeRollers extends SubsystemBase {
   @Logged(name = "intakeRollersCurrent")
   public Current getCurrent() {
     return rollerMotor.getStatorCurrent().getValue();
+  }
+
+  public void periodic() {
+    SmartDashboard.putNumber("Intake Roller Velocity", getRollerVelocity().in(RPM));
+    SmartDashboard.putNumber("Intake Roller Voltage", getVoltage().in(Volts));
   }
 }

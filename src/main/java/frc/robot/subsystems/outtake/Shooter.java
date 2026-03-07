@@ -179,8 +179,11 @@ public class Shooter extends SubsystemBase {
         "Bottom Motor Velocity", bottomShooterMotor.getVelocity().getValue().in(RPM));
     SmartDashboard.putNumber(
         "Top Shooter Motor Voltage", topShooterMotor.getMotorVoltage().getValue().in(Volts));
-
     SmartDashboard.putNumber(
-        "Bottom  Shooter Motor Voltage", bottomShooterMotor.getMotorVoltage().getValue().in(Volts));
+        "Bottom Shooter Motor Voltage", bottomShooterMotor.getMotorVoltage().getValue().in(Volts));
+    SmartDashboard.putNumber(
+        "Top Rotor Velocity", topShooterMotor.getRotorVelocity().getValue().in(RPM));
+    SmartDashboard.putNumber(
+        "Bottom Rotor Velocity", bottomShooterMotor.getRotorVelocity().getValue().in(RPM));
   }
 }

@@ -2,11 +2,13 @@
 package frc.robot.util;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Radians;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.units.measure.Distance;
 import java.util.List;
 import java.util.function.Supplier;
@@ -36,6 +38,9 @@ public class RebuiltUtil {
     return MyAlliance.isRed() ? redHubPose : blueHubPose;
   }
 
+  public static TunableConstant xTransform = new TunableConstant("X Transform", 0);
+  public static TunableConstant yTransform = new TunableConstant("Y Transform", 0);
+
   public static Rotation2d getHubHeading(Supplier<Pose2d> robotPose) {
 
     Rotation2d rotationToHub =
@@ -44,8 +49,20 @@ public class RebuiltUtil {
                 Math.PI
                     + getHubPose().getRotation().getRadians()
                     + Math.atan(
-                        (getHubPose().getY() - robotPose.get().getY())
-                            / (getHubPose().getX() - robotPose.get().getX()))));
+                        (getHubPose().getY()
+                                - (robotPose
+                                        .get()
+                                        .plus(
+                                            new Transform2d(
+                                                Inches.of(-8.0), Inches.of(2.5), Rotation2d.kZero)))
+                                    .getY())
+                            / (getHubPose().getX()
+                                - (robotPose
+                                        .get()
+                                        .plus(
+                                            new Transform2d(
+                                                Inches.of(-8.0), Inches.of(2.5), Rotation2d.kZero)))
+                                    .getX()))));
 
     return rotationToHub;
   }

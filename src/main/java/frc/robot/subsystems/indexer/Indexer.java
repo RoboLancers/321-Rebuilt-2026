@@ -9,16 +9,17 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Indexer extends SubsystemBase {
@@ -26,9 +27,12 @@ public class Indexer extends SubsystemBase {
   @Logged private TalonFX motor = new TalonFX(IndexerConstants.kMotorID);
   private AngularVelocity targetVelocity = DegreesPerSecond.of(0);
 
+  private PIDController indexerController = new PIDController(0, 0, 0);
+  private SimpleMotorFeedforward indexerFeedforward = new SimpleMotorFeedforward(0.50, 0.00795);
+
   public Indexer() {
     configureMotors();
-    setPID(IndexerConstants.kP, IndexerConstants.kD, IndexerConstants.kV);
+    setPID(IndexerConstants.kP, IndexerConstants.kD, IndexerConstants.kV, IndexerConstants.kS);
   }
 
   public void configureMotors() {
@@ -45,8 +49,8 @@ public class Indexer extends SubsystemBase {
                     .withNeutralMode(NeutralModeValue.Brake)
                     .withInverted(
                         IndexerConstants.kInverted
-                            ? InvertedValue.CounterClockwise_Positive
-                            : InvertedValue.Clockwise_Positive))
+                            ? InvertedValue.Clockwise_Positive
+                            : InvertedValue.CounterClockwise_Positive))
             .withFeedback(
                 new FeedbackConfigs().withSensorToMechanismRatio(IndexerConstants.kGearing))
             .withMotionMagic(
@@ -57,24 +61,38 @@ public class Indexer extends SubsystemBase {
     motor.getConfigurator().apply(configurations);
   }
 
-  public void setPID(double kP, double kD, double kV) {
-    Slot0Configs pidConfigs = new Slot0Configs().withKP(kP).withKD(kD).withKV(kV);
+  public void setPID(double kP, double kD, double kV, double kS) {
+    // Slot0Configs pidConfigs = new Slot0Configs().withKP(kP).withKD(kD).withKV(kV);
 
-    motor.getConfigurator().apply(pidConfigs);
+    // motor.getConfigurator().apply(pidConfigs);
+
+    indexerController.setP(kP);
+
+    indexerController.setD(kD);
+
+    indexerFeedforward.setKv(kV);
+
+    indexerFeedforward.setKs(kS);
   }
 
   public void goToVelocity(AngularVelocity targetVelocity) {
     this.targetVelocity = targetVelocity;
-    motor.setControl(new MotionMagicVelocityVoltage(targetVelocity));
+    // motor.setControl(new MotionMagicVelocityVoltage(targetVelocity));
+    double volts =
+        indexerController.calculate(getVelocity().in(RPM), targetVelocity.in(RPM))
+            + indexerFeedforward.calculateWithVelocities(
+                getVelocity().in(RPM), targetVelocity.in(RPM));
+
+    motor.setVoltage(volts);
   }
 
   public void setVoltage(Voltage volts) {
     motor.setVoltage(volts.in(Volts));
   }
 
-  public void tune(double kP, double kD, double kV, double targetSpeed) {
-    setPID(kP, kD, kV);
-    goToVelocity(RPM.of(targetSpeed));
+  public void tune(double kP, double kD, double kV, double kS, AngularVelocity targetSpeed) {
+    setPID(kP, kD, kV, kS);
+    goToVelocity(targetSpeed);
   }
 
   @Logged(name = "indexerTargetVelocity")
@@ -95,5 +113,12 @@ public class Indexer extends SubsystemBase {
   @Logged(name = "indexerCurrent")
   public Current getIndexerCurrent() {
     return motor.getStatorCurrent().getValue();
+  }
+
+  public void periodic() {
+    SmartDashboard.putNumber("Spindexer Velocity", motor.getVelocity().getValue().in(RPM));
+    SmartDashboard.putNumber("Spindexer Voltage", motor.getMotorVoltage().getValue().in(Volts));
+    SmartDashboard.putNumber(
+        "Spindexer motor velocity", motor.getRotorVelocity().getValue().in(RPM));
   }
 }
