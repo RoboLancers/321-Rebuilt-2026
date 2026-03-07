@@ -183,11 +183,11 @@ public class RobotContainer {
 
     driver.leftBumper().whileTrue(new IntakeWithVoltage(intakeRollers));
 
-    // driver.y().onTrue(new GoToAngle(intakePivot, () -> IntakeConstants.kIntakePosition));
+    driver.y().onTrue(new GoToAngle(intakePivot, () -> IntakeConstants.kIntakePosition));
 
-    // driver.a().onTrue(new GoToAngle(intakePivot, () -> IntakeConstants.kDefaultPosition));
+    driver.a().onTrue(new GoToAngle(intakePivot, () -> IntakeConstants.kDefaultPosition));
 
-    driver.leftBumper().whileTrue(new IntakeFuel(intakeRollers));
+    // driver.leftBumper().whileTrue(new IntakeFuel(intakeRollers));
 
     driver
         .leftTrigger()
@@ -203,10 +203,10 @@ public class RobotContainer {
 
     driver.x().whileTrue(new SetIndexerVelocity(indexer, () -> IndexerConstants.kIndexVelocity));
 
-    // driver
-    //     .rightBumper()
-    //     .whileTrue(
-    //         new Feed(tunnel, shooter, hood));
+    driver
+        .rightBumper()
+        .whileTrue(
+            new Feed(tunnel, shooter, hood));
   }
 
   @Logged(name = "autonomousCommand")

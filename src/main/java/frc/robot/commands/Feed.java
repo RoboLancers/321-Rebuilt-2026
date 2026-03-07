@@ -44,7 +44,7 @@ public class Feed extends Command {
   @Override
   public void end(boolean interrupted) {
     hood.runVolts(Volts.of(0));
-    shooter.setVelocity(RPM.of(0));
+    shooter.setVoltage(Volts.of(0));
     tunnel.runAtVelocity(RPM.of(0));
   }
 }
