@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.ShootAndIndex;
+import frc.robot.commands.ShootToHub;
 import frc.robot.subsystems.hood.hoodCommands.HomeHood;
 
 public class Robot extends TimedRobot {
@@ -24,6 +26,7 @@ public class Robot extends TimedRobot {
   private static final String kTopAuto = "Top Auto";
   private static final String kTopBumpAuto = "Top Bump Auto";
   private static final String kDefaultAuto = "No Auto";
+  private static final String kStationaryAuto = "--FAKE--";
 
   @Logged(name = "autonomousCommandName")
   public String getAutonomousCommand() {
@@ -44,6 +47,7 @@ public class Robot extends TimedRobot {
     chooser.addOption("Top Auto", kTopAuto);
     chooser.addOption("Bottom Bump Auto", kBottomBumpAuto);
     chooser.addOption("Top Bump Auto", kTopBumpAuto);
+    chooser.addOption("Stationary Auto", kStationaryAuto);
     chooser.setDefaultOption("No Auto", kDefaultAuto);
 
     SmartDashboard.putData("Auto choices", chooser);
@@ -79,7 +83,8 @@ public class Robot extends TimedRobot {
       CommandScheduler.getInstance().schedule(m_autonomousCommand);
     }
 
-    CommandScheduler.getInstance().schedule((new HomeHood(m_robotContainer.hood)));
+    CommandScheduler.getInstance().schedule((new HomeHood(m_robotContainer.hood))); 
+    CommandScheduler.getInstance().schedule(new ShootAndIndex(m_robotContainer.tunnel, m_robotContainer.shooter, m_robotContainer.hood, m_robotContainer.indexer, m_robotContainer::getHubDistance));
   }
 
   @Override

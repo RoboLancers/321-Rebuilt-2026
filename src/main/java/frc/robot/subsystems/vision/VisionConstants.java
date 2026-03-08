@@ -31,14 +31,14 @@ public class VisionConstants {
           Inches.of(-11.841),
           Inches.of(10.010),
           Inches.of(5.797),
-          new Rotation3d(Degrees.zero(), Degrees.of(15), Degrees.of(130)));
+          new Rotation3d(Degrees.zero(), Degrees.of(15), Degrees.of(220)));
 
   public static final Transform3d kRightClimbCameraTransform =
       new Transform3d(
           Inches.of(-8.591),
           Inches.of(11.797),
           Inches.of(5.815),
-          new Rotation3d(Degrees.of(0), Degrees.of(20), Degrees.of(30)));
+          new Rotation3d(Degrees.of(0), Degrees.of(20), Degrees.of(120)));
 
   public static final Transform3d kLeftShooterCameraTransform =
       new Transform3d(

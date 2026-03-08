@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Align;
 import frc.robot.commands.Feed;
 import frc.robot.commands.Release;
+import frc.robot.commands.ShootAndIndex;
 import frc.robot.commands.ShootToHub;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainConstants;
@@ -36,6 +37,7 @@ import frc.robot.subsystems.indexer.indexerCommands.SetIndexerVelocity;
 import frc.robot.subsystems.intakePivot.IntakeConstants;
 import frc.robot.subsystems.intakePivot.IntakePivot;
 import frc.robot.subsystems.intakePivot.intakePivotCommands.GoToAngle;
+import frc.robot.subsystems.intakePivot.intakePivotCommands.GoToVoltage;
 import frc.robot.subsystems.intakePivot.intakePivotCommands.HomeIntakePivot;
 import frc.robot.subsystems.intakePivot.intakePivotCommands.Tune;
 import frc.robot.subsystems.intakerollers.IntakeRollers;
@@ -138,7 +140,7 @@ public class RobotContainer {
   }
 
   public RobotContainer() {
-    configureBindings();
+     configureBindings();
     // configureTuningBindings();
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -148,8 +150,8 @@ public class RobotContainer {
   }
 
   private void configureTuningBindings() {
-    drivetrain.setDefaultCommand(
-        drivetrain.driveRobotCentric(this::getDriverForward, this::getDriverStrafe, this::getDriverTurn));
+    // drivetrain.setDefaultCommand(
+    //     drivetrain.driveRobotCentric(this::getDriverForward, this::getDriverStrafe, this::getDriverTurn));
 
     // intakeRollers.setDefaultCommand(
     //     Commands.run(() -> intakeRollers.setVoltage(Volts.of(0)), intakeRollers));
@@ -186,9 +188,9 @@ public class RobotContainer {
 
     driver.leftBumper().whileTrue(new IntakeWithVoltage(intakeRollers));
 
-    driver.y().onTrue(new GoToAngle(intakePivot, () -> IntakeConstants.kIntakePosition));
+    driver.y().whileTrue(new GoToVoltage(intakePivot, ()->Volts.of(-12)));
 
-    driver.a().onTrue(new GoToAngle(intakePivot, () -> IntakeConstants.kDefaultPosition));
+    // driver.a().onTrue(new GoToAngle(intakePivot, () -> IntakeConstants.kDefaultPosition));
 
     // driver.leftBumper().whileTrue(new IntakeFuel(intakeRollers));
 
@@ -202,18 +204,21 @@ public class RobotContainer {
                 this::getHubHeading,
                 drivetrain::getPose));
 
-   driver.rightTrigger().whileTrue((new ShootToHub(tunnel, shooter, hood, this::getHubDistance)));
+  //  driver.rightTrigger().whileTrue((new ShootToHub(tunnel, shooter, hood, this::getHubDistance)));
 
-    driver.x().whileTrue(new SetIndexerVelocity(indexer, () -> IndexerConstants.kIndexVelocity));
+  //   driver.x().whileTrue(new SetIndexerVelocity(indexer, () -> IndexerConstants.kIndexVelocity));
 
-    driver
-        .rightBumper()
-        .whileTrue(
-            new Feed(tunnel, shooter, hood));
+    driver.rightTrigger().whileTrue(new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance));
+
+    // driver
+    //     .rightBumper()
+    //     .whileTrue(
+    //         new Feed(tunnel, shooter, hood));
   }
 
   @Logged(name = "autonomousCommand")
   public Command getAutonomousCommand() {
+    
     return autoChooser.getSelected();
   }
 }
