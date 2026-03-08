@@ -11,6 +11,7 @@ import edu.wpi.first.units.measure.Current;
 
 public class IntakeRollerConstants {
   public static final int kRollerMotorId = 15;
+  public static final String kIntakeRollerCANbus = "rio";
   public static final boolean kStatorCurrentLimitsEnable = true;
   public static final boolean kSupplyCurrentLimitsEnable = true;
   public static final Current kStatorCurrentLimit = Amps.of(60);

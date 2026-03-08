@@ -9,8 +9,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.ShootAndIndex;
-import frc.robot.commands.ShootToHub;
 import frc.robot.subsystems.hood.hoodCommands.HomeHood;
 
 public class Robot extends TimedRobot {
@@ -51,6 +49,7 @@ public class Robot extends TimedRobot {
     chooser.setDefaultOption("No Auto", kDefaultAuto);
 
     SmartDashboard.putData("Auto choices", chooser);
+    // Epilogue.bind(this);
   }
 
   @Override
@@ -83,8 +82,18 @@ public class Robot extends TimedRobot {
       CommandScheduler.getInstance().schedule(m_autonomousCommand);
     }
 
-    CommandScheduler.getInstance().schedule((new HomeHood(m_robotContainer.hood))); 
-    CommandScheduler.getInstance().schedule(new ShootAndIndex(m_robotContainer.tunnel, m_robotContainer.shooter, m_robotContainer.hood, m_robotContainer.indexer, m_robotContainer::getHubDistance));
+    CommandScheduler.getInstance().schedule((new HomeHood(m_robotContainer.hood)));
+    // CommandScheduler.getInstance()
+    //     .schedule(
+    //         new ShootAndIndex(
+    //             m_robotContainer.tunnel,
+    //             m_robotContainer.shooter,
+    //             m_robotContainer.hood,
+    //             m_robotContainer.indexer,
+    //             m_robotContainer::getHubDistance));
+    // Rotation2d rotation = MyAlliance.isBlue() ? Rotation2d.kZero : Rotation2d.k180deg;
+    // m_robotContainer.drivetrain.addVisionMeasurement(new Pose2d(0,0,rotation), 0,
+    // VecBuilder.fill(0,0,0));
   }
 
   @Override

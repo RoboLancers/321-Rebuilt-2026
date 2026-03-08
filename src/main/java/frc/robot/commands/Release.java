@@ -5,8 +5,8 @@ import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.hood.Hood;
-import frc.robot.subsystems.hood.HoodConstants;
+import frc.robot.subsystems.indexer.Indexer;
+import frc.robot.subsystems.indexer.IndexerConstants;
 import frc.robot.subsystems.outtake.OuttakeConstants;
 import frc.robot.subsystems.outtake.Shooter;
 import frc.robot.subsystems.tunnel.Tunnel;
@@ -16,14 +16,14 @@ public class Release extends Command {
 
   Tunnel tunnel;
   Shooter shooter;
-  Hood hood;
+  Indexer indexer;
 
-  public Release(Tunnel tunnel, Shooter shooter, Hood hood) {
+  public Release(Tunnel tunnel, Shooter shoote, Indexer indexer) {
     this.tunnel = tunnel;
     this.shooter = shooter;
-    this.hood = hood;
+    this.indexer = indexer;
 
-    addRequirements(tunnel, shooter, hood);
+    addRequirements(tunnel, shooter, indexer);
   }
 
   @Override
@@ -33,7 +33,7 @@ public class Release extends Command {
   public void execute() {
     tunnel.runAtVelocity(TunnelConstants.kPassFuelRPM);
     shooter.setVelocity(OuttakeConstants.kReleaseRPM);
-    hood.goToAngle(HoodConstants.kStartingAngle);
+    indexer.goToVelocity(IndexerConstants.kIndexVelocity);
   }
 
   @Override
@@ -43,8 +43,8 @@ public class Release extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    hood.runVolts(Volts.of(0));
     shooter.setVoltage(Volts.of(0));
     tunnel.runAtVelocity(RPM.of(0));
+    indexer.setVoltage(Volts.of(0));
   }
 }

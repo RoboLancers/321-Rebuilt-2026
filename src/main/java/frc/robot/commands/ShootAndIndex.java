@@ -23,7 +23,11 @@ public class ShootAndIndex extends Command {
   Supplier<Distance> hubDistanceSupplier;
 
   public ShootAndIndex(
-      Tunnel tunnel, Shooter shooter, Hood hood, Indexer indexer, Supplier<Distance> hubDistanceSupplier) {
+      Tunnel tunnel,
+      Shooter shooter,
+      Hood hood,
+      Indexer indexer,
+      Supplier<Distance> hubDistanceSupplier) {
     this.tunnel = tunnel;
     this.shooter = shooter;
     this.hood = hood;
@@ -38,14 +42,16 @@ public class ShootAndIndex extends Command {
 
   @Override
   public void execute() {
-    
+
     Distance hubDistance = hubDistanceSupplier.get();
     shooter.setVelocity(shooter.getScoreVelocity(hubDistance));
     hood.goToAngle(hood.getScoreAngle(hubDistance));
 
-    if(Math.abs(shooter.getTopVelocity().in(RPM) - shooter.getScoreVelocity(hubDistance).in(RPM)) < 25){
-     tunnel.runAtVelocity(TunnelConstants.kPassFuelRPM);
-    indexer.goToVelocity(IndexerConstants.kIndexVelocity);}
+    if (Math.abs(shooter.getTopVelocity().in(RPM) - shooter.getScoreVelocity(hubDistance).in(RPM))
+        < 25) {
+      tunnel.runAtVelocity(TunnelConstants.kPassFuelRPM);
+      indexer.goToVelocity(IndexerConstants.kIndexVelocity);
+    }
   }
 
   @Override

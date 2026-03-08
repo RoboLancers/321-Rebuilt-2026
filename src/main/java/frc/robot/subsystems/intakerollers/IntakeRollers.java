@@ -10,7 +10,6 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.VoltageConfigs;
-import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -26,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class IntakeRollers extends SubsystemBase {
 
   @Logged private TalonFX rollerMotor = new TalonFX(IntakeRollerConstants.kRollerMotorId);
+
   private CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
   private MotorOutputConfigs motorConfigs = new MotorOutputConfigs();
   private VoltageConfigs voltageConfigs = new VoltageConfigs();
@@ -37,11 +37,9 @@ public class IntakeRollers extends SubsystemBase {
 
   public IntakeRollers() {
     motorConfigurations();
-    setPID(
-        IntakeRollerConstants.kP,
-        IntakeRollerConstants.kD,
-        IntakeRollerConstants.kV);
+    setPID(IntakeRollerConstants.kP, IntakeRollerConstants.kD, IntakeRollerConstants.kV);
   }
+
   public void motorConfigurations() {
     motorConfigs.withInverted(InvertedValue.CounterClockwise_Positive);
     motorConfigs.withNeutralMode(NeutralModeValue.Brake);
@@ -63,27 +61,28 @@ public class IntakeRollers extends SubsystemBase {
     rollerMotor.getConfigurator().apply(motionMagicConfigs);
   }
 
-  public PIDController rollerController = new PIDController(0,0,0);
+  public PIDController rollerController = new PIDController(0, 0, 0);
   public SimpleMotorFeedforward rollerFF = new SimpleMotorFeedforward(0, 0);
 
   public void setVelocity(AngularVelocity velocity) {
     this.targetVelocity = velocity;
-    double volts = rollerController.calculate(getRollerVelocity().in(RPM), velocity.in(RPM)) + rollerFF.calculateWithVelocities(getRollerVelocity().in(RPM), velocity.in(RPM));
+    double volts =
+        rollerController.calculate(getRollerVelocity().in(RPM), velocity.in(RPM))
+            + rollerFF.calculateWithVelocities(getRollerVelocity().in(RPM), velocity.in(RPM));
     rollerMotor.setVoltage(volts);
   }
 
   public void setPID(double kP, double kD, double kV) {
-   rollerController.setP(kP);
-   rollerController.setD(kD);
-   rollerFF.setKv(kV);
+    rollerController.setP(kP);
+    rollerController.setD(kD);
+    rollerFF.setKv(kV);
   }
 
   public void setVoltage(Voltage volts) {
     rollerMotor.setVoltage(volts.in(Volts));
   }
 
-  public void tune(
-      double kP, double kD, double kV, AngularVelocity rollerTargetVelocity) {
+  public void tune(double kP, double kD, double kV, AngularVelocity rollerTargetVelocity) {
     setPID(kP, kD, kV);
     setVelocity(rollerTargetVelocity);
   }

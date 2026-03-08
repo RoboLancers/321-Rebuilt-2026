@@ -20,8 +20,7 @@ public class IntakeRollerTune extends Command {
   }
 
   public void execute() {
-    intakeRollers.tune(
-        kP.get(), kD.get(), kV.get(), RPM.of(rollerTargetVelocityRPM.get()));
+    intakeRollers.tune(kP.get(), kD.get(), kV.get(), RPM.of(rollerTargetVelocityRPM.get()));
   }
 
   public boolean isFinished() {

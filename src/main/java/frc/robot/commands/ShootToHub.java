@@ -34,7 +34,7 @@ public class ShootToHub extends Command {
 
   @Override
   public void execute() {
-    
+
     Distance hubDistance = hubDistanceSupplier.get();
     tunnel.runAtVelocity(TunnelConstants.kPassFuelRPM);
     shooter.setVelocity(shooter.getScoreVelocity(hubDistance));
