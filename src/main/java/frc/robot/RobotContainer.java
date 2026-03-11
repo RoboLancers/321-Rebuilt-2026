@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.Align;
+import frc.robot.commands.ShootTest;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainConstants;
 import frc.robot.subsystems.hood.Hood;
@@ -30,7 +30,6 @@ import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.indexerCommands.SetIndexerVelocity;
 import frc.robot.subsystems.intakePivot.IntakePivot;
 import frc.robot.subsystems.intakePivot.intakePivotCommands.GoToAngle;
-import frc.robot.subsystems.intakePivot.intakePivotCommands.GoToVoltage;
 import frc.robot.subsystems.intakePivot.intakePivotCommands.HomeIntakePivot;
 import frc.robot.subsystems.intakePivot.intakePivotCommands.Tune;
 import frc.robot.subsystems.intakerollers.IntakeRollers;
@@ -42,6 +41,7 @@ import frc.robot.subsystems.tunnel.Tunnel;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.util.RebuiltUtil;
 
+@Logged
 public class RobotContainer {
 
   private final CommandXboxController driver = new CommandXboxController(0);
@@ -105,11 +105,11 @@ public class RobotContainer {
     double rawJoystick =
         -MathUtil.applyDeadband(driver.getRightX(), DrivetrainConstants.kRotationDeadband)
             * DrivetrainConstants.kMaxAngularVelocity.in(RadiansPerSecond);
-
     return rawJoystick;
   }
 
-  public Trigger inverted = driver.rightTrigger();
+  public Trigger driveInverted = driver.leftTrigger();
+  public Trigger turnInverted = driver.rightTrigger();
 
   public double getDriverForward1() {
 
@@ -139,6 +139,45 @@ public class RobotContainer {
             : DrivetrainConstants.kMaxLinearVelocity.in(MetersPerSecond));
   }
 
+  public double getDriverForward2() {
+    double rawJoystick =
+        -MathUtil.applyDeadband(
+                Math.pow(Math.hypot(driver.getLeftY(), driver.getLeftX()), 1),
+                DrivetrainConstants.kDriveDeadband)
+            * Math.cos(Math.atan2(driver.getLeftX(), driver.getLeftY()));
+
+    double processedJoystick =
+        rawJoystick
+            * (slowMode.getAsBoolean()
+                ? DrivetrainConstants.kSlowModeLinearVelocity.in(MetersPerSecond)
+                : DrivetrainConstants.kMaxLinearVelocity.in(MetersPerSecond));
+    return driveInverted.getAsBoolean() ? -processedJoystick : processedJoystick;
+  }
+
+  public double getDriverStrafe2() {
+    double rawJoystick =
+        -MathUtil.applyDeadband(
+                Math.pow(Math.hypot(driver.getLeftY(), driver.getLeftX()), 1),
+                DrivetrainConstants.kDriveDeadband)
+            * Math.sin(Math.atan2(driver.getLeftX(), driver.getLeftY()));
+
+    double processedJoystick =
+        rawJoystick
+            * (slowMode.getAsBoolean()
+                ? DrivetrainConstants.kSlowModeLinearVelocity.in(MetersPerSecond)
+                : DrivetrainConstants.kMaxLinearVelocity.in(MetersPerSecond));
+
+    return driveInverted.getAsBoolean() ? -processedJoystick : processedJoystick;
+  }
+
+  public double getDriverTurn2() {
+    double processedJoystick =
+        -MathUtil.applyDeadband(driver.getRightX(), DrivetrainConstants.kRotationDeadband)
+            * DrivetrainConstants.kMaxAngularVelocity.in(RadiansPerSecond);
+
+    return turnInverted.getAsBoolean() ? -processedJoystick : processedJoystick;
+  }
+
   @Logged(name = "calculatedHubHeading")
   public Rotation2d getHubHeading() {
     return RebuiltUtil.getHubHeading(drivetrain::getPose);
@@ -165,8 +204,8 @@ public class RobotContainer {
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
-    autoChooser.addOption("Test Auto", new PathPlannerAuto("Test Auto"));
-
+    // autoChooser.addOption("Test Auto", new PathPlannerAuto("Test Auto"));
+    autoChooser.addOption("Disrupt Auto", new PathPlannerAuto("Disrupt Auto"));
     // NamedCommands.registerCommand("IntakeFuel", intakeFuel);
     // NamedCommands.registerCommand("ShootFuel", shootFuel.releaseFuel(shooter));
   }
@@ -203,32 +242,34 @@ public class RobotContainer {
     hood.setDefaultCommand(new SetHoodAngle(hood, hood::getTargetAngle));
     shooter.setDefaultCommand(new SetShooterVelocity(shooter, () -> RPM.of(0)));
 
-    drivetrain.setDefaultCommand(
-        drivetrain.teleopDrive(
-            this::getDriverForward1, this::getDriverStrafe1, this::getDriverTurn));
+    // drivetrain.setDefaultCommand(
+    //     drivetrain.teleopDrive(
+    //         this::getDriverForward2, this::getDriverStrafe2, this::getDriverTurn2));
+
+    // driver.a().onTrue(Commands.runOnce(()->drivetrain.getPigeon2().setYaw(Degrees.of(0))));
 
     // driver
     // .leftBumper()
     // .whileTrue(new GoToIntakePosition(intakePivot).andThen(new
     // IntakeFuel(intakeRollers)));
 
-    driver.leftBumper().whileTrue(new IntakeWithVoltage(intakeRollers));
+    // driver.leftBumper().whileTrue(new IntakeWithVoltage(intakeRollers));
 
-    driver.y().whileTrue(new GoToVoltage(intakePivot, () -> Volts.of(-3)));
+    // driver.y().whileTrue(new GoToVoltage(intakePivot, () -> Volts.of(-3)));
 
     // driver.a().onTrue(new GoToAngle(intakePivot, () -> IntakeConstants.kDefaultPosition));
 
     // driver.leftBumper().whileTrue(new IntakeFuel(intakeRollers));
 
-    driver
-        .leftTrigger()
-        .whileTrue(
-            Align.rotateToHubWhileDriving(
-                drivetrain,
-                this::getDriverForward,
-                this::getDriverStrafe,
-                this::getHubHeading,
-                drivetrain::getPose));
+    // driver
+    //     .leftTrigger()
+    //     .whileTrue(
+    //         Align.rotateToHubWhileDriving(
+    //             drivetrain,
+    //             this::getDriverForward,
+    //             this::getDriverStrafe,
+    //             this::getHubHeading,
+    //             drivetrain::getPose));
 
     //  driver.rightTrigger().whileTrue((new ShootToHub(tunnel, shooter, hood,
     // this::getHubDistance)));
@@ -244,6 +285,8 @@ public class RobotContainer {
     //     .rightBumper()
     //     .whileTrue(
     //         new Feed(tunnel, shooter, hood));
+
+    driver.rightTrigger().whileTrue(new ShootTest(tunnel, shooter, indexer));
   }
 
   @Logged(name = "autonomousCommand")
