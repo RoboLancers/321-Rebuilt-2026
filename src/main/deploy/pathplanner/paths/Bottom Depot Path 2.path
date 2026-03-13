@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 3.5789916963226576,
-        "y": 4.008102016607354
+        "x": 3.5251957295373675,
+        "y": 4.029620403321471
       },
       "prevControl": {
-        "x": 2.5789916963226576,
-        "y": 4.008102016607354
+        "x": 2.5251957295373675,
+        "y": 4.029620403321471
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,7 +45,7 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Bottom Depot Auto",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0

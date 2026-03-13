@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Top Bumper Path 1"
+            "pathName": "Top Bump Path 1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Top Bumper Path 2"
+            "pathName": "Top Bump Path 2"
           }
         }
       ]

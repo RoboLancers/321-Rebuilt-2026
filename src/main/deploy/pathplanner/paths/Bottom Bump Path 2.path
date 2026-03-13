@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.011779359430605,
-        "y": 2.5986476868327397
+        "x": 7.785836298932384,
+        "y": 3.7498813760379592
       },
       "isLocked": false,
       "linkedName": "BottomBumpPath1"
     },
     {
       "anchor": {
-        "x": 7.559893238434164,
-        "y": 6.837769869513641
+        "x": 7.592170818505339,
+        "y": 7.149786476868328
       },
       "prevControl": {
-        "x": 7.656725978647687,
-        "y": 6.525753262158957
+        "x": 7.99026097271649,
+        "y": 6.418161328588376
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,7 +45,7 @@
     "rotation": 90.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "New Folder",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 90.0
