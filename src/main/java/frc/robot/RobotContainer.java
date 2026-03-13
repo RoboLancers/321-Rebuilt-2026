@@ -11,11 +11,13 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -63,6 +65,13 @@ public class RobotContainer {
   public Shooter shooter = new Shooter();
   public Drivetrain drivetrain = Drivetrain.create();
   public Vision vision = Vision.create(drivetrain::addVisionMeasurement, null);
+
+  public Field2d latestPoseField = new Field2d();
+
+  @Logged(name = "latest robot pose")
+  public Pose3d getLatestCameraPose() {
+    return vision.getLatestBestPose();
+  }
 
   private final SendableChooser<Command> autoChooser;
   // private final IntakeRollers intakeRollers = new IntakeRollers();

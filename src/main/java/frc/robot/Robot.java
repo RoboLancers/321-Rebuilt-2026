@@ -67,7 +67,9 @@ public class Robot extends TimedRobot {
       }
     }
 
-    SmartDashboard.putNumber("hub distance", m_robotContainer.getHubDistance().in(Inches));
+    // SmartDashboard.putNumber("hub distance", m_robotContainer.getHubDistance().in(Inches));
+    m_robotContainer.latestPoseField.setRobotPose(m_robotContainer.getLatestCameraPose().toPose2d());
+    SmartDashboard.putData("latest 2d pose", m_robotContainer.latestPoseField);
   }
 
   @Override
