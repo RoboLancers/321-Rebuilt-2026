@@ -39,7 +39,7 @@ public class DrivetrainConstants {
   public static final Distance kTrackWidth = Inches.of(29);
   public static final Distance kWheelBase = Inches.of(29);
 
-  public static final double kDriveDeadband = 0.05;
+  public static final double kDriveDeadband = 0.22;
   public static final double kRotationDeadband = 0.05;
   public static final AngularVelocity kMaxAngularVelocity = RadiansPerSecond.of(6);
   public static final LinearVelocity kMaxLinearVelocity = MetersPerSecond.of(5.0);

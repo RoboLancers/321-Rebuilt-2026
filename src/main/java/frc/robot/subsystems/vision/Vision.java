@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -107,6 +108,11 @@ public class Vision extends SubsystemBase {
     return new Vision(visionEstConsume, LEDCandle);
   }
 
+  public Field2d leftField = new Field2d();
+  public Field2d rightField = new Field2d();
+
+  public List<Field2d> fieldList = List.of(leftField, rightField);
+
   public Vision(Consumer<VisionEstimate> visionEstConsumer, CANdle LEDCandle) {
     this.visionEstConsumer = visionEstConsumer;
     this.LEDCandle = LEDCandle;
@@ -160,6 +166,10 @@ public class Vision extends SubsystemBase {
       if (estimatedPose == null) {
         continue;
       }
+
+      // fieldList.get(i).setRobotPose(estimatedPose.estimatedPose.toPose2d());
+
+      // SmartDashboard.putData("field" + Integer.toString(i), fieldList.get(i));
 
       double standardDeviation = calculateStdDevs(estimatedPose);
 

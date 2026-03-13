@@ -1,6 +1,7 @@
 /* (C) RoboLancers 2026 */
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
@@ -21,11 +22,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.ShootTest;
+import frc.robot.commands.Align;
+import frc.robot.commands.ShootAndIndex;
+import frc.robot.commands.ShootTesting;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainConstants;
 import frc.robot.subsystems.hood.Hood;
-import frc.robot.subsystems.hood.hoodCommands.SetHoodAngle;
+import frc.robot.subsystems.hood.hoodCommands.HomeHood;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.indexerCommands.SetIndexerVelocity;
 import frc.robot.subsystems.intakePivot.IntakePivot;
@@ -40,6 +43,7 @@ import frc.robot.subsystems.outtake.commands.SetShooterVelocity;
 import frc.robot.subsystems.tunnel.Tunnel;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.util.RebuiltUtil;
+import frc.robot.util.TunableConstant;
 
 @Logged
 public class RobotContainer {
@@ -234,19 +238,23 @@ public class RobotContainer {
     // driver.rightTrigger().whileTrue(new Release(tunnel, shooter, hood));
   }
 
+  public TunableConstant tuningHoodAngle = new TunableConstant("Robot Container/hood pitch", 0);
+
   private void configureBindings() {
     tunnel.setDefaultCommand(Commands.run(() -> tunnel.runAtVelocity(RPM.of(0)), tunnel));
     intakeRollers.setDefaultCommand(new IntakeDefaultVelocity(intakeRollers));
     indexer.setDefaultCommand(new SetIndexerVelocity(indexer, () -> RPM.of(0)));
     intakePivot.setDefaultCommand(new GoToAngle(intakePivot, intakePivot::getTargetAngle));
-    hood.setDefaultCommand(new SetHoodAngle(hood, hood::getTargetAngle));
+    hood.setDefaultCommand(Commands.run(() -> hood.runVolts(Volts.of(0)), hood));
     shooter.setDefaultCommand(new SetShooterVelocity(shooter, () -> RPM.of(0)));
 
-    // drivetrain.setDefaultCommand(
-    //     drivetrain.teleopDrive(
-    //         this::getDriverForward2, this::getDriverStrafe2, this::getDriverTurn2));
+    drivetrain.setDefaultCommand(
+        drivetrain.teleopDrive(
+            this::getDriverForward2, this::getDriverStrafe2, this::getDriverTurn2));
 
     // driver.a().onTrue(Commands.runOnce(()->drivetrain.getPigeon2().setYaw(Degrees.of(0))));
+
+    driver.y().whileTrue(new HomeHood(hood));
 
     // driver
     // .leftBumper()
@@ -261,15 +269,15 @@ public class RobotContainer {
 
     // driver.leftBumper().whileTrue(new IntakeFuel(intakeRollers));
 
-    // driver
-    //     .leftTrigger()
-    //     .whileTrue(
-    //         Align.rotateToHubWhileDriving(
-    //             drivetrain,
-    //             this::getDriverForward,
-    //             this::getDriverStrafe,
-    //             this::getHubHeading,
-    //             drivetrain::getPose));
+    driver
+        .leftTrigger()
+        .whileTrue(
+            Align.rotateToHubWhileDriving(
+                drivetrain,
+                this::getDriverForward,
+                this::getDriverStrafe,
+                this::getHubHeading,
+                drivetrain::getPose));
 
     //  driver.rightTrigger().whileTrue((new ShootToHub(tunnel, shooter, hood,
     // this::getHubDistance)));
@@ -277,16 +285,27 @@ public class RobotContainer {
     //   driver.x().whileTrue(new SetIndexerVelocity(indexer, () ->
     // IndexerConstants.kIndexVelocity));
 
-    // driver
-    //     .rightTrigger()
-    //     .whileTrue(new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance));
+    driver
+        .rightTrigger()
+        .whileTrue(new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance));
+
+    driver
+        .rightBumper()
+        .whileTrue(
+            new ShootTesting(
+                tunnel,
+                shooter,
+                hood,
+                indexer,
+                this::getHubDistance,
+                () -> Degrees.of(tuningHoodAngle.get())));
 
     // driver
     //     .rightBumper()
     //     .whileTrue(
     //         new Feed(tunnel, shooter, hood));
 
-    driver.rightTrigger().whileTrue(new ShootTest(tunnel, shooter, indexer));
+    // driver.rightTrigger().whileTrue(new ShootTest(tunnel, shooter, indexer));
   }
 
   @Logged(name = "autonomousCommand")

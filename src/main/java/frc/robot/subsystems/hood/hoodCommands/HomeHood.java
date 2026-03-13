@@ -28,6 +28,7 @@ public class HomeHood extends Command {
 
   @Override
   public void end(boolean interrupted) {
+    hood.zeroEncoder();
     hood.runVolts(Volts.of(0));
   }
 }

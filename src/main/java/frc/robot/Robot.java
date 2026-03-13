@@ -1,6 +1,8 @@
 /* (C) RoboLancers 2026 */
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Inches;
+
 import edu.wpi.first.epilogue.Epilogue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
@@ -15,9 +17,9 @@ import frc.robot.subsystems.hood.hoodCommands.HomeHood;
 
 @Logged
 public class Robot extends TimedRobot {
- @NotLogged private String autoSelected;
+  @NotLogged private String autoSelected;
   private SendableChooser<String> chooser = new SendableChooser<>();
- @NotLogged private Command m_autonomousCommand;
+  @NotLogged private Command m_autonomousCommand;
   private static final String kCenterDepotAuto = "Center Depot Auto";
   private static final String kTopDepotAuto = "Top Depot Auto";
   private static final String kBottomDepotAuto = "Bottom Depot Auto";
@@ -29,7 +31,7 @@ public class Robot extends TimedRobot {
   private static final String kDefaultAuto = "No Auto";
   private static final String kStationaryAuto = "--FAKE--";
 
-  @Logged //(name = "autonomousCommandName")
+  @Logged // (name = "autonomousCommandName")
   public String getAutonomousCommand() {
     return chooser.getSelected();
   }
@@ -64,6 +66,8 @@ public class Robot extends TimedRobot {
         m_robotContainer.drivetrain.driveTrainPeriodic();
       }
     }
+
+    SmartDashboard.putNumber("hub distance", m_robotContainer.getHubDistance().in(Inches));
   }
 
   @Override
