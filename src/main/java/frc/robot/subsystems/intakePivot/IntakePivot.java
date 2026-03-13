@@ -12,12 +12,9 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.VoltageConfigs;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
@@ -56,7 +53,6 @@ public class IntakePivot extends SubsystemBase {
     currentLimitsConfigs.withStatorCurrentLimitEnable(IntakeConstants.kCurrentLimitEnable);
     currentLimitsConfigs.withStatorCurrentLimit(IntakeConstants.kCurrentLimit);
 
-
     feedbackConfigs.withSensorToMechanismRatio(IntakeConstants.kSensorToMechanismRatio);
 
     motionMagicConfigs.withMotionMagicCruiseVelocity(IntakeConstants.kMaxVelocity);
@@ -67,12 +63,14 @@ public class IntakePivot extends SubsystemBase {
     intakePivotMotor.getConfigurator().apply(motionMagicConfigs);
   }
 
-  public PIDController pivotController = new PIDController(0,0,0);
-  public ArmFeedforward pivotFeedforward = new ArmFeedforward(0,0,0);
+  public PIDController pivotController = new PIDController(0, 0, 0);
+  public ArmFeedforward pivotFeedforward = new ArmFeedforward(0, 0, 0);
 
   public void goToAngle(Angle angle) {
     this.targetAngle = angle;
-   double volts = pivotController.calculate(getAngle().in(Degrees), angle.in(Degrees)) + pivotFeedforward.calculate(angle.in(Degrees), 0);
+    double volts =
+        pivotController.calculate(getAngle().in(Degrees), angle.in(Degrees))
+            + pivotFeedforward.calculate(angle.in(Degrees), 0);
     intakePivotMotor.setVoltage(volts);
   }
 

@@ -9,7 +9,6 @@ import static edu.wpi.first.units.Units.Volts;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -23,12 +22,10 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Align;
 import frc.robot.commands.Feed;
-import frc.robot.commands.Release;
 import frc.robot.commands.ShootToHub;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainConstants;
 import frc.robot.subsystems.hood.Hood;
-import frc.robot.subsystems.hood.hoodCommands.HomeHood;
 import frc.robot.subsystems.hood.hoodCommands.SetHoodAngle;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerConstants;
@@ -40,7 +37,6 @@ import frc.robot.subsystems.intakePivot.intakePivotCommands.HomeIntakePivot;
 import frc.robot.subsystems.intakePivot.intakePivotCommands.Tune;
 import frc.robot.subsystems.intakerollers.IntakeRollers;
 import frc.robot.subsystems.intakerollers.rolllercommands.IntakeDefaultVelocity;
-import frc.robot.subsystems.intakerollers.rolllercommands.IntakeFuel;
 import frc.robot.subsystems.intakerollers.rolllercommands.IntakeWithVoltage;
 import frc.robot.subsystems.outtake.Shooter;
 import frc.robot.subsystems.outtake.commands.SetShooterVelocity;
@@ -90,8 +86,6 @@ public class RobotContainer {
         * (slowMode.getAsBoolean()
             ? DrivetrainConstants.kSlowModeLinearVelocity.in(MetersPerSecond)
             : DrivetrainConstants.kMaxLinearVelocity.in(MetersPerSecond));
-
-      
   }
 
   @Logged(name = "driverStrafeValue")
@@ -149,7 +143,8 @@ public class RobotContainer {
 
   private void configureTuningBindings() {
     drivetrain.setDefaultCommand(
-        drivetrain.driveRobotCentric(this::getDriverForward, this::getDriverStrafe, this::getDriverTurn));
+        drivetrain.driveRobotCentric(
+            this::getDriverForward, this::getDriverStrafe, this::getDriverTurn));
 
     // intakeRollers.setDefaultCommand(
     //     Commands.run(() -> intakeRollers.setVoltage(Volts.of(0)), intakeRollers));
@@ -202,14 +197,11 @@ public class RobotContainer {
                 this::getHubHeading,
                 drivetrain::getPose));
 
-   driver.rightTrigger().whileTrue((new ShootToHub(tunnel, shooter, hood, this::getHubDistance)));
+    driver.rightTrigger().whileTrue((new ShootToHub(tunnel, shooter, hood, this::getHubDistance)));
 
     driver.x().whileTrue(new SetIndexerVelocity(indexer, () -> IndexerConstants.kIndexVelocity));
 
-    driver
-        .rightBumper()
-        .whileTrue(
-            new Feed(tunnel, shooter, hood));
+    driver.rightBumper().whileTrue(new Feed(tunnel, shooter, hood));
   }
 
   @Logged(name = "autonomousCommand")
