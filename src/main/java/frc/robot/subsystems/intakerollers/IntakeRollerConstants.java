@@ -11,10 +11,11 @@ import edu.wpi.first.units.measure.Current;
 
 public class IntakeRollerConstants {
   public static final int kRollerMotorId = 15;
+  public static final String kIntakeRollerCANbus = "rio";
   public static final boolean kStatorCurrentLimitsEnable = true;
   public static final boolean kSupplyCurrentLimitsEnable = true;
-  public static final Current kStatorCurrentLimit = Amps.of(40);
-  public static final Current kSupplyCurrentLimit = Amps.of(40);
+  public static final Current kStatorCurrentLimit = Amps.of(60);
+  public static final Current kSupplyCurrentLimit = Amps.of(60);
   public static final double kSensorToMechanismRatio = 0;
   public static final AngularVelocity kIntakeFuelVelocity = RPM.of(0);
   public static final AngularVelocity kOuttakeFuelVelocity = RPM.of(0);

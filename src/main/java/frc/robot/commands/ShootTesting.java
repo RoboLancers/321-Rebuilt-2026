@@ -4,29 +4,41 @@ package frc.robot.commands;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.hood.Hood;
+import frc.robot.subsystems.indexer.Indexer;
+import frc.robot.subsystems.indexer.IndexerConstants;
 import frc.robot.subsystems.outtake.Shooter;
 import frc.robot.subsystems.tunnel.Tunnel;
 import frc.robot.subsystems.tunnel.TunnelConstants;
 import java.util.function.Supplier;
 
-public class ShootToHub extends Command {
+public class ShootTesting extends Command {
 
   Tunnel tunnel;
   Shooter shooter;
   Hood hood;
+  Indexer indexer;
   Supplier<Distance> hubDistanceSupplier;
+  Supplier<Angle> angleSupplier;
 
-  public ShootToHub(
-      Tunnel tunnel, Shooter shooter, Hood hood, Supplier<Distance> hubDistanceSupplier) {
+  public ShootTesting(
+      Tunnel tunnel,
+      Shooter shooter,
+      Hood hood,
+      Indexer indexer,
+      Supplier<Distance> hubDistanceSupplier,
+      Supplier<Angle> angleSupplier) {
     this.tunnel = tunnel;
     this.shooter = shooter;
     this.hood = hood;
+    this.indexer = indexer;
     this.hubDistanceSupplier = hubDistanceSupplier;
+    this.angleSupplier = angleSupplier;
 
-    addRequirements(tunnel, shooter, hood);
+    addRequirements(tunnel, shooter, hood, indexer);
   }
 
   @Override
@@ -36,9 +48,14 @@ public class ShootToHub extends Command {
   public void execute() {
 
     Distance hubDistance = hubDistanceSupplier.get();
-    tunnel.runAtVelocity(TunnelConstants.kPassFuelRPM);
     shooter.setVelocity(shooter.getScoreVelocity(hubDistance));
-    hood.goToAngle(hood.getScoreAngle(hubDistance));
+    hood.goToAngle(angleSupplier.get());
+
+    if (Math.abs(shooter.getTopVelocity().in(RPM) - shooter.getScoreVelocity(hubDistance).in(RPM))
+        < 25) {
+      tunnel.runAtVelocity(TunnelConstants.kPassFuelRPM);
+      indexer.goToVelocity(IndexerConstants.kIndexVelocity);
+    }
   }
 
   @Override
@@ -51,5 +68,6 @@ public class ShootToHub extends Command {
     hood.runVolts(Volts.of(0));
     shooter.setVelocity(RPM.of(0));
     tunnel.runAtVelocity(RPM.of(0));
+    indexer.setVoltage(Volts.of(0));
   }
 }

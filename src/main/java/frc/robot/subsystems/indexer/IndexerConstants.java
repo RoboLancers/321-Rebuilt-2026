@@ -11,7 +11,7 @@ public class IndexerConstants {
 
   public static int kMotorID = 17;
 
-  public static double kCurrentLimit = 40;
+  public static double kCurrentLimit = 60;
 
   public static boolean kInverted = true;
 

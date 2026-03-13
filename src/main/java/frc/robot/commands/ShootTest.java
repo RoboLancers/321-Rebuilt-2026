@@ -4,29 +4,24 @@ package frc.robot.commands;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.hood.Hood;
+import frc.robot.subsystems.indexer.Indexer;
+import frc.robot.subsystems.indexer.IndexerConstants;
 import frc.robot.subsystems.outtake.Shooter;
 import frc.robot.subsystems.tunnel.Tunnel;
 import frc.robot.subsystems.tunnel.TunnelConstants;
-import java.util.function.Supplier;
 
-public class ShootToHub extends Command {
+public class ShootTest extends Command {
 
   Tunnel tunnel;
   Shooter shooter;
-  Hood hood;
-  Supplier<Distance> hubDistanceSupplier;
+  Indexer indexer;
 
-  public ShootToHub(
-      Tunnel tunnel, Shooter shooter, Hood hood, Supplier<Distance> hubDistanceSupplier) {
+  public ShootTest(Tunnel tunnel, Shooter shooter, Indexer indexer) {
     this.tunnel = tunnel;
     this.shooter = shooter;
-    this.hood = hood;
-    this.hubDistanceSupplier = hubDistanceSupplier;
-
-    addRequirements(tunnel, shooter, hood);
+    this.indexer = indexer;
+    addRequirements(tunnel, shooter, indexer);
   }
 
   @Override
@@ -35,10 +30,12 @@ public class ShootToHub extends Command {
   @Override
   public void execute() {
 
-    Distance hubDistance = hubDistanceSupplier.get();
-    tunnel.runAtVelocity(TunnelConstants.kPassFuelRPM);
-    shooter.setVelocity(shooter.getScoreVelocity(hubDistance));
-    hood.goToAngle(hood.getScoreAngle(hubDistance));
+    shooter.setVelocity(RPM.of(1000));
+
+    if (Math.abs(shooter.getTopVelocity().in(RPM) - 1000) < 25) {
+      tunnel.runAtVelocity(TunnelConstants.kPassFuelRPM);
+      indexer.goToVelocity(IndexerConstants.kIndexVelocity);
+    }
   }
 
   @Override
@@ -48,8 +45,8 @@ public class ShootToHub extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    hood.runVolts(Volts.of(0));
     shooter.setVelocity(RPM.of(0));
     tunnel.runAtVelocity(RPM.of(0));
+    indexer.setVoltage(Volts.of(0));
   }
 }

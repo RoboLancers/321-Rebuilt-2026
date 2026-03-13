@@ -5,9 +5,8 @@ import static edu.wpi.first.units.Units.Meters;
 
 import com.ctre.phoenix6.hardware.CANdle;
 import edu.wpi.first.epilogue.Logged;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
@@ -44,14 +43,14 @@ public class Vision extends SubsystemBase {
     return getAmbiguityFromSupplier(() -> currentAmbiguity);
   }
 
-  public Pose2d latestBestPose = new Pose2d(new Translation2d(0, 0), Rotation2d.kZero);
+  public Pose3d latestBestPose = new Pose3d(new Translation3d(0, 0, 0), Rotation3d.kZero);
   public EstimatedRobotPose latestEstimatedRobotPose;
 
-  public Pose2d getPoseFromSupplier(Supplier<Pose2d> bestPose) {
+  public Pose3d getPoseFromSupplier(Supplier<Pose3d> bestPose) {
     return bestPose.get();
   }
 
-  public Pose2d getLatestBestPose() {
+  public Pose3d getLatestBestPose() {
     return getPoseFromSupplier(() -> latestBestPose);
   }
 
@@ -107,6 +106,11 @@ public class Vision extends SubsystemBase {
     return new Vision(visionEstConsume, LEDCandle);
   }
 
+  // public Field2d leftField = new Field2d();
+  // public Field2d rightField = new Field2d();
+
+  // public List<Field2d> fieldList = List.of(leftField, rightField);
+
   public Vision(Consumer<VisionEstimate> visionEstConsumer, CANdle LEDCandle) {
     this.visionEstConsumer = visionEstConsumer;
     this.LEDCandle = LEDCandle;
@@ -161,6 +165,10 @@ public class Vision extends SubsystemBase {
         continue;
       }
 
+      // fieldList.get(i).setRobotPose(estimatedPose.estimatedPose.toPose2d());
+
+      // SmartDashboard.putData("field" + Integer.toString(i), fieldList.get(i));
+
       double standardDeviation = calculateStdDevs(estimatedPose);
 
       VisionEstimate visionEstimate = new VisionEstimate(estimatedPose, standardDeviation);
@@ -182,8 +190,8 @@ public class Vision extends SubsystemBase {
           visionEstimates
               .get(ambiguities.indexOf(Collections.min(ambiguities)))
               .estimatedPose()
-              .estimatedPose
-              .toPose2d();
+              .estimatedPose;
+      // .toPose2d();
 
       this.latestEstimatedRobotPose =
           visionEstimates.get(ambiguities.indexOf(Collections.min(ambiguities))).estimatedPose();
@@ -288,7 +296,7 @@ public class Vision extends SubsystemBase {
 
     SmartDashboard.putNumber("Vision Pose Y", getLatestBestPose().getY());
 
-    SmartDashboard.putNumber("Vision Pose Yaw", getLatestBestPose().getRotation().getDegrees());
+    // SmartDashboard.putNumber("Vision Pose Yaw", getLatestBestPose().getRotation().getDegrees());
 
     SmartDashboard.putBoolean("right climb cam connected", getRightClimbCameraConnected());
     SmartDashboard.putBoolean("left shooter cam connected", getLeftShooterCameraConnected());

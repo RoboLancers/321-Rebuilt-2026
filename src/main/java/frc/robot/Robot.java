@@ -1,7 +1,11 @@
 /* (C) RoboLancers 2026 */
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Inches;
+
+import edu.wpi.first.epilogue.Epilogue;
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -11,10 +15,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.hood.hoodCommands.HomeHood;
 
+@Logged
 public class Robot extends TimedRobot {
-  private String autoSelected;
+  @NotLogged private String autoSelected;
   private SendableChooser<String> chooser = new SendableChooser<>();
-  private Command m_autonomousCommand;
+  @NotLogged private Command m_autonomousCommand;
   private static final String kCenterDepotAuto = "Center Depot Auto";
   private static final String kTopDepotAuto = "Top Depot Auto";
   private static final String kBottomDepotAuto = "Bottom Depot Auto";
@@ -24,8 +29,9 @@ public class Robot extends TimedRobot {
   private static final String kTopAuto = "Top Auto";
   private static final String kTopBumpAuto = "Top Bump Auto";
   private static final String kDefaultAuto = "No Auto";
+  private static final String kStationaryAuto = "--FAKE--";
 
-  @Logged(name = "autonomousCommandName")
+  @Logged // (name = "autonomousCommandName")
   public String getAutonomousCommand() {
     return chooser.getSelected();
   }
@@ -44,9 +50,11 @@ public class Robot extends TimedRobot {
     chooser.addOption("Top Auto", kTopAuto);
     chooser.addOption("Bottom Bump Auto", kBottomBumpAuto);
     chooser.addOption("Top Bump Auto", kTopBumpAuto);
-    chooser.setDefaultOption("No Auto", kDefaultAuto);
+    chooser.addOption("Stationary Auto", kStationaryAuto);
+    chooser.setDefaultOption("Disrupt Auto", "Disrupt Auto");
 
     SmartDashboard.putData("Auto choices", chooser);
+    Epilogue.bind(this);
   }
 
   @Override
@@ -58,6 +66,10 @@ public class Robot extends TimedRobot {
         m_robotContainer.drivetrain.driveTrainPeriodic();
       }
     }
+
+    // SmartDashboard.putNumber("hub distance", m_robotContainer.getHubDistance().in(Inches));
+    m_robotContainer.latestPoseField.setRobotPose(m_robotContainer.getLatestCameraPose().toPose2d());
+    SmartDashboard.putData("latest 2d pose", m_robotContainer.latestPoseField);
   }
 
   @Override
@@ -80,6 +92,17 @@ public class Robot extends TimedRobot {
     }
 
     CommandScheduler.getInstance().schedule((new HomeHood(m_robotContainer.hood)));
+    // CommandScheduler.getInstance()
+    //     .schedule(
+    //         new ShootAndIndex(
+    //             m_robotContainer.tunnel,
+    //             m_robotContainer.shooter,
+    //             m_robotContainer.hood,
+    //             m_robotContainer.indexer,
+    //             m_robotContainer::getHubDistance));
+    // Rotation2d rotation = MyAlliance.isBlue() ? Rotation2d.kZero : Rotation2d.k180deg;
+    // m_robotContainer.drivetrain.addVisionMeasurement(new Pose2d(0,0,rotation), 0,
+    // VecBuilder.fill(0,0,0));
   }
 
   @Override

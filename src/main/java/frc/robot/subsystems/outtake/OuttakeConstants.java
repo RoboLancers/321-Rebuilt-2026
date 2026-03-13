@@ -22,9 +22,9 @@ public class OuttakeConstants {
 
   public static final int kBottomMotorID = 12;
 
-  public static final Current kStatorLimit = Amps.of(40);
+  public static final Current kStatorLimit = Amps.of(60);
 
-  public static final Current kSupplyLimit = Amps.of(40);
+  public static final Current kSupplyLimit = Amps.of(60);
 
   public static final boolean kInverted = false;
 
