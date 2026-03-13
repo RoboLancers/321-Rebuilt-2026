@@ -9,7 +9,7 @@
       "prevControl": null,
       "nextControl": {
         "x": 7.49413253012048,
-        "y": 1.6195060240963857
+        "y": 1.6195060240963854
       },
       "isLocked": false,
       "linkedName": "Disrupt endpoint 1"
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 5.0,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,

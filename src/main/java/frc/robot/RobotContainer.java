@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.MathUtil;
@@ -214,13 +215,15 @@ public class RobotContainer {
   public RobotContainer() {
     configureBindings();
     // configureTuningBindings();
+    ShootAndIndex shootInAuto =
+        new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance);
+    NamedCommands.registerCommand("ShootFuel", shootInAuto);
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
     // autoChooser.addOption("Test Auto", new PathPlannerAuto("Test Auto"));
     autoChooser.addOption("Disrupt Auto", new PathPlannerAuto("Disrupt Auto"));
     // NamedCommands.registerCommand("IntakeFuel", intakeFuel);
-    // NamedCommands.registerCommand("ShootFuel", shootFuel.releaseFuel(shooter));
   }
 
   private void configureTuningBindings() {
