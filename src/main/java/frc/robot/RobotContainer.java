@@ -70,14 +70,6 @@ public class RobotContainer {
   }
 
   private final SendableChooser<Command> autoChooser;
-  // private final IntakeRollers intakeRollers = new IntakeRollers();
-  // private final IntakeFuel intakeFuel = new IntakeFuel(intakeRollers);
-  // private final Shooter shooter = new Shooter();
-  // private final ShootFuel shootFuel = new ShootFuel();
-  // private final Hood hood = new Hood();
-  // private final IntakePivot intakePivot = new IntakePivot();
-  // private final Indexer spindexer = new Indexer();
-  // private final Tunnel tunnel = new Tunnel();
 
   public Trigger slowMode = driver.b();
 
