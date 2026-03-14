@@ -43,6 +43,7 @@ import frc.robot.subsystems.intakerollers.rolllercommands.IntakeWithVoltage;
 import frc.robot.subsystems.outtake.Shooter;
 import frc.robot.subsystems.outtake.commands.SetShooterVelocity;
 import frc.robot.subsystems.tunnel.Tunnel;
+import frc.robot.subsystems.tunnel.tunnelCommands.RunAtVelocity;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.util.RebuiltUtil;
 import frc.robot.util.TunableConstant;
@@ -168,7 +169,7 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    tunnel.setDefaultCommand(Commands.run(() -> tunnel.runAtVelocity(RPM.of(0)), tunnel));
+    tunnel.setDefaultCommand(new RunAtVelocity(tunnel, ()->RPM.of(0)));
     intakeRollers.setDefaultCommand(new IntakeDefaultVelocity(intakeRollers));
     indexer.setDefaultCommand(new SetIndexerVelocity(indexer, () -> RPM.of(0)));
     intakePivot.setDefaultCommand(new GoToAngle(intakePivot, intakePivot::getTargetAngle));
