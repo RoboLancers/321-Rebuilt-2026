@@ -130,6 +130,7 @@ public class IntakePivot extends SubsystemBase {
     return false;
   }
 
+  @Override
   public void periodic() {
 
     SmartDashboard.putNumber("Intake Pivot Angle", getAngle().in(Degrees));
