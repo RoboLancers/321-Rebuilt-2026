@@ -4,7 +4,6 @@ package frc.robot.commands;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.hood.HoodConstants;
@@ -14,7 +13,6 @@ import frc.robot.subsystems.outtake.OuttakeConstants;
 import frc.robot.subsystems.outtake.Shooter;
 import frc.robot.subsystems.tunnel.Tunnel;
 import frc.robot.subsystems.tunnel.TunnelConstants;
-import java.util.function.Supplier;
 
 public class Feed extends Command {
 
@@ -23,11 +21,7 @@ public class Feed extends Command {
   Hood hood;
   Indexer indexer;
 
-  public Feed(
-      Tunnel tunnel,
-      Shooter shooter,
-      Hood hood,
-      Indexer indexer) {
+  public Feed(Tunnel tunnel, Shooter shooter, Hood hood, Indexer indexer) {
     this.tunnel = tunnel;
     this.shooter = shooter;
     this.hood = hood;
