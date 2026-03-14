@@ -30,7 +30,7 @@ public class TuneHood extends Command {
   }
 
   @Override
-  public void end(boolean interrupted){
+  public void end(boolean interrupted) {
     hood.runVolts(Volts.of(0));
   }
 }

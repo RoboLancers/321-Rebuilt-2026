@@ -27,7 +27,7 @@ public class IntakeDefaultVelocity extends Command {
   }
 
   @Override
-  public void end(boolean interrupted){
+  public void end(boolean interrupted) {
     intakeRollers.setVoltage(Volts.of(0));
   }
 }

@@ -3,7 +3,6 @@ package frc.robot.subsystems.climb.climbCommands;
 
 import static edu.wpi.first.units.Units.Volts;
 
-import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.climb.Climb;
 
@@ -27,5 +26,5 @@ public class LockClimb extends Command {
   }
 
   @Override
-  public void end(boolean interrupted){}
+  public void end(boolean interrupted) {}
 }

@@ -111,13 +111,13 @@ public class Climb extends SubsystemBase {
     pivotClimbMotor.getConfigurator().apply(pivotClimbMotorConfiguration);
   }
 
-  public void lockPivot(){
+  public void lockPivot() {
     pivotClimbMotor.setVoltage(0);
-    }
+  }
 
-    public void lockClimb(){
-      climbMotor.setVoltage(0);
-    }
+  public void lockClimb() {
+    climbMotor.setVoltage(0);
+  }
 
   @Logged(name = "climbVelocity")
   public AngularVelocity getClimbVelocity() {

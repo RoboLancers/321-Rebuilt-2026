@@ -25,12 +25,12 @@ public class TuneOuttake extends Command {
   }
 
   @Override
-  public boolean isFinished(){
+  public boolean isFinished() {
     return false;
   }
 
   @Override
-  public void end(boolean interrupted){
+  public void end(boolean interrupted) {
     outtake.setVoltage(Volts.of(0));
   }
 }

@@ -26,12 +26,12 @@ public class Tune extends Command {
   }
 
   @Override
-  public boolean isFinished(){
+  public boolean isFinished() {
     return false;
   }
 
   @Override
-  public void end(boolean interrupted){
+  public void end(boolean interrupted) {
     intakePivot.setVoltage(Volts.of(0));
   }
 }

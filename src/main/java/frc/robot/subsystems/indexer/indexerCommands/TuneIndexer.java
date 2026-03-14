@@ -26,13 +26,13 @@ public class TuneIndexer extends Command {
     indexer.tune(kP.get(), kD.get(), kV.get(), kS.get(), RPM.of(targetSpeed.get()));
   }
 
-@Override
+  @Override
   public boolean isFinished() {
     return false;
   }
 
   @Override
-  public void end(boolean interrupted){
+  public void end(boolean interrupted) {
     indexer.setVoltage(Volts.of(0));
   }
 }
