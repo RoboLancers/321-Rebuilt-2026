@@ -1,6 +1,8 @@
 /* (C) RoboLancers 2026 */
 package frc.robot.subsystems.intakePivot.intakePivotCommands;
 
+import static edu.wpi.first.units.Units.Volts;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.intakePivot.IntakePivot;
 import frc.robot.util.TunableConstant;
@@ -15,9 +17,21 @@ public class Tune extends Command {
 
   public Tune(IntakePivot intakePivot) {
     this.intakePivot = intakePivot;
+    addRequirements(intakePivot);
   }
 
+  @Override
   public void execute() {
     intakePivot.tune(kP.get(), kD.get(), kG.get(), angle.get());
+  }
+
+  @Override
+  public boolean isFinished(){
+    return false;
+  }
+
+  @Override
+  public void end(boolean interrupted){
+    intakePivot.setVoltage(Volts.of(0));
   }
 }

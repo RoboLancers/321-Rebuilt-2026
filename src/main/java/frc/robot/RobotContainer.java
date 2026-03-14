@@ -191,8 +191,6 @@ public class RobotContainer {
 
     // driver.leftBumper().whileTrue(new IntakeWithVoltage(intakeRollers));
 
-    // driver.y().whileTrue(new GoToVoltage(intakePivot, () -> Volts.of(-3)));
-
     // driver.a().onTrue(new GoToAngle(intakePivot, () -> IntakeConstants.kDefaultPosition));
 
     // driver.leftBumper().whileTrue(new IntakeFuel(intakeRollers));
