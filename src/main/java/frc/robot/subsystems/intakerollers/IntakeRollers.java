@@ -112,6 +112,7 @@ public class IntakeRollers extends SubsystemBase {
     return rollerMotor.getStatorCurrent().getValue();
   }
 
+  @Override
   public void periodic() {
     SmartDashboard.putNumber("Intake Roller Velocity", getRollerVelocity().in(RPM));
     SmartDashboard.putNumber("Intake Roller Voltage", getVoltage().in(Volts));
