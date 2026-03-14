@@ -115,6 +115,7 @@ public class Indexer extends SubsystemBase {
     return motor.getStatorCurrent().getValue();
   }
 
+  @Override
   public void periodic() {
     SmartDashboard.putNumber("Spindexer Velocity", motor.getVelocity().getValue().in(RPM));
     SmartDashboard.putNumber("Spindexer Voltage", motor.getMotorVoltage().getValue().in(Volts));
