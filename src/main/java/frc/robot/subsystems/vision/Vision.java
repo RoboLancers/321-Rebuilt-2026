@@ -182,7 +182,6 @@ public class Vision extends SubsystemBase {
               .get(ambiguities.indexOf(Collections.min(ambiguities)))
               .estimatedPose()
               .estimatedPose;
-      // .toPose2d();
 
       this.latestEstimatedRobotPose =
           visionEstimates.get(ambiguities.indexOf(Collections.min(ambiguities))).estimatedPose();
