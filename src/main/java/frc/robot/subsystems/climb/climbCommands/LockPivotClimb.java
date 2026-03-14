@@ -10,18 +10,22 @@ import frc.robot.subsystems.climb.Climb;
 public class LockPivotClimb extends Command {
 
   Climb climb;
-  TalonFX climbMotor;
 
-  public LockPivotClimb(Climb climb, TalonFX climbMotor) {
+  public LockPivotClimb(Climb climb) {
     this.climb = climb;
-    this.climbMotor = climbMotor;
+    addRequirements(climb);
   }
 
+  @Override
   public void execute() {
-    climbMotor.setVoltage(0);
+    climb.lockPivot();
   }
 
+  @Override
   public boolean isFinished() {
     return climb.atPivotClimbVoltage(Volts.of(0));
   }
+
+  @Override
+  public void end(boolean interrupted){}
 }

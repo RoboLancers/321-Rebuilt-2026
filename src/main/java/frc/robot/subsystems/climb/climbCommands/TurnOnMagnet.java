@@ -10,13 +10,19 @@ public class TurnOnMagnet extends Command {
 
   public TurnOnMagnet(Climb climb) {
     this.climb = climb;
+    addRequirements(climb);
   }
 
+  @Override
   public void execute() {
     climb.turnOnMagnet();
   }
 
+  @Override
   public boolean isFinished() {
     return false;
   }
+
+  @Override
+  public void end(boolean interrupted){}
 }
