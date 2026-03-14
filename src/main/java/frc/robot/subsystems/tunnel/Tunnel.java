@@ -102,6 +102,10 @@ public class Tunnel extends SubsystemBase {
     runAtVelocity(RPM.of(targetVelocity));
   }
 
+  public void setVoltage(Voltage volts){
+    tunnelMotor.setVoltage(volts.in(Volts));
+  }
+
   @Logged(name = "tunnelVoltage")
   public Voltage getVoltage() {
     return tunnelMotor.getMotorVoltage().getValue();

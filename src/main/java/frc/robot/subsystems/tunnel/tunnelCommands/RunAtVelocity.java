@@ -4,6 +4,9 @@ package frc.robot.subsystems.tunnel.tunnelCommands;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.tunnel.Tunnel;
+
+import static edu.wpi.first.units.Units.Volts;
+
 import java.util.function.Supplier;
 
 public class RunAtVelocity extends Command {
@@ -14,15 +17,21 @@ public class RunAtVelocity extends Command {
   public RunAtVelocity(Tunnel tunnel, Supplier<AngularVelocity> velocity) {
     this.tunnel = tunnel;
     this.velocity = velocity;
+    addRequirements(tunnel);
   }
 
-  public void init() {}
-
+  @Override
   public void execute() {
     tunnel.runAtVelocity(velocity.get());
   }
 
+  @Override
   public boolean isFinished() {
     return false;
+  }
+
+  @Override
+  public void end(boolean interrupted){
+    tunnel.setVoltage(Volts.of(0));
   }
 }

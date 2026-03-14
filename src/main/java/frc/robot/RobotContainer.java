@@ -121,76 +121,6 @@ public class RobotContainer {
     return rawJoystick;
   }
 
-  public Trigger driveInverted = driver.leftTrigger();
-  public Trigger turnInverted = driver.rightTrigger();
-
-  public double getDriverForward1() {
-
-    double rawJoystick =
-        MathUtil.applyDeadband(
-                Math.pow(Math.hypot(driver.getLeftX(), driver.getLeftY()), 1),
-                DrivetrainConstants.kDriveDeadband)
-            * Math.sin(Math.atan2(-driver.getLeftY(), driver.getLeftX()));
-
-    return rawJoystick
-        * (slowMode.getAsBoolean()
-            ? DrivetrainConstants.kSlowModeLinearVelocity.in(MetersPerSecond)
-            : DrivetrainConstants.kMaxLinearVelocity.in(MetersPerSecond));
-  }
-
-  public double getDriverStrafe1() {
-
-    double rawJoystick =
-        MathUtil.applyDeadband(
-                Math.pow(Math.hypot(driver.getLeftX(), driver.getLeftY()), 1),
-                DrivetrainConstants.kDriveDeadband)
-            * Math.cos(Math.atan2(driver.getLeftY(), driver.getRightX()));
-
-    return rawJoystick
-        * (slowMode.getAsBoolean()
-            ? DrivetrainConstants.kSlowModeLinearVelocity.in(MetersPerSecond)
-            : DrivetrainConstants.kMaxLinearVelocity.in(MetersPerSecond));
-  }
-
-  public double getDriverForward2() {
-    double rawJoystick =
-        -MathUtil.applyDeadband(
-                Math.pow(Math.hypot(driver.getLeftY(), driver.getLeftX()), 1),
-                DrivetrainConstants.kDriveDeadband)
-            * Math.cos(Math.atan2(driver.getLeftX(), driver.getLeftY()));
-
-    double processedJoystick =
-        rawJoystick
-            * (slowMode.getAsBoolean()
-                ? DrivetrainConstants.kSlowModeLinearVelocity.in(MetersPerSecond)
-                : DrivetrainConstants.kMaxLinearVelocity.in(MetersPerSecond));
-    return driveInverted.getAsBoolean() ? -processedJoystick : processedJoystick;
-  }
-
-  public double getDriverStrafe2() {
-    double rawJoystick =
-        -MathUtil.applyDeadband(
-                Math.pow(Math.hypot(driver.getLeftY(), driver.getLeftX()), 1),
-                DrivetrainConstants.kDriveDeadband)
-            * Math.sin(Math.atan2(driver.getLeftX(), driver.getLeftY()));
-
-    double processedJoystick =
-        rawJoystick
-            * (slowMode.getAsBoolean()
-                ? DrivetrainConstants.kSlowModeLinearVelocity.in(MetersPerSecond)
-                : DrivetrainConstants.kMaxLinearVelocity.in(MetersPerSecond));
-
-    return driveInverted.getAsBoolean() ? -processedJoystick : processedJoystick;
-  }
-
-  public double getDriverTurn2() {
-    double processedJoystick =
-        -MathUtil.applyDeadband(driver.getRightX(), DrivetrainConstants.kRotationDeadband)
-            * DrivetrainConstants.kMaxAngularVelocity.in(RadiansPerSecond);
-
-    return turnInverted.getAsBoolean() ? -processedJoystick : processedJoystick;
-  }
-
   @Logged(name = "calculatedHubHeading")
   public Rotation2d getHubHeading() {
     return RebuiltUtil.getHubHeading(drivetrain::getPose);
@@ -224,9 +154,6 @@ public class RobotContainer {
   }
 
   private void configureTuningBindings() {
-    // drivetrain.setDefaultCommand(
-    //     drivetrain.driveRobotCentric(this::getDriverForward, this::getDriverStrafe,
-    // this::getDriverTurn));
 
     intakeRollers.setDefaultCommand(
         Commands.run(() -> intakeRollers.setVoltage(Volts.of(0)), intakeRollers));
@@ -234,20 +161,11 @@ public class RobotContainer {
     intakePivot.setDefaultCommand(
         Commands.run(() -> intakePivot.setVoltage(Volts.of(0)), intakePivot));
 
-    // indexer.setDefaultCommand(Commands.run(() -> indexer.setVoltage(Volts.of(0)), indexer));
+    indexer.setDefaultCommand(Commands.run(() -> indexer.setVoltage(Volts.of(0)), indexer));
 
     driver.a().whileTrue(new Tune(intakePivot));
 
-    driver.y().whileTrue(new HomeIntakePivot(intakePivot));
-
-    driver.x().whileTrue(new IntakeWithVoltage(intakeRollers));
-
-    // driver.x().whileTrue(new SetIndexerVelocity(indexer, () -> IndexerConstants.kIndexVelocity));
-
-    // driver.rightTrigger().whileTrue(new Release(tunnel, shooter, hood));
   }
-
-  public TunableConstant tuningHoodAngle = new TunableConstant("Robot Container/hood pitch", 0);
 
   private void configureBindings() {
     tunnel.setDefaultCommand(Commands.run(() -> tunnel.runAtVelocity(RPM.of(0)), tunnel));
@@ -259,7 +177,7 @@ public class RobotContainer {
 
     drivetrain.setDefaultCommand(
         drivetrain.teleopDrive(
-            this::getDriverForward2, this::getDriverStrafe2, this::getDriverTurn2));
+            this::getDriverForward, this::getDriverStrafe, this::getDriverTurn));
 
     // driver.a().onTrue(Commands.runOnce(()->drivetrain.getPigeon2().setYaw(Degrees.of(0))));
 
@@ -297,17 +215,6 @@ public class RobotContainer {
     driver
         .rightTrigger()
         .whileTrue(new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance));
-
-    driver
-        .rightBumper()
-        .whileTrue(
-            new ShootTesting(
-                tunnel,
-                shooter,
-                hood,
-                indexer,
-                this::getHubDistance,
-                () -> Degrees.of(tuningHoodAngle.get())));
 
     // driver
     //     .rightBumper()
