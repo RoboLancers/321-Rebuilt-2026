@@ -276,20 +276,5 @@ public class Vision extends SubsystemBase {
     SmartDashboard.putString(
         "Right Shooter Cam Status Color",
         cameraStatusLEDs.get(rightShooterCamera).getStatusColorHex());
-
-    SmartDashboard.putBoolean("All Cameras Are Connected", areCamerasConnected());
-    SmartDashboard.putBoolean("Left Climb Camera Connected", getLeftClimbCameraConnected());
-    SmartDashboard.putBoolean("Right Climb Camera Connected", getRightClimbCameraConnected());
-    SmartDashboard.putBoolean("Left Shooter Camera Connected", getLeftShooterCameraConnected());
-    SmartDashboard.putBoolean("Right Shooter Camera Connected", getRightShooterCameraConnected());
-
-    SmartDashboard.putNumber("Vision Pose X", getLatestBestPose().getX());
-
-    SmartDashboard.putNumber("Vision Pose Y", getLatestBestPose().getY());
-
-    // SmartDashboard.putNumber("Vision Pose Yaw", getLatestBestPose().getRotation().getDegrees());
-
-    SmartDashboard.putBoolean("right climb cam connected", getRightClimbCameraConnected());
-    SmartDashboard.putBoolean("left shooter cam connected", getLeftShooterCameraConnected());
   }
 }
