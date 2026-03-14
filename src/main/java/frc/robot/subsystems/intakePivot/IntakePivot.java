@@ -128,10 +128,6 @@ public class IntakePivot extends SubsystemBase {
     return intakePivotMotor.getStatorCurrent().getValue();
   }
 
-  public boolean atHomedPosition() {
-    return false;
-  }
-
   @Override
   public void periodic() {
 
