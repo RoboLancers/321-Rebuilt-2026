@@ -19,9 +19,14 @@ public class RunAtVelocity extends Command {
     addRequirements(tunnel);
   }
 
+@Override
+public void initialize(){
+  tunnel.setTargetVelocity(velocity.get());
+}
+
   @Override
   public void execute() {
-    tunnel.runAtVelocity(velocity.get());
+    tunnel.goToVelocity(velocity.get());
   }
 
   @Override
