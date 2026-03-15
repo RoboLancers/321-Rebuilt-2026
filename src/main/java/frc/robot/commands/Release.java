@@ -18,7 +18,7 @@ public class Release extends Command {
   Shooter shooter;
   Indexer indexer;
 
-  public Release(Tunnel tunnel, Shooter shoote, Indexer indexer) {
+  public Release(Tunnel tunnel, Shooter shooter, Indexer indexer) {
     this.tunnel = tunnel;
     this.shooter = shooter;
     this.indexer = indexer;
@@ -27,12 +27,16 @@ public class Release extends Command {
   }
 
   @Override
-  public void initialize() {}
+  public void initialize() {
+    shooter.setTargetVelocity(OuttakeConstants.kReleaseRPM);
+    indexer.setTargetVelocity(IndexerConstants.kIndexVelocity);
+    tunnel.setTargetVelocity(TunnelConstants.kPassFuelRPM);
+  }
 
   @Override
   public void execute() {
-    tunnel.runAtVelocity(TunnelConstants.kPassFuelRPM);
-    shooter.setVelocity(OuttakeConstants.kReleaseRPM);
+    tunnel.goToVelocity(TunnelConstants.kPassFuelRPM);
+    shooter.goToVelocity(OuttakeConstants.kReleaseRPM);
     indexer.goToVelocity(IndexerConstants.kIndexVelocity);
   }
 
@@ -44,7 +48,11 @@ public class Release extends Command {
   @Override
   public void end(boolean interrupted) {
     shooter.setVoltage(Volts.of(0));
-    tunnel.runAtVelocity(RPM.of(0));
+    tunnel.setVoltage(Volts.of(0));
     indexer.setVoltage(Volts.of(0));
+
+    shooter.setTargetVelocity(RPM.of(0));
+    tunnel.setTargetVelocity(RPM.of(0));
+    indexer.setTargetVelocity(RPM.of(0));
   }
 }
