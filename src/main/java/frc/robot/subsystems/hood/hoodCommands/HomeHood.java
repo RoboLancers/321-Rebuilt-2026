@@ -17,6 +17,11 @@ public class HomeHood extends Command {
   }
 
   @Override
+  public void initialize() {
+    hood.setTargetAngle(HoodConstants.kStartingAngle);
+  }
+
+  @Override
   public void execute() {
     hood.runVolts(HoodConstants.kHomingVoltage);
   }
@@ -28,6 +33,7 @@ public class HomeHood extends Command {
 
   @Override
   public void end(boolean interrupted) {
+    hood.zeroEncoder();
     hood.runVolts(Volts.of(0));
   }
 }

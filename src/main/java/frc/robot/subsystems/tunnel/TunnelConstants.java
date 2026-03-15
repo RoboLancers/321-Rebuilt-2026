@@ -24,9 +24,9 @@ public class TunnelConstants {
 
   public static final int kTunnelMotorId = 13;
 
-  public static final Current kTunnelStatorLimit = Amps.of(40);
+  public static final Current kTunnelStatorLimit = Amps.of(60);
 
-  public static final Current kTunnelSupplyLimit = Amps.of(40);
+  public static final Current kTunnelSupplyLimit = Amps.of(60);
 
   public static final NeutralModeValue kTunnelNeutralMode = NeutralModeValue.Brake;
 

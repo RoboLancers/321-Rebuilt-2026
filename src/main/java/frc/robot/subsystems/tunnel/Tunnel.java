@@ -78,8 +78,11 @@ public class Tunnel extends SubsystemBase {
     return this.targetVelocity;
   }
 
-  public void runAtVelocity(AngularVelocity velocity) {
+  public void setTargetVelocity(AngularVelocity velocity) {
     this.targetVelocity = velocity;
+  }
+
+  public void goToVelocity(AngularVelocity velocity) {
     Voltage volts =
         Volts.of(
             tunnelController.calculate(getVelocity().in(RPM), velocity.in(RPM))
@@ -99,7 +102,11 @@ public class Tunnel extends SubsystemBase {
 
     tunnelFeedforward.setKv(kV);
 
-    runAtVelocity(RPM.of(targetVelocity));
+    goToVelocity(RPM.of(targetVelocity));
+  }
+
+  public void setVoltage(Voltage volts) {
+    tunnelMotor.setVoltage(volts.in(Volts));
   }
 
   @Logged(name = "tunnelVoltage")

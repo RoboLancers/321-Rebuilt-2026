@@ -10,11 +10,12 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.VoltageConfigs;
-import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
@@ -24,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class IntakeRollers extends SubsystemBase {
 
   @Logged private TalonFX rollerMotor = new TalonFX(IntakeRollerConstants.kRollerMotorId);
+
   private CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
   private MotorOutputConfigs motorConfigs = new MotorOutputConfigs();
   private VoltageConfigs voltageConfigs = new VoltageConfigs();
@@ -35,11 +37,7 @@ public class IntakeRollers extends SubsystemBase {
 
   public IntakeRollers() {
     motorConfigurations();
-    setPID(
-        IntakeRollerConstants.kP,
-        IntakeRollerConstants.kD,
-        IntakeRollerConstants.kV,
-        IntakeRollerConstants.kG);
+    setPID(IntakeRollerConstants.kP, IntakeRollerConstants.kD, IntakeRollerConstants.kV);
   }
 
   public void motorConfigurations() {
@@ -63,28 +61,33 @@ public class IntakeRollers extends SubsystemBase {
     rollerMotor.getConfigurator().apply(motionMagicConfigs);
   }
 
-  public void setVelocity(AngularVelocity velocity) {
+  public PIDController rollerController = new PIDController(0, 0, 0);
+  public SimpleMotorFeedforward rollerFF = new SimpleMotorFeedforward(0, 0);
+
+  public void setTargetVelocity(AngularVelocity velocity) {
     this.targetVelocity = velocity;
-    rollerMotor.setControl(new MotionMagicVelocityVoltage(velocity));
   }
 
-  public void setPID(double kP, double kD, double kV, double kG) {
-    slot0Configs.withKP(kP);
-    slot0Configs.withKD(kD);
-    slot0Configs.withKG(kG);
-    slot0Configs.withKV(kV);
+  public void goToVelocity(AngularVelocity velocity) {
+    double volts =
+        rollerController.calculate(getRollerVelocity().in(RPM), velocity.in(RPM))
+            + rollerFF.calculateWithVelocities(getRollerVelocity().in(RPM), velocity.in(RPM));
+    rollerMotor.setVoltage(volts);
+  }
 
-    rollerMotor.getConfigurator().apply(slot0Configs);
+  public void setPID(double kP, double kD, double kV) {
+    rollerController.setP(kP);
+    rollerController.setD(kD);
+    rollerFF.setKv(kV);
   }
 
   public void setVoltage(Voltage volts) {
     rollerMotor.setVoltage(volts.in(Volts));
   }
 
-  public void tune(
-      double kP, double kD, double kV, double kG, AngularVelocity rollerTargetVelocity) {
-    setPID(kP, kD, kV, kG);
-    setVelocity(rollerTargetVelocity);
+  public void tune(double kP, double kD, double kV, AngularVelocity rollerTargetVelocity) {
+    setPID(kP, kD, kV);
+    goToVelocity(rollerTargetVelocity);
   }
 
   @Logged(name = "intakeRollersVelocity")
@@ -112,6 +115,7 @@ public class IntakeRollers extends SubsystemBase {
     return rollerMotor.getStatorCurrent().getValue();
   }
 
+  @Override
   public void periodic() {
     SmartDashboard.putNumber("Intake Roller Velocity", getRollerVelocity().in(RPM));
     SmartDashboard.putNumber("Intake Roller Voltage", getVoltage().in(Volts));

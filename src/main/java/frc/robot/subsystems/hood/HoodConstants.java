@@ -28,9 +28,9 @@ public class HoodConstants {
 
   public static final boolean kHoodMotorInverted = true;
 
-  public static final Current kHoodStatorCurrentLimit = Amps.of(40);
+  public static final Current kHoodStatorCurrentLimit = Amps.of(60);
 
-  public static final Current kHoodSupplyCurrentLimit = Amps.of(40);
+  public static final Current kHoodSupplyCurrentLimit = Amps.of(60);
 
   public static final AngularVelocity kHoodMotorMaxVelocity = RotationsPerSecond.of(0.16);
 
@@ -49,7 +49,7 @@ public class HoodConstants {
 
   public static final Angle kRegion3ScoreAngle = Degrees.of(0);
 
-  public static final Angle kNeutralFeedAngle = Degrees.of(0);
+  public static final Angle kNeutralFeedAngle = Degrees.of(15);
 
   public static final Angle kOppositeFeedAngle = Degrees.of(0);
 

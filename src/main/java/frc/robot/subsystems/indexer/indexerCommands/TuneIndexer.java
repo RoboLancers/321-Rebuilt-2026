@@ -2,6 +2,7 @@
 package frc.robot.subsystems.indexer.indexerCommands;
 
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.indexer.Indexer;
@@ -17,13 +18,21 @@ public class TuneIndexer extends Command {
 
   public TuneIndexer(Indexer indexer) {
     this.indexer = indexer;
+    addRequirements(indexer);
   }
 
+  @Override
   public void execute() {
     indexer.tune(kP.get(), kD.get(), kV.get(), kS.get(), RPM.of(targetSpeed.get()));
   }
 
+  @Override
   public boolean isFinished() {
     return false;
+  }
+
+  @Override
+  public void end(boolean interrupted) {
+    indexer.setVoltage(Volts.of(0));
   }
 }

@@ -75,9 +75,11 @@ public class Indexer extends SubsystemBase {
     indexerFeedforward.setKs(kS);
   }
 
-  public void goToVelocity(AngularVelocity targetVelocity) {
-    this.targetVelocity = targetVelocity;
-    // motor.setControl(new MotionMagicVelocityVoltage(targetVelocity));
+  public void setTargetVelocity(AngularVelocity velocity) {
+    this.targetVelocity = velocity;
+  }
+
+  public void goToVelocity(AngularVelocity velocity) {
     double volts =
         indexerController.calculate(getVelocity().in(RPM), targetVelocity.in(RPM))
             + indexerFeedforward.calculateWithVelocities(
@@ -115,6 +117,7 @@ public class Indexer extends SubsystemBase {
     return motor.getStatorCurrent().getValue();
   }
 
+  @Override
   public void periodic() {
     SmartDashboard.putNumber("Spindexer Velocity", motor.getVelocity().getValue().in(RPM));
     SmartDashboard.putNumber("Spindexer Voltage", motor.getMotorVoltage().getValue().in(Volts));

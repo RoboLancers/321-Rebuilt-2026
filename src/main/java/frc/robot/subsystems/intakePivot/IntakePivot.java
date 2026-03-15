@@ -12,13 +12,12 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.VoltageConfigs;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
@@ -54,24 +53,28 @@ public class IntakePivot extends SubsystemBase {
     currentLimitsConfigs.withStatorCurrentLimitEnable(IntakeConstants.kCurrentLimitEnable);
     currentLimitsConfigs.withStatorCurrentLimit(IntakeConstants.kCurrentLimit);
 
-    slot0Configs.withGravityType(GravityTypeValue.Arm_Cosine);
-    slot0Configs.withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
-
     feedbackConfigs.withSensorToMechanismRatio(IntakeConstants.kSensorToMechanismRatio);
 
     motionMagicConfigs.withMotionMagicCruiseVelocity(IntakeConstants.kMaxVelocity);
 
     intakePivotMotor.getConfigurator().apply(motorConfigs);
     intakePivotMotor.getConfigurator().apply(currentLimitsConfigs);
-    intakePivotMotor.getConfigurator().apply(slot0Configs);
     intakePivotMotor.getConfigurator().apply(feedbackConfigs);
     intakePivotMotor.getConfigurator().apply(motionMagicConfigs);
   }
 
+  public PIDController pivotController = new PIDController(0, 0, 0);
+  public ArmFeedforward pivotFeedforward = new ArmFeedforward(0, 0, 0);
+
+  public void setTargetAngle(Angle angle) {
+    this.targetAngle = angle;
+  }
+
   public void goToAngle(Angle angle) {
-    targetAngle = angle;
-    MotionMagicVoltage intakeVoltage = new MotionMagicVoltage(angle);
-    intakePivotMotor.setControl(intakeVoltage);
+    double volts =
+        pivotController.calculate(getAngle().in(Degrees), angle.in(Degrees))
+            + pivotFeedforward.calculate(angle.in(Degrees), 0);
+    intakePivotMotor.setVoltage(volts);
   }
 
   public void setVoltage(Voltage volts) {
@@ -98,7 +101,9 @@ public class IntakePivot extends SubsystemBase {
   }
 
   public void setPID(double kP, double kD, double kG) {
-    intakePivotMotor.getConfigurator().apply(new Slot0Configs().withKP(kP).withKD(kD).withKG(kG));
+    pivotController.setP(kP);
+    pivotController.setD(kD);
+    pivotFeedforward.setKg(kG);
   }
 
   public void tune(double kP, double kD, double kG, double angle) {
@@ -126,10 +131,7 @@ public class IntakePivot extends SubsystemBase {
     return intakePivotMotor.getStatorCurrent().getValue();
   }
 
-  public boolean atHomedPosition() {
-    return false;
-  }
-
+  @Override
   public void periodic() {
 
     SmartDashboard.putNumber("Intake Pivot Angle", getAngle().in(Degrees));

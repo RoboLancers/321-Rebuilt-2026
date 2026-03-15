@@ -22,9 +22,9 @@ public class OuttakeConstants {
 
   public static final int kBottomMotorID = 12;
 
-  public static final Current kStatorLimit = Amps.of(40);
+  public static final Current kStatorLimit = Amps.of(60);
 
-  public static final Current kSupplyLimit = Amps.of(40);
+  public static final Current kSupplyLimit = Amps.of(60);
 
   public static final boolean kInverted = false;
 
@@ -32,7 +32,7 @@ public class OuttakeConstants {
 
   public static final double kNominalVoltage = 12;
 
-  public static final AngularVelocity kNeutralFeedRPM = RPM.of(0);
+  public static final AngularVelocity kNeutralFeedRPM = RPM.of(1000);
 
   public static final AngularVelocity kOppositeFeedRPM = RPM.of(0);
 
@@ -44,7 +44,7 @@ public class OuttakeConstants {
 
   public static final AngularVelocity kSetPositionScoreRPM = RPM.of(0);
 
-  public static final AngularVelocity kReleaseRPM = RPM.of(0);
+  public static final AngularVelocity kReleaseRPM = RPM.of(180);
 
   public static final AngularVelocity kMaxVelocity = RPM.of(2000);
 
