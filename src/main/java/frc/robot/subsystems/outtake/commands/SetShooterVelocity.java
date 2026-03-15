@@ -38,5 +38,6 @@ public class SetShooterVelocity extends Command {
   @Override
   public void end(boolean interrupted) {
     shooter.setVoltage(Volts.of(0));
+    shooter.setTargetVelocity(RPM.of(0));
   }
 }

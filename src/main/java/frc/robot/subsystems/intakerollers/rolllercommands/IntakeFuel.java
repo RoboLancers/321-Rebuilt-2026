@@ -1,6 +1,7 @@
 /* (C) RoboLancers 2026 */
 package frc.robot.subsystems.intakerollers.rolllercommands;
 
+import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -34,5 +35,6 @@ public class IntakeFuel extends Command {
   @Override
   public void end(boolean interrupted) {
     intakeRollers.setVoltage(Volts.of(0));
+    intakeRollers.setTargetVelocity(RPM.of(0));
   }
 }

@@ -1,6 +1,7 @@
 /* (C) RoboLancers 2026 */
 package frc.robot.subsystems.tunnel.tunnelCommands;
 
+import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -37,5 +38,6 @@ public void initialize(){
   @Override
   public void end(boolean interrupted) {
     tunnel.setVoltage(Volts.of(0));
+    tunnel.setTargetVelocity(RPM.of(0));
   }
 }

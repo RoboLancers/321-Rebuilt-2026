@@ -1,6 +1,7 @@
 /* (C) RoboLancers 2026 */
 package frc.robot.subsystems.indexer.indexerCommands;
 
+import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -37,5 +38,6 @@ public class SetIndexerVelocity extends Command {
   @Override
   public void end(boolean interrupted) {
     indexer.setVoltage(Volts.of(0));
+    indexer.setTargetVelocity(RPM.of(0));
   }
 }

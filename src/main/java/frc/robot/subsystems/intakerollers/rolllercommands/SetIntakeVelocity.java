@@ -39,5 +39,6 @@ public class SetIntakeVelocity extends Command {
   @Override
   public void end(boolean interrupted) {
     intakeRollers.setVoltage(Volts.of(0));
+    intakeRollers.setTargetVelocity(RPM.of(0));
   }
 }
