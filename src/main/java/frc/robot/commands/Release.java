@@ -38,6 +38,10 @@ public class Release extends Command {
     tunnel.goToVelocity(TunnelConstants.kPassFuelRPM);
     shooter.goToVelocity(OuttakeConstants.kReleaseRPM);
     indexer.goToVelocity(IndexerConstants.kIndexVelocity);
+
+    shooter.setTargetVelocity(OuttakeConstants.kReleaseRPM);
+    indexer.setTargetVelocity(IndexerConstants.kIndexVelocity);
+    tunnel.setTargetVelocity(TunnelConstants.kPassFuelRPM);
   }
 
   @Override

@@ -51,11 +51,15 @@ public class ShootAndIndex extends Command {
   public void execute() {
     shooter.goToVelocity(shooter.getScoreVelocity(hubDistance));
     hood.goToAngle(hood.getScoreAngle(hubDistance));
+    hood.setTargetAngle(hood.getScoreAngle(hubDistance));
+    shooter.setTargetVelocity(shooter.getScoreVelocity(hubDistance));
 
     if (Math.abs(shooter.getTopVelocity().in(RPM) - shooter.getScoreVelocity(hubDistance).in(RPM))
         < 25) {
       tunnel.goToVelocity(TunnelConstants.kPassFuelRPM);
       indexer.goToVelocity(IndexerConstants.kIndexVelocity);
+      indexer.setTargetVelocity(IndexerConstants.kIndexVelocity);
+    tunnel.setTargetVelocity(TunnelConstants.kPassFuelRPM);
     }
   }
 

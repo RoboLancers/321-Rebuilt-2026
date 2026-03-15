@@ -27,6 +27,7 @@ public class SetShooterVelocity extends Command {
 
   @Override
   public void execute() {
+    shooter.setTargetVelocity(rpmSupplier.get());
     shooter.goToVelocity(rpmSupplier.get());
   }
 

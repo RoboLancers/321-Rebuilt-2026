@@ -27,6 +27,7 @@ public class SetIndexerVelocity extends Command {
 
   @Override
   public void execute() {
+    indexer.setTargetVelocity(rpmSupplier.get());
     indexer.goToVelocity(rpmSupplier.get());
   }
 

@@ -43,9 +43,13 @@ public class Feed extends Command {
 
     shooter.goToVelocity(OuttakeConstants.kNeutralFeedRPM);
     hood.goToAngle(HoodConstants.kNeutralFeedAngle);
+    hood.setTargetAngle(HoodConstants.kNeutralFeedAngle);
+    shooter.setTargetVelocity(OuttakeConstants.kNeutralFeedRPM);
 
     if (Math.abs(shooter.getTopVelocity().in(RPM) - OuttakeConstants.kNeutralFeedRPM.in(RPM))
         < 25) {
+       indexer.setTargetVelocity(IndexerConstants.kIndexVelocity);
+    tunnel.setTargetVelocity(TunnelConstants.kPassFuelRPM);
       tunnel.goToVelocity(TunnelConstants.kPassFuelRPM);
       indexer.goToVelocity(IndexerConstants.kIndexVelocity);
     }

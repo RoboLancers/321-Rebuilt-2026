@@ -28,6 +28,7 @@ public class SetIntakeVelocity extends Command {
 
   @Override
   public void execute() {
+    intakeRollers.setTargetVelocity(velocitySupplier.get());
     intakeRollers.goToVelocity(velocitySupplier.get());
   }
 
