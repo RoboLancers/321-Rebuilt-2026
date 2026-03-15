@@ -41,11 +41,11 @@ public class ShootTesting extends Command {
     addRequirements(tunnel, shooter, hood, indexer);
   }
 
-    Distance hubDistance = hubDistanceSupplier.get();
+  Distance hubDistance = hubDistanceSupplier.get();
 
   @Override
   public void initialize() {
-     hood.setTargetAngle(angleSupplier.get());
+    hood.setTargetAngle(angleSupplier.get());
     shooter.setTargetVelocity(shooter.getScoreVelocity(hubDistance));
     indexer.setTargetVelocity(IndexerConstants.kIndexVelocity);
     tunnel.setTargetVelocity(TunnelConstants.kPassFuelRPM);
@@ -71,7 +71,7 @@ public class ShootTesting extends Command {
 
   @Override
   public void end(boolean interrupted) {
-   hood.runVolts(Volts.of(0));
+    hood.runVolts(Volts.of(0));
     shooter.setVoltage(Volts.of(0));
     tunnel.setVoltage(Volts.of(0));
     indexer.setVoltage(Volts.of(0));

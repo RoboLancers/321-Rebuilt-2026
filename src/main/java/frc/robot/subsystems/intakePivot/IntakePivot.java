@@ -66,9 +66,9 @@ public class IntakePivot extends SubsystemBase {
   public PIDController pivotController = new PIDController(0, 0, 0);
   public ArmFeedforward pivotFeedforward = new ArmFeedforward(0, 0, 0);
 
-public void setTargetAngle(Angle angle){
-  this.targetAngle = angle;
-}
+  public void setTargetAngle(Angle angle) {
+    this.targetAngle = angle;
+  }
 
   public void goToAngle(Angle angle) {
     double volts =

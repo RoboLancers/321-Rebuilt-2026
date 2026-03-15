@@ -78,7 +78,7 @@ public class Tunnel extends SubsystemBase {
     return this.targetVelocity;
   }
 
-  public void setTargetVelocity(AngularVelocity velocity){
+  public void setTargetVelocity(AngularVelocity velocity) {
     this.targetVelocity = velocity;
   }
 

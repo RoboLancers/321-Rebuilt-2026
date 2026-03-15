@@ -66,6 +66,5 @@ public class Feed extends Command {
     shooter.setTargetVelocity(RPM.of(0));
     tunnel.setTargetVelocity(RPM.of(0));
     indexer.setTargetVelocity(RPM.of(0));
-
   }
 }

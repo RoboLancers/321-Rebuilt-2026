@@ -64,8 +64,8 @@ public class IntakeRollers extends SubsystemBase {
   public PIDController rollerController = new PIDController(0, 0, 0);
   public SimpleMotorFeedforward rollerFF = new SimpleMotorFeedforward(0, 0);
 
-  public void setTargetVelocity(AngularVelocity velocity){
-     this.targetVelocity = velocity;
+  public void setTargetVelocity(AngularVelocity velocity) {
+    this.targetVelocity = velocity;
   }
 
   public void goToVelocity(AngularVelocity velocity) {

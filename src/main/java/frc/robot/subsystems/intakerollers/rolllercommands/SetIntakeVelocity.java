@@ -4,25 +4,25 @@ package frc.robot.subsystems.intakerollers.rolllercommands;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
-import java.util.function.Supplier;
-
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.intakerollers.IntakeRollers;
+import java.util.function.Supplier;
 
 public class SetIntakeVelocity extends Command {
 
   IntakeRollers intakeRollers;
   Supplier<AngularVelocity> velocitySupplier;
 
-  public SetIntakeVelocity(IntakeRollers intakeRollers, Supplier<AngularVelocity> velocitySupplier) {
+  public SetIntakeVelocity(
+      IntakeRollers intakeRollers, Supplier<AngularVelocity> velocitySupplier) {
     this.intakeRollers = intakeRollers;
     this.velocitySupplier = velocitySupplier;
     addRequirements(intakeRollers);
   }
 
   @Override
-  public void initialize(){
+  public void initialize() {
     intakeRollers.setTargetVelocity(velocitySupplier.get());
   }
 

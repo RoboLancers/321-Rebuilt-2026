@@ -105,7 +105,7 @@ public class Shooter extends SubsystemBase {
     simpleMotorFeedForward.setKv(kV);
   }
 
-  public void setTargetVelocity(AngularVelocity rpm){
+  public void setTargetVelocity(AngularVelocity rpm) {
     targetShooterVelocity = rpm;
   }
 

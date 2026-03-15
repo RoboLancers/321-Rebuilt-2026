@@ -17,8 +17,8 @@ public class HomeHood extends Command {
   }
 
   @Override
-  public void initialize(){
-     hood.setTargetAngle(HoodConstants.kStartingAngle);
+  public void initialize() {
+    hood.setTargetAngle(HoodConstants.kStartingAngle);
   }
 
   @Override
