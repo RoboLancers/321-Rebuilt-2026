@@ -105,8 +105,11 @@ public class Shooter extends SubsystemBase {
     simpleMotorFeedForward.setKv(kV);
   }
 
-  public void setVelocity(AngularVelocity rpm) {
+  public void setTargetVelocity(AngularVelocity rpm){
     targetShooterVelocity = rpm;
+  }
+
+  public void goToVelocity(AngularVelocity rpm) {
     double volts =
         pidController.calculate(getTopVelocity().in(RPM), rpm.in(RPM))
             + simpleMotorFeedForward.calculateWithVelocities(getTopVelocity().in(RPM), rpm.in(RPM));
@@ -128,7 +131,7 @@ public class Shooter extends SubsystemBase {
 
   public void tune(double kP, double kD, double kV, double targetRPM) {
     setPID(kP, kD, kV);
-    setVelocity(RPM.of(targetRPM));
+    goToVelocity(RPM.of(targetRPM));
   }
 
   @Logged(name = "shooterTargetVelocity")
