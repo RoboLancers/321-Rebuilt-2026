@@ -2,6 +2,7 @@
 package frc.robot.subsystems.drivetrain;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Radians;
@@ -418,6 +419,17 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
             .withVelocityY(targetSpeeds.vyMetersPerSecond)
             .withRotationalRate(targetSpeeds.omegaRadiansPerSecond)
             .withForwardPerspective(ForwardPerspectiveValue.BlueAlliance));
+  }
+
+  public Pose2d getJostlePose(){
+    Distance x = Meters.of(getPose().getMeasureX().in(Inches) + 0.5 * Math.sin(4 * DriverStation.getMatchTime()));
+    Distance y = Meters.of(getPose().getMeasureY().in(Inches) + 0.5 * Math.sin(4 * DriverStation.getMatchTime()));
+    Rotation2d yaw = getPose().getRotation();
+    return new Pose2d(x,y,yaw);
+  }
+
+  public Command jostle(){
+    return driveToFieldPoseCommand(this::getJostlePose, this::getPose);
   }
 
   // drive with absolute heading control

@@ -28,6 +28,6 @@ public class IntakeConstants {
   public static final Angle kAngleTolerance = Degrees.of(0);
   public static final Voltage kHomingVoltage = Volts.of(-2.0);
   public static final AngularVelocity kMaxVelocity = RotationsPerSecond.of(0.125);
-  public static final double kJostleVelocity = 2;
-  public static final double k
+  public static final double kJostleVoltage = 2;
+  public static final double kCycles = 67;
 }
