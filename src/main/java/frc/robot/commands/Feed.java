@@ -31,17 +31,22 @@ public class Feed extends Command {
   }
 
   @Override
-  public void initialize() {}
+  public void initialize() {
+    hood.setTargetAngle(HoodConstants.kNeutralFeedAngle);
+    shooter.setTargetVelocity(OuttakeConstants.kNeutralFeedRPM);
+    indexer.setTargetVelocity(IndexerConstants.kIndexVelocity);
+    tunnel.setTargetVelocity(TunnelConstants.kPassFuelRPM);
+  }
 
   @Override
   public void execute() {
 
-    shooter.setVelocity(OuttakeConstants.kNeutralFeedRPM);
+    shooter.goToVelocity(OuttakeConstants.kNeutralFeedRPM);
     hood.goToAngle(HoodConstants.kNeutralFeedAngle);
 
     if (Math.abs(shooter.getTopVelocity().in(RPM) - OuttakeConstants.kNeutralFeedRPM.in(RPM))
         < 25) {
-      tunnel.runAtVelocity(TunnelConstants.kPassFuelRPM);
+      tunnel.goToVelocity(TunnelConstants.kPassFuelRPM);
       indexer.goToVelocity(IndexerConstants.kIndexVelocity);
     }
   }
@@ -54,8 +59,13 @@ public class Feed extends Command {
   @Override
   public void end(boolean interrupted) {
     hood.runVolts(Volts.of(0));
-    shooter.setVelocity(RPM.of(0));
-    tunnel.runAtVelocity(RPM.of(0));
+    shooter.setVoltage(Volts.of(0));
+    tunnel.setVoltage(Volts.of(0));
     indexer.setVoltage(Volts.of(0));
+
+    shooter.setTargetVelocity(RPM.of(0));
+    tunnel.setTargetVelocity(RPM.of(0));
+    indexer.setTargetVelocity(RPM.of(0));
+
   }
 }
