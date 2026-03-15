@@ -18,12 +18,8 @@ Drivetrain drivetrain;
         addRequirements(intakePivot, drivetrain);
     }
 
-public Angle getTargetPosition(){
-    public double targetPosition = Math.sin(DriverStation.get)
-}
-
 @Override
 public void execute(){
-    intakePivot.goToAngle();
+    intakePivot
 }
 }

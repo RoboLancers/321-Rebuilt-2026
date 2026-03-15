@@ -78,6 +78,12 @@ public class IntakePivot extends SubsystemBase {
     intakePivotMotor.setVoltage(volts.in(Volts));
   }
 
+  public void jostleHopper(){
+    for(i = 0, i<IntakeConstants.k){
+    intakePivotMotor.setVoltage()
+    }
+  }
+
   @Logged(name = "intakePivotAngle")
   public Angle getAngle() {
     return intakePivotMotor.getPosition().getValue();
