@@ -20,6 +20,11 @@ public class GoToAngle extends Command {
   }
 
   @Override
+  public void initialize(){
+    intakePivot.setTargetAngle(angleSupplier.get());
+  }
+
+  @Override
   public void execute() {
     intakePivot.goToAngle(angleSupplier.get());
   }
