@@ -17,8 +17,13 @@ public class IntakeFuel extends Command {
   }
 
   @Override
+  public void initialize(){
+    intakeRollers.setTargetVelocity(IntakeRollerConstants.kIntakeFuelVelocity);
+  }
+
+  @Override
   public void execute() {
-    intakeRollers.setVelocity(IntakeRollerConstants.kIntakeFuelVelocity);
+    intakeRollers.goToVelocity(IntakeRollerConstants.kIntakeFuelVelocity);
   }
 
   @Override

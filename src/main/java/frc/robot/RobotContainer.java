@@ -35,7 +35,8 @@ import frc.robot.subsystems.intakePivot.IntakePivot;
 import frc.robot.subsystems.intakePivot.intakePivotCommands.GoToAngle;
 import frc.robot.subsystems.intakePivot.intakePivotCommands.Tune;
 import frc.robot.subsystems.intakerollers.IntakeRollers;
-import frc.robot.subsystems.intakerollers.rolllercommands.IntakeDefaultVelocity;
+import frc.robot.subsystems.intakerollers.rolllercommands.SetIntakeVelocity;
+import frc.robot.subsystems.intakerollers.rolllercommands.SetIntakeVelocity;
 import frc.robot.subsystems.outtake.Shooter;
 import frc.robot.subsystems.outtake.commands.SetShooterVelocity;
 import frc.robot.subsystems.tunnel.Tunnel;
@@ -156,7 +157,7 @@ public class RobotContainer {
 
   private void configureBindings() {
     tunnel.setDefaultCommand(new RunAtVelocity(tunnel, () -> RPM.of(0)));
-    intakeRollers.setDefaultCommand(new IntakeDefaultVelocity(intakeRollers));
+    intakeRollers.setDefaultCommand(new SetIntakeVelocity(intakeRollers, ()->RPM.of(0)));
     indexer.setDefaultCommand(new SetIndexerVelocity(indexer, () -> RPM.of(0)));
     intakePivot.setDefaultCommand(new GoToAngle(intakePivot, intakePivot::getTargetAngle));
     hood.setDefaultCommand(Commands.run(() -> hood.runVolts(Volts.of(0)), hood));
