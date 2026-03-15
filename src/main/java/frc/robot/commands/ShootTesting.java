@@ -56,15 +56,15 @@ public class ShootTesting extends Command {
 
     shooter.goToVelocity(shooter.getScoreVelocity(hubDistance));
     hood.goToAngle(angleSupplier.get());
-     hood.setTargetAngle(angleSupplier.get());
+    hood.setTargetAngle(angleSupplier.get());
     shooter.setTargetVelocity(shooter.getScoreVelocity(hubDistance));
 
     if (Math.abs(shooter.getTopVelocity().in(RPM) - shooter.getScoreVelocity(hubDistance).in(RPM))
         < 25) {
       tunnel.goToVelocity(TunnelConstants.kPassFuelRPM);
       indexer.goToVelocity(IndexerConstants.kIndexVelocity);
-       indexer.setTargetVelocity(IndexerConstants.kIndexVelocity);
-    tunnel.setTargetVelocity(TunnelConstants.kPassFuelRPM);
+      indexer.setTargetVelocity(IndexerConstants.kIndexVelocity);
+      tunnel.setTargetVelocity(TunnelConstants.kPassFuelRPM);
     }
   }
 

@@ -59,7 +59,7 @@ public class ShootAndIndex extends Command {
       tunnel.goToVelocity(TunnelConstants.kPassFuelRPM);
       indexer.goToVelocity(IndexerConstants.kIndexVelocity);
       indexer.setTargetVelocity(IndexerConstants.kIndexVelocity);
-    tunnel.setTargetVelocity(TunnelConstants.kPassFuelRPM);
+      tunnel.setTargetVelocity(TunnelConstants.kPassFuelRPM);
     }
   }
 
