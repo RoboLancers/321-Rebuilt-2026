@@ -421,14 +421,18 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
             .withForwardPerspective(ForwardPerspectiveValue.BlueAlliance));
   }
 
-  public Pose2d getJostlePose(){
-    Distance x = Meters.of(getPose().getMeasureX().in(Inches) + 0.5 * Math.sin(4 * DriverStation.getMatchTime()));
-    Distance y = Meters.of(getPose().getMeasureY().in(Inches) + 0.5 * Math.sin(4 * DriverStation.getMatchTime()));
+  public Pose2d getJostlePose() {
+    Distance x =
+        Meters.of(
+            getPose().getMeasureX().in(Inches) + 0.5 * Math.sin(4 * DriverStation.getMatchTime()));
+    Distance y =
+        Meters.of(
+            getPose().getMeasureY().in(Inches) + 0.5 * Math.cos(4 * DriverStation.getMatchTime()));
     Rotation2d yaw = getPose().getRotation();
-    return new Pose2d(x,y,yaw);
+    return new Pose2d(x, y, yaw);
   }
 
-  public Command jostle(){
+  public Command jostle() {
     return driveToFieldPoseCommand(this::getJostlePose, this::getPose);
   }
 

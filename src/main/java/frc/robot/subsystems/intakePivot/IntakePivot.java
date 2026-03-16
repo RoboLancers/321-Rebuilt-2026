@@ -25,7 +25,6 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotConstants;
-import frc.robot.util.Parity;
 
 public class IntakePivot extends SubsystemBase {
 
@@ -91,17 +90,19 @@ public class IntakePivot extends SubsystemBase {
     }
   }
 
-  public void jostleHopper(Angle setpoint){
+  public void jostleHopper(Angle setpoint) {
     double jostleVoltage = 0;
 
-    if (setpoint == IntakeConstants.kDefaultPosition){
+    if (setpoint == IntakeConstants.kDefaultPosition) {
       jostleVoltage = IntakeConstants.kJostleVoltage;
-    } else {jostleVoltage = -IntakeConstants.kJostleVoltage;}
+    } else {
+      jostleVoltage = -IntakeConstants.kJostleVoltage;
+    }
 
-    if(!atAngle(setpoint)){
+    if (!atAngle(setpoint)) {
       intakePivotMotor.setVoltage(jostleVoltage);
     } else {
-      if (setpoint == IntakeConstants.kDefaultPosition){
+      if (setpoint == IntakeConstants.kDefaultPosition) {
         setpoint = IntakeConstants.kIntakePosition;
       } else {
         setpoint = IntakeConstants.kDefaultPosition;
