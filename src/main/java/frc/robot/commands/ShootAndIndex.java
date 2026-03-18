@@ -39,7 +39,7 @@ public class ShootAndIndex extends Command {
 
   @Override
   public void execute() {
-  Distance hubDistance = hubDistanceSupplier.get();
+    Distance hubDistance = hubDistanceSupplier.get();
     shooter.goToVelocity(shooter.getScoreVelocity(hubDistance));
     hood.goToAngle(hood.getScoreAngle(hubDistance));
     hood.setTargetAngle(hood.getScoreAngle(hubDistance));
