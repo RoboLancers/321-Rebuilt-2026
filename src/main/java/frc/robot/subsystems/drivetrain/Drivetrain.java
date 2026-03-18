@@ -423,10 +423,10 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
 
   public Pose2d getJostlePose() {
     Distance x =
-        Meters.of(
+        Inches.of(
             getPose().getMeasureX().in(Inches) + 0.5 * Math.sin(4 * DriverStation.getMatchTime()));
     Distance y =
-        Meters.of(
+        Inches.of(
             getPose().getMeasureY().in(Inches) + 0.5 * Math.cos(4 * DriverStation.getMatchTime()));
     Rotation2d yaw = getPose().getRotation();
     return new Pose2d(x, y, yaw);
