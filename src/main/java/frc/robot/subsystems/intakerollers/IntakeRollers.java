@@ -41,7 +41,7 @@ public class IntakeRollers extends SubsystemBase {
   }
 
   public void motorConfigurations() {
-    motorConfigs.withInverted(InvertedValue.CounterClockwise_Positive);
+    motorConfigs.withInverted(InvertedValue.Clockwise_Positive);
     motorConfigs.withNeutralMode(NeutralModeValue.Brake);
     feedbackConfigs.withSensorToMechanismRatio(IntakeRollerConstants.kIntakeRollerGearRatio);
 
