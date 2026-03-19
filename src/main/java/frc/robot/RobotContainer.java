@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Align;
 import frc.robot.commands.ShootAndIndex;
 import frc.robot.commands.ShootTesting;
+import frc.robot.commands.ShootToHub;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainConstants;
 import frc.robot.subsystems.hood.Hood;
@@ -43,6 +44,7 @@ import frc.robot.subsystems.intakerollers.rolllercommands.IntakeDefaultVelocity;
 import frc.robot.subsystems.intakerollers.rolllercommands.IntakeWithVoltage;
 import frc.robot.subsystems.outtake.Shooter;
 import frc.robot.subsystems.outtake.commands.SetShooterVelocity;
+import frc.robot.subsystems.outtake.commands.ShootFuel;
 import frc.robot.subsystems.tunnel.Tunnel;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.util.RebuiltUtil;
@@ -215,9 +217,10 @@ public class RobotContainer {
   public RobotContainer() {
     configureBindings();
     // configureTuningBindings();
+    ShootFuel shootFuel = new ShootFuel();
     ShootAndIndex shootInAuto =
         new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance);
-    NamedCommands.registerCommand("ShootFuel", shootInAuto);
+    NamedCommands.registerCommand("ShootFuel", Commands.run(()-> shooter.setVoltage(Volts.of(10))));
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
