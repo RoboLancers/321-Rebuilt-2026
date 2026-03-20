@@ -31,6 +31,7 @@ import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.hood.hoodCommands.HomeHood;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.indexerCommands.SetIndexerVelocity;
+import frc.robot.subsystems.indexer.indexerCommands.TuneIndexer;
 import frc.robot.subsystems.intakePivot.IntakePivot;
 import frc.robot.subsystems.intakePivot.intakePivotCommands.GoToAngle;
 import frc.robot.subsystems.intakePivot.intakePivotCommands.Tune;
@@ -152,7 +153,7 @@ public class RobotContainer {
 
     indexer.setDefaultCommand(Commands.run(() -> indexer.setVoltage(Volts.of(0)), indexer));
 
-    driver.a().whileTrue(new IntakeRollerTune(intakeRollers));
+    driver.a().whileTrue(new Tune(intakePivot));
   }
 
   private void configureBindings() {

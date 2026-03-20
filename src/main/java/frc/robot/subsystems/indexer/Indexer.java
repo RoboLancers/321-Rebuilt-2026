@@ -80,6 +80,7 @@ public class Indexer extends SubsystemBase {
   }
 
   public void goToVelocity(AngularVelocity velocity) {
+    targetVelocity = velocity;
     double volts =
         indexerController.calculate(getVelocity().in(RPM), targetVelocity.in(RPM))
             + indexerFeedforward.calculateWithVelocities(
@@ -123,5 +124,6 @@ public class Indexer extends SubsystemBase {
     SmartDashboard.putNumber("Spindexer Voltage", motor.getMotorVoltage().getValue().in(Volts));
     SmartDashboard.putNumber(
         "Spindexer motor velocity", motor.getRotorVelocity().getValue().in(RPM));
+      SmartDashboard.putNumber("Indexer Target Velocity", targetVelocity.in(RPM));
   }
 }
