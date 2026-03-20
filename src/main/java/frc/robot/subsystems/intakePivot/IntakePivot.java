@@ -44,6 +44,7 @@ public class IntakePivot extends SubsystemBase {
   public IntakePivot() {
     motorConfigurations();
     setPID(IntakeConstants.kP, IntakeConstants.kD, IntakeConstants.kG);
+    intakePivotMotor.setPosition(Degrees.of(0));
   }
 
   private void motorConfigurations() {
@@ -68,6 +69,10 @@ public class IntakePivot extends SubsystemBase {
 
   public void setTargetAngle(Angle angle) {
     this.targetAngle = angle;
+  }
+
+  public void setAngle() {
+    intakePivotMotor.setPosition(Degrees.of(0));
   }
 
   public void goToAngle(Angle angle) {
