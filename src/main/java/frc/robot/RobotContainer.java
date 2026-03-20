@@ -35,6 +35,7 @@ import frc.robot.subsystems.intakePivot.IntakePivot;
 import frc.robot.subsystems.intakePivot.intakePivotCommands.GoToAngle;
 import frc.robot.subsystems.intakePivot.intakePivotCommands.Tune;
 import frc.robot.subsystems.intakerollers.IntakeRollers;
+import frc.robot.subsystems.intakerollers.rolllercommands.IntakeRollerTune;
 import frc.robot.subsystems.intakerollers.rolllercommands.SetIntakeVelocity;
 import frc.robot.subsystems.outtake.Shooter;
 import frc.robot.subsystems.outtake.commands.SetShooterVelocity;
@@ -130,8 +131,8 @@ public class RobotContainer {
   }
 
   public RobotContainer() {
-    configureBindings();
-    // configureTuningBindings();
+    // configureBindings();
+    configureTuningBindings();
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -151,7 +152,7 @@ public class RobotContainer {
 
     indexer.setDefaultCommand(Commands.run(() -> indexer.setVoltage(Volts.of(0)), indexer));
 
-    driver.a().whileTrue(new Tune(intakePivot));
+    driver.a().whileTrue(new IntakeRollerTune(intakeRollers));
   }
 
   private void configureBindings() {
