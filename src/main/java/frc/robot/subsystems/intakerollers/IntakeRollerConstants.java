@@ -24,5 +24,5 @@ public class IntakeRollerConstants {
   public static final double kD = 0;
   public static final double kG = 0;
   public static final double kV = 0;
-  public static final double kIntakeRollerGearRatio = 1/2;
+  public static final double kIntakeRollerGearRatio = 1 / 2;
 }
