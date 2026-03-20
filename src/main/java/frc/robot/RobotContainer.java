@@ -171,6 +171,8 @@ public class RobotContainer {
 
     driver.y().whileTrue(new HomeHood(hood));
 
+    driver.a().onTrue(Commands.runOnce(() -> intakePivot.setAngle()));
+
     // driver
     // .leftBumper()
     // .whileTrue(new GoToIntakePosition(intakePivot).andThen(new
