@@ -40,8 +40,9 @@ public class IntakePivot extends SubsystemBase {
   private Slot0Configs slot0Configs = new Slot0Configs();
   private MotionMagicConfigs motionMagicConfigs = new MotionMagicConfigs();
 
-  private Angle targetAngle = IntakeConstants.kDefaultPosition;
+  private Angle targetAngle = IntakeConstants.kStowedPosition;
 
+  public double targetVoltage = 0;
   public IntakePivot() {
     motorConfigurations();
     setPID(IntakeConstants.kP, IntakeConstants.kI, IntakeConstants.kD, IntakeConstants.kG);
@@ -80,6 +81,7 @@ public class IntakePivot extends SubsystemBase {
     double volts =
         pivotController.calculate(getAngle().in(Radians), angle.in(Radians))
             + pivotFeedforward.calculate(angle.in(Radians), 0);
+          targetVoltage = volts;
     intakePivotMotor.setVoltage(volts);
   }
 
@@ -145,5 +147,6 @@ public class IntakePivot extends SubsystemBase {
     SmartDashboard.putNumber("Intake Pivot Angle", getAngle().in(Degrees));
     SmartDashboard.putNumber("Intake Pivot Voltage", getVoltage().in(Volts));
     SmartDashboard.putNumber("Intake Pivot Current", getCurrent().in(Amps));
+    SmartDashboard.putNumber("Target Pivot Voltage", targetVoltage);
   }
 }

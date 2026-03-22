@@ -32,11 +32,13 @@ import frc.robot.subsystems.hood.hoodCommands.HomeHood;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.indexerCommands.SetIndexerVelocity;
 import frc.robot.subsystems.indexer.indexerCommands.TuneIndexer;
+import frc.robot.subsystems.intakePivot.IntakeConstants;
 import frc.robot.subsystems.intakePivot.IntakePivot;
 import frc.robot.subsystems.intakePivot.intakePivotCommands.GoToAngle;
 import frc.robot.subsystems.intakePivot.intakePivotCommands.Tune;
 import frc.robot.subsystems.intakePivot.intakePivotCommands.ZeroPosition;
 import frc.robot.subsystems.intakerollers.IntakeRollers;
+import frc.robot.subsystems.intakerollers.rolllercommands.IntakeFuel;
 import frc.robot.subsystems.intakerollers.rolllercommands.IntakeRollerTune;
 import frc.robot.subsystems.intakerollers.rolllercommands.SetIntakeVelocity;
 import frc.robot.subsystems.outtake.Shooter;
@@ -149,13 +151,14 @@ public class RobotContainer {
     intakeRollers.setDefaultCommand(
         Commands.run(() -> intakeRollers.setVoltage(Volts.of(0)), intakeRollers));
 
-    intakePivot.setDefaultCommand(
-        Commands.run(() -> intakePivot.setVoltage(Volts.of(0)), intakePivot));
+    intakePivot.setDefaultCommand(new GoToAngle(intakePivot, ()->IntakeConstants.kStowedPosition));
 
     indexer.setDefaultCommand(Commands.run(() -> indexer.setVoltage(Volts.of(0)), indexer));
 
-    driver.y().onTrue(new ZeroPosition(intakePivot));
-    driver.a().whileTrue(new Tune(intakePivot));
+    driver
+    .leftBumper()
+    .whileTrue(new GoToAngle(intakePivot, ()->IntakeConstants.kIntakePosition).andThen(new
+    IntakeFuel(intakeRollers)));
   }
 
   private void configureBindings() {
