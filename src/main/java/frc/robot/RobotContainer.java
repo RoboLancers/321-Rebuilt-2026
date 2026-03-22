@@ -154,6 +154,7 @@ public class RobotContainer {
     indexer.setDefaultCommand(Commands.run(() -> indexer.setVoltage(Volts.of(0)), indexer));
 
     driver.a().whileTrue(new Tune(intakePivot));
+    driver.y().onTrue(Commands.runOnce(()->intakePivot.zero(), intakePivot));
   }
 
   private void configureBindings() {

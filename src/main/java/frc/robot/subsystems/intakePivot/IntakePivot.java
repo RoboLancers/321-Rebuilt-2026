@@ -3,6 +3,7 @@ package frc.robot.subsystems.intakePivot;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
@@ -39,16 +40,19 @@ public class IntakePivot extends SubsystemBase {
   private Slot0Configs slot0Configs = new Slot0Configs();
   private MotionMagicConfigs motionMagicConfigs = new MotionMagicConfigs();
 
+  public double targetVoltage = 0;
+  public double targetFFVoltage = 0;
+
   private Angle targetAngle = IntakeConstants.kDefaultPosition;
 
   public IntakePivot() {
     motorConfigurations();
-    setPID(IntakeConstants.kP, IntakeConstants.kD, IntakeConstants.kG);
+    setPID(IntakeConstants.kP, 0, IntakeConstants.kD, IntakeConstants.kG);
     intakePivotMotor.setPosition(Degrees.of(0));
   }
 
   private void motorConfigurations() {
-    motorConfigs.withInverted(InvertedValue.Clockwise_Positive);
+    motorConfigs.withInverted(InvertedValue.CounterClockwise_Positive);
     motorConfigs.withNeutralMode(NeutralModeValue.Brake);
 
     currentLimitsConfigs.withStatorCurrentLimitEnable(IntakeConstants.kCurrentLimitEnable);
@@ -77,8 +81,10 @@ public class IntakePivot extends SubsystemBase {
 
   public void goToAngle(Angle angle) {
     double volts =
-        pivotController.calculate(getAngle().in(Degrees), angle.in(Degrees))
-            + pivotFeedforward.calculate(angle.in(Degrees), 0);
+        pivotController.calculate(getAngle().in(Radians), angle.in(Radians))
+            + pivotFeedforward.calculate(angle.in(Radians), 0);
+            targetVoltage = volts;
+            targetFFVoltage = pivotFeedforward.calculate(angle.in(Radians),0);
     intakePivotMotor.setVoltage(volts);
   }
 
@@ -105,15 +111,20 @@ public class IntakePivot extends SubsystemBase {
         < RobotConstants.kAngleTolerance.in(Degrees);
   }
 
-  public void setPID(double kP, double kD, double kG) {
+  public void setPID(double kP, double kI, double kD, double kG) {
     pivotController.setP(kP);
     pivotController.setD(kD);
+    pivotController.setI(kI);
     pivotFeedforward.setKg(kG);
   }
 
-  public void tune(double kP, double kD, double kG, double angle) {
-    setPID(kP, kD, kG);
+  public void tune(double kP, double kI, double kD, double kG, double angle) {
+    setPID(kP, kI, kD, kG);
     goToAngle(Degrees.of(angle));
+  }
+
+  public void zero(){
+    intakePivotMotor.setPosition(Degrees.of(0));
   }
 
   @Logged(name = "intakePivotVOltage")
@@ -141,6 +152,7 @@ public class IntakePivot extends SubsystemBase {
 
     SmartDashboard.putNumber("Intake Pivot Angle", getAngle().in(Degrees));
     SmartDashboard.putNumber("Intake Pivot Voltage", getVoltage().in(Volts));
-    SmartDashboard.putNumber("Intake Pivot Current", getCurrent().in(Amps));
+    SmartDashboard.putNumber("Intake Target Voltage", targetVoltage);
+    SmartDashboard.putNumber("Intake Target FF Voltage", targetFFVoltage);
   }
 }
