@@ -37,18 +37,10 @@ public class ShootAndIndex extends Command {
     addRequirements(tunnel, shooter, hood, indexer);
   }
 
-  Distance hubDistance = hubDistanceSupplier.get();
-
-  @Override
-  public void initialize() {
-    hood.setTargetAngle(hood.getScoreAngle(hubDistance));
-    shooter.setTargetVelocity(shooter.getScoreVelocity(hubDistance));
-    indexer.setTargetVelocity(IndexerConstants.kIndexVelocity);
-    tunnel.setTargetVelocity(TunnelConstants.kPassFuelRPM);
-  }
 
   @Override
   public void execute() {
+  Distance hubDistance = hubDistanceSupplier.get();
     shooter.goToVelocity(shooter.getScoreVelocity(hubDistance));
     hood.goToAngle(hood.getScoreAngle(hubDistance));
     hood.setTargetAngle(hood.getScoreAngle(hubDistance));
@@ -57,8 +49,8 @@ public class ShootAndIndex extends Command {
     if (Math.abs(shooter.getTopVelocity().in(RPM) - shooter.getScoreVelocity(hubDistance).in(RPM))
         < 25) {
       tunnel.goToVelocity(TunnelConstants.kPassFuelRPM);
-      indexer.goToVelocity(IndexerConstants.kIndexVelocity);
-      indexer.setTargetVelocity(IndexerConstants.kIndexVelocity);
+      indexer.setTargetVelocity(RPM.of(1400 + indexer.getOscillationVelocity().in(RPM)));
+      indexer.goToVelocity(RPM.of(1400 + indexer.getOscillationVelocity().in(RPM)));
       tunnel.setTargetVelocity(TunnelConstants.kPassFuelRPM);
     }
   }

@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.hood.Hood;
@@ -21,7 +22,7 @@ public class ShootTesting extends Command {
   Shooter shooter;
   Hood hood;
   Indexer indexer;
-  Supplier<Distance> hubDistanceSupplier;
+  Supplier<AngularVelocity> velocitySupplier;
   Supplier<Angle> angleSupplier;
 
   public ShootTesting(
@@ -29,41 +30,31 @@ public class ShootTesting extends Command {
       Shooter shooter,
       Hood hood,
       Indexer indexer,
-      Supplier<Distance> hubDistanceSupplier,
+      Supplier<AngularVelocity> velocitySupplier,
       Supplier<Angle> angleSupplier) {
     this.tunnel = tunnel;
     this.shooter = shooter;
     this.hood = hood;
     this.indexer = indexer;
-    this.hubDistanceSupplier = hubDistanceSupplier;
+    this.velocitySupplier = velocitySupplier;
     this.angleSupplier = angleSupplier;
 
     addRequirements(tunnel, shooter, hood, indexer);
   }
 
-  Distance hubDistance = hubDistanceSupplier.get();
-
-  @Override
-  public void initialize() {
-    hood.setTargetAngle(angleSupplier.get());
-    shooter.setTargetVelocity(shooter.getScoreVelocity(hubDistance));
-    indexer.setTargetVelocity(IndexerConstants.kIndexVelocity);
-    tunnel.setTargetVelocity(TunnelConstants.kPassFuelRPM);
-  }
-
   @Override
   public void execute() {
 
-    shooter.goToVelocity(shooter.getScoreVelocity(hubDistance));
+    shooter.goToVelocity(velocitySupplier.get());
     hood.goToAngle(angleSupplier.get());
     hood.setTargetAngle(angleSupplier.get());
-    shooter.setTargetVelocity(shooter.getScoreVelocity(hubDistance));
+    shooter.setTargetVelocity(velocitySupplier.get());
 
-    if (Math.abs(shooter.getTopVelocity().in(RPM) - shooter.getScoreVelocity(hubDistance).in(RPM))
+    if (Math.abs(shooter.getTopVelocity().in(RPM) - velocitySupplier.get().in(RPM))
         < 25) {
-      tunnel.goToVelocity(TunnelConstants.kPassFuelRPM);
-      indexer.goToVelocity(IndexerConstants.kIndexVelocity);
-      indexer.setTargetVelocity(IndexerConstants.kIndexVelocity);
+    tunnel.goToVelocity(TunnelConstants.kPassFuelRPM);
+      indexer.setTargetVelocity(RPM.of(1400 + indexer.getOscillationVelocity().in(RPM)));
+      indexer.goToVelocity(RPM.of(1400 + indexer.getOscillationVelocity().in(RPM)));
       tunnel.setTargetVelocity(TunnelConstants.kPassFuelRPM);
     }
   }
