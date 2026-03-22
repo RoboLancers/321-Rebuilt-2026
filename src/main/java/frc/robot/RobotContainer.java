@@ -24,6 +24,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Align;
+import frc.robot.commands.IndexTest;
+import frc.robot.commands.Release;
 import frc.robot.commands.ShootAndIndex;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainConstants;
@@ -152,13 +154,18 @@ public class RobotContainer {
         Commands.run(() -> intakeRollers.setVoltage(Volts.of(0)), intakeRollers));
 
     intakePivot.setDefaultCommand(new GoToAngle(intakePivot, ()->IntakeConstants.kStowedPosition));
-
+// intakePivot.setDefaultCommand(Commands.run(()-> intakePivot.setVoltage(Volts.of(0)), intakePivot));
     indexer.setDefaultCommand(Commands.run(() -> indexer.setVoltage(Volts.of(0)), indexer));
+
+    driver.y().onTrue(new ZeroPosition(intakePivot));
 
     driver
     .leftBumper()
     .whileTrue(new GoToAngle(intakePivot, ()->IntakeConstants.kIntakePosition).alongWith(new //TODO: change to and then once end criteria is reimplemented
     IntakeFuel(intakeRollers)));
+
+    driver.rightTrigger().whileTrue(new IndexTest(tunnel, shooter, indexer));
+
   }
 
   private void configureBindings() {

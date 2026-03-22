@@ -17,11 +17,11 @@ public class IndexerConstants {
 
   public static double kGearing = 1;
 
-  public static AngularVelocity kMaxVelocity = RPM.of(1000);
+  public static AngularVelocity kMaxVelocity = RPM.of(2500);
 
   public static AngularAcceleration kMaxAcceleration = RotationsPerSecondPerSecond.of(16);
 
-  public static AngularVelocity kIndexVelocity = RPM.of(500);
+  public static AngularVelocity kIndexVelocity = RPM.of(2400);
 
   public static AngularVelocity kReleaseVelocity = RPM.of(0);
 

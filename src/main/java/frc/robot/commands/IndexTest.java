@@ -4,6 +4,7 @@ package frc.robot.commands;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerConstants;
@@ -12,13 +13,13 @@ import frc.robot.subsystems.outtake.Shooter;
 import frc.robot.subsystems.tunnel.Tunnel;
 import frc.robot.subsystems.tunnel.TunnelConstants;
 
-public class Release extends Command {
+public class IndexTest extends Command {
 
   Tunnel tunnel;
   Shooter shooter;
   Indexer indexer;
 
-  public Release(Tunnel tunnel, Shooter shooter, Indexer indexer) {
+  public IndexTest(Tunnel tunnel, Shooter shooter, Indexer indexer) {
     this.tunnel = tunnel;
     this.shooter = shooter;
     this.indexer = indexer;
@@ -30,10 +31,10 @@ public class Release extends Command {
   public void execute() {
     tunnel.goToVelocity(TunnelConstants.kPassFuelRPM);
     shooter.goToVelocity(OuttakeConstants.kReleaseRPM);
-    indexer.goToVelocity(IndexerConstants.kIndexVelocity);
+    indexer.goToVelocity(RPM.of(1400 + indexer.getOscillationVelocity().in(RPM)));
 
     shooter.setTargetVelocity(OuttakeConstants.kReleaseRPM);
-    indexer.setTargetVelocity(IndexerConstants.kIndexVelocity);
+    indexer.setTargetVelocity(RPM.of(1400 + indexer.getOscillationVelocity().in(RPM)));
     tunnel.setTargetVelocity(TunnelConstants.kPassFuelRPM);
   }
 
