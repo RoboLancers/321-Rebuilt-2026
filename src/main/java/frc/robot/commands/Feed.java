@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.hood.HoodConstants;
 import frc.robot.subsystems.indexer.Indexer;
-import frc.robot.subsystems.indexer.IndexerConstants;
 import frc.robot.subsystems.outtake.OuttakeConstants;
 import frc.robot.subsystems.outtake.Shooter;
 import frc.robot.subsystems.tunnel.Tunnel;
@@ -43,8 +42,7 @@ public class Feed extends Command {
       indexer.setTargetVelocity(RPM.of(1400 + indexer.getOscillationVelocity().in(RPM)));
       tunnel.setTargetVelocity(TunnelConstants.kPassFuelRPM);
       tunnel.goToVelocity(TunnelConstants.kPassFuelRPM);
-       indexer.goToVelocity(RPM.of(1400 + indexer.getOscillationVelocity().in(RPM)));
-
+      indexer.goToVelocity(RPM.of(1400 + indexer.getOscillationVelocity().in(RPM)));
     }
   }
 

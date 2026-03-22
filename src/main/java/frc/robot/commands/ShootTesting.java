@@ -6,11 +6,9 @@ import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.indexer.Indexer;
-import frc.robot.subsystems.indexer.IndexerConstants;
 import frc.robot.subsystems.outtake.Shooter;
 import frc.robot.subsystems.tunnel.Tunnel;
 import frc.robot.subsystems.tunnel.TunnelConstants;
@@ -50,9 +48,8 @@ public class ShootTesting extends Command {
     hood.setTargetAngle(angleSupplier.get());
     shooter.setTargetVelocity(velocitySupplier.get());
 
-    if (Math.abs(shooter.getTopVelocity().in(RPM) - velocitySupplier.get().in(RPM))
-        < 25) {
-    tunnel.goToVelocity(TunnelConstants.kPassFuelRPM);
+    if (Math.abs(shooter.getTopVelocity().in(RPM) - velocitySupplier.get().in(RPM)) < 25) {
+      tunnel.goToVelocity(TunnelConstants.kPassFuelRPM);
       indexer.setTargetVelocity(RPM.of(1400 + indexer.getOscillationVelocity().in(RPM)));
       indexer.goToVelocity(RPM.of(1400 + indexer.getOscillationVelocity().in(RPM)));
       tunnel.setTargetVelocity(TunnelConstants.kPassFuelRPM);

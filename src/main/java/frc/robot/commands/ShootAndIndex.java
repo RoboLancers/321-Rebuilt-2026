@@ -8,7 +8,6 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.indexer.Indexer;
-import frc.robot.subsystems.indexer.IndexerConstants;
 import frc.robot.subsystems.outtake.Shooter;
 import frc.robot.subsystems.tunnel.Tunnel;
 import frc.robot.subsystems.tunnel.TunnelConstants;
@@ -37,10 +36,9 @@ public class ShootAndIndex extends Command {
     addRequirements(tunnel, shooter, hood, indexer);
   }
 
-
   @Override
   public void execute() {
-  Distance hubDistance = hubDistanceSupplier.get();
+    Distance hubDistance = hubDistanceSupplier.get();
     shooter.goToVelocity(shooter.getScoreVelocity(hubDistance));
     hood.goToAngle(hood.getScoreAngle(hubDistance));
     hood.setTargetAngle(hood.getScoreAngle(hubDistance));

@@ -82,7 +82,7 @@ public class IntakePivot extends SubsystemBase {
     double volts =
         pivotController.calculate(getAngle().in(Radians), angle.in(Radians))
             + pivotFeedforward.calculate(angle.in(Radians), 0);
-          targetVoltage = volts;
+    targetVoltage = volts;
     intakePivotMotor.setVoltage(volts);
   }
 
@@ -109,11 +109,11 @@ public class IntakePivot extends SubsystemBase {
         < RobotConstants.kAngleTolerance.in(Degrees);
   }
 
-  public void setPID(double kP,double kI, double kD, double kG) {
+  public void setPID(double kP, double kI, double kD, double kG) {
     pivotController.setP(kP);
     pivotController.setI(kI);
     pivotController.setD(kD);
-  
+
     pivotFeedforward.setKg(kG);
   }
 
@@ -121,7 +121,6 @@ public class IntakePivot extends SubsystemBase {
     setPID(kP, kI, kD, kG);
     goToAngle(Degrees.of(angle));
   }
-
 
   @Logged(name = "intakePivotVOltage")
   public Voltage getVoltage() {
