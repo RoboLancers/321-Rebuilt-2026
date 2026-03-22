@@ -40,9 +40,10 @@ public class IntakePivot extends SubsystemBase {
   private Slot0Configs slot0Configs = new Slot0Configs();
   private MotionMagicConfigs motionMagicConfigs = new MotionMagicConfigs();
 
+  public double targetVoltage = 0;
+
   private Angle targetAngle = IntakeConstants.kStowedPosition;
 
-  public double targetVoltage = 0;
   public IntakePivot() {
     motorConfigurations();
     setPID(IntakeConstants.kP, IntakeConstants.kI, IntakeConstants.kD, IntakeConstants.kG);
@@ -120,6 +121,7 @@ public class IntakePivot extends SubsystemBase {
     setPID(kP, kI, kD, kG);
     goToAngle(Degrees.of(angle));
   }
+
 
   @Logged(name = "intakePivotVOltage")
   public Voltage getVoltage() {
