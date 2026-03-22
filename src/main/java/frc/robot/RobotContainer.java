@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Align;
+import frc.robot.commands.Feed;
 import frc.robot.commands.IndexTest;
 import frc.robot.commands.Release;
 import frc.robot.commands.ShootAndIndex;
@@ -164,7 +165,9 @@ public class RobotContainer {
     .whileTrue(new GoToAngle(intakePivot, ()->IntakeConstants.kIntakePosition).alongWith(new //TODO: change to and then once end criteria is reimplemented
     IntakeFuel(intakeRollers)));
 
-    driver.rightTrigger().whileTrue(new IndexTest(tunnel, shooter, indexer));
+
+    driver.x().onTrue(new HomeHood(hood));
+    driver.rightTrigger().whileTrue(new Feed(tunnel, shooter, hood, indexer));
 
   }
 

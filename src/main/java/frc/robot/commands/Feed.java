@@ -31,14 +31,6 @@ public class Feed extends Command {
   }
 
   @Override
-  public void initialize() {
-    hood.setTargetAngle(HoodConstants.kNeutralFeedAngle);
-    shooter.setTargetVelocity(OuttakeConstants.kNeutralFeedRPM);
-    indexer.setTargetVelocity(IndexerConstants.kIndexVelocity);
-    tunnel.setTargetVelocity(TunnelConstants.kPassFuelRPM);
-  }
-
-  @Override
   public void execute() {
 
     shooter.goToVelocity(OuttakeConstants.kNeutralFeedRPM);
@@ -48,10 +40,11 @@ public class Feed extends Command {
 
     if (Math.abs(shooter.getTopVelocity().in(RPM) - OuttakeConstants.kNeutralFeedRPM.in(RPM))
         < 25) {
-      indexer.setTargetVelocity(IndexerConstants.kIndexVelocity);
+      indexer.setTargetVelocity(RPM.of(1400 + indexer.getOscillationVelocity().in(RPM)));
       tunnel.setTargetVelocity(TunnelConstants.kPassFuelRPM);
       tunnel.goToVelocity(TunnelConstants.kPassFuelRPM);
-      indexer.goToVelocity(IndexerConstants.kIndexVelocity);
+       indexer.goToVelocity(RPM.of(1400 + indexer.getOscillationVelocity().in(RPM)));
+
     }
   }
 
