@@ -3,6 +3,7 @@ package frc.robot.subsystems.intakePivot;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
@@ -43,7 +44,7 @@ public class IntakePivot extends SubsystemBase {
 
   public IntakePivot() {
     motorConfigurations();
-    setPID(IntakeConstants.kP, IntakeConstants.kD, IntakeConstants.kG);
+    setPID(IntakeConstants.kP, IntakeConstants.kI, IntakeConstants.kD, IntakeConstants.kG);
     intakePivotMotor.setPosition(Degrees.of(0));
   }
 
@@ -71,14 +72,14 @@ public class IntakePivot extends SubsystemBase {
     this.targetAngle = angle;
   }
 
-  public void setAngle() {
+  public void zero() {
     intakePivotMotor.setPosition(Degrees.of(0));
   }
 
   public void goToAngle(Angle angle) {
     double volts =
-        pivotController.calculate(getAngle().in(Degrees), angle.in(Degrees))
-            + pivotFeedforward.calculate(angle.in(Degrees), 0);
+        pivotController.calculate(getAngle().in(Radians), angle.in(Radians))
+            + pivotFeedforward.calculate(angle.in(Radians), 0);
     intakePivotMotor.setVoltage(volts);
   }
 
@@ -105,14 +106,16 @@ public class IntakePivot extends SubsystemBase {
         < RobotConstants.kAngleTolerance.in(Degrees);
   }
 
-  public void setPID(double kP, double kD, double kG) {
+  public void setPID(double kP,double kI, double kD, double kG) {
     pivotController.setP(kP);
+    pivotController.setI(kI);
     pivotController.setD(kD);
+  
     pivotFeedforward.setKg(kG);
   }
 
-  public void tune(double kP, double kD, double kG, double angle) {
-    setPID(kP, kD, kG);
+  public void tune(double kP, double kI, double kD, double kG, double angle) {
+    setPID(kP, kI, kD, kG);
     goToAngle(Degrees.of(angle));
   }
 

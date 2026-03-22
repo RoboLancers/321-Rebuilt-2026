@@ -35,6 +35,7 @@ import frc.robot.subsystems.indexer.indexerCommands.TuneIndexer;
 import frc.robot.subsystems.intakePivot.IntakePivot;
 import frc.robot.subsystems.intakePivot.intakePivotCommands.GoToAngle;
 import frc.robot.subsystems.intakePivot.intakePivotCommands.Tune;
+import frc.robot.subsystems.intakePivot.intakePivotCommands.ZeroPosition;
 import frc.robot.subsystems.intakerollers.IntakeRollers;
 import frc.robot.subsystems.intakerollers.rolllercommands.IntakeRollerTune;
 import frc.robot.subsystems.intakerollers.rolllercommands.SetIntakeVelocity;
@@ -153,6 +154,7 @@ public class RobotContainer {
 
     indexer.setDefaultCommand(Commands.run(() -> indexer.setVoltage(Volts.of(0)), indexer));
 
+    driver.y().onTrue(new ZeroPosition(intakePivot));
     driver.a().whileTrue(new Tune(intakePivot));
   }
 
@@ -171,7 +173,6 @@ public class RobotContainer {
 
     driver.y().whileTrue(new HomeHood(hood));
 
-    driver.a().onTrue(Commands.runOnce(() -> intakePivot.setAngle()));
 
     // driver
     // .leftBumper()
