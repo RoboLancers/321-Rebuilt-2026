@@ -49,7 +49,7 @@ public class IntakePivot extends SubsystemBase {
   }
 
   private void motorConfigurations() {
-    motorConfigs.withInverted(InvertedValue.Clockwise_Positive);
+    motorConfigs.withInverted(InvertedValue.CounterClockwise_Positive);
     motorConfigs.withNeutralMode(NeutralModeValue.Brake);
 
     currentLimitsConfigs.withStatorCurrentLimitEnable(IntakeConstants.kCurrentLimitEnable);
