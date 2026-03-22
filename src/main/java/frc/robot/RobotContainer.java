@@ -157,7 +157,7 @@ public class RobotContainer {
 
     driver
     .leftBumper()
-    .whileTrue(new GoToAngle(intakePivot, ()->IntakeConstants.kIntakePosition).andThen(new
+    .whileTrue(new GoToAngle(intakePivot, ()->IntakeConstants.kIntakePosition).alongWith(new //TODO: change to and then once end criteria is reimplemented
     IntakeFuel(intakeRollers)));
   }
 
