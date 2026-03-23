@@ -133,8 +133,8 @@ public class RobotContainer {
   }
 
   public RobotContainer() {
-    // configureBindings();
-    configureTuningBindings();
+    configureBindings();
+    // configureTuningBindings();
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -204,6 +204,7 @@ public class RobotContainer {
         .whileTrue(new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance));
 
     driver.rightBumper().whileTrue(new Feed(tunnel, shooter, hood, indexer));
+    driver.x().onTrue(new HomeHood(hood));
   }
 
   @Logged(name = "autonomousCommand")

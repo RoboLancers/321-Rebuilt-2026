@@ -188,8 +188,6 @@ public class Hood extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Hood Angle", hoodMotor.getPosition().getValue().in(Degrees));
-    SmartDashboard.putBoolean("Hood Is At Homed Position", atHomedPosition());
-    SmartDashboard.putNumber("Hood Voltage", getVoltage().in(Volts));
+  
   }
 }

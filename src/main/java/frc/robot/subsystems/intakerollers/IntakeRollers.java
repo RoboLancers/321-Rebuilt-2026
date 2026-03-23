@@ -117,7 +117,5 @@ public class IntakeRollers extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Intake Roller Velocity", getRollerVelocity().in(RPM));
-    SmartDashboard.putNumber("Intake Roller Voltage", getVoltage().in(Volts));
-  }
-}
+  
+}}

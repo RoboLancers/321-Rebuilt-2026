@@ -85,11 +85,12 @@ public class Robot extends TimedRobot {
     System.out.println("Auto selected: " + autoSelected);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
+    
+    CommandScheduler.getInstance().schedule((new HomeHood(m_robotContainer.hood)));
     if (m_autonomousCommand != null) {
       CommandScheduler.getInstance().schedule(m_autonomousCommand);
     }
 
-    CommandScheduler.getInstance().schedule((new HomeHood(m_robotContainer.hood)));
   }
 
   @Override
@@ -99,7 +100,7 @@ public class Robot extends TimedRobot {
       case kTopDepotAuto:
       case kBottomDepotAuto:
       case kBottomAuto:
-      case kCenterAuto:
+      case kCenterAuto:  
       case kTopAuto:
       case kBottomBumpAuto:
       case kTopBumpAuto:
