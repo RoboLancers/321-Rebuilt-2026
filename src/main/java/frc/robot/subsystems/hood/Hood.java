@@ -95,8 +95,11 @@ public class Hood extends SubsystemBase {
     armFeedforward.setKg(kG);
   }
 
-  public void goToAngle(Angle angle) {
+  public void setTargetAngle(Angle angle) {
     this.targetAngle = angle;
+  }
+
+  public void goToAngle(Angle angle) {
     hoodMotor.setVoltage(
         pidController.calculate(getAngle().in(Degrees), angle.in(Degrees))
             + armFeedforward.calculate(angle.in(Degrees), 0));

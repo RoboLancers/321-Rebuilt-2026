@@ -41,20 +41,30 @@ public class ShootTesting extends Command {
     addRequirements(tunnel, shooter, hood, indexer);
   }
 
+  Distance hubDistance = hubDistanceSupplier.get();
+
   @Override
-  public void initialize() {}
+  public void initialize() {
+    hood.setTargetAngle(angleSupplier.get());
+    shooter.setTargetVelocity(shooter.getScoreVelocity(hubDistance));
+    indexer.setTargetVelocity(IndexerConstants.kIndexVelocity);
+    tunnel.setTargetVelocity(TunnelConstants.kPassFuelRPM);
+  }
 
   @Override
   public void execute() {
 
-    Distance hubDistance = hubDistanceSupplier.get();
-    shooter.setVelocity(shooter.getScoreVelocity(hubDistance));
+    shooter.goToVelocity(shooter.getScoreVelocity(hubDistance));
     hood.goToAngle(angleSupplier.get());
+    hood.setTargetAngle(angleSupplier.get());
+    shooter.setTargetVelocity(shooter.getScoreVelocity(hubDistance));
 
     if (Math.abs(shooter.getTopVelocity().in(RPM) - shooter.getScoreVelocity(hubDistance).in(RPM))
         < 25) {
-      tunnel.runAtVelocity(TunnelConstants.kPassFuelRPM);
+      tunnel.goToVelocity(TunnelConstants.kPassFuelRPM);
       indexer.goToVelocity(IndexerConstants.kIndexVelocity);
+      indexer.setTargetVelocity(IndexerConstants.kIndexVelocity);
+      tunnel.setTargetVelocity(TunnelConstants.kPassFuelRPM);
     }
   }
 
@@ -66,8 +76,12 @@ public class ShootTesting extends Command {
   @Override
   public void end(boolean interrupted) {
     hood.runVolts(Volts.of(0));
-    shooter.setVelocity(RPM.of(0));
-    tunnel.runAtVelocity(RPM.of(0));
+    shooter.setVoltage(Volts.of(0));
+    tunnel.setVoltage(Volts.of(0));
     indexer.setVoltage(Volts.of(0));
+
+    shooter.setTargetVelocity(RPM.of(0));
+    tunnel.setTargetVelocity(RPM.of(0));
+    indexer.setTargetVelocity(RPM.of(0));
   }
 }

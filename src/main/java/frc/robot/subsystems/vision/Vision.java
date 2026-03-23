@@ -106,11 +106,6 @@ public class Vision extends SubsystemBase {
     return new Vision(visionEstConsume, LEDCandle);
   }
 
-  // public Field2d leftField = new Field2d();
-  // public Field2d rightField = new Field2d();
-
-  // public List<Field2d> fieldList = List.of(leftField, rightField);
-
   public Vision(Consumer<VisionEstimate> visionEstConsumer, CANdle LEDCandle) {
     this.visionEstConsumer = visionEstConsumer;
     this.LEDCandle = LEDCandle;
@@ -165,10 +160,6 @@ public class Vision extends SubsystemBase {
         continue;
       }
 
-      // fieldList.get(i).setRobotPose(estimatedPose.estimatedPose.toPose2d());
-
-      // SmartDashboard.putData("field" + Integer.toString(i), fieldList.get(i));
-
       double standardDeviation = calculateStdDevs(estimatedPose);
 
       VisionEstimate visionEstimate = new VisionEstimate(estimatedPose, standardDeviation);
@@ -191,7 +182,6 @@ public class Vision extends SubsystemBase {
               .get(ambiguities.indexOf(Collections.min(ambiguities)))
               .estimatedPose()
               .estimatedPose;
-      // .toPose2d();
 
       this.latestEstimatedRobotPose =
           visionEstimates.get(ambiguities.indexOf(Collections.min(ambiguities))).estimatedPose();
@@ -285,20 +275,5 @@ public class Vision extends SubsystemBase {
     SmartDashboard.putString(
         "Right Shooter Cam Status Color",
         cameraStatusLEDs.get(rightShooterCamera).getStatusColorHex());
-
-    SmartDashboard.putBoolean("All Cameras Are Connected", areCamerasConnected());
-    SmartDashboard.putBoolean("Left Climb Camera Connected", getLeftClimbCameraConnected());
-    SmartDashboard.putBoolean("Right Climb Camera Connected", getRightClimbCameraConnected());
-    SmartDashboard.putBoolean("Left Shooter Camera Connected", getLeftShooterCameraConnected());
-    SmartDashboard.putBoolean("Right Shooter Camera Connected", getRightShooterCameraConnected());
-
-    SmartDashboard.putNumber("Vision Pose X", getLatestBestPose().getX());
-
-    SmartDashboard.putNumber("Vision Pose Y", getLatestBestPose().getY());
-
-    // SmartDashboard.putNumber("Vision Pose Yaw", getLatestBestPose().getRotation().getDegrees());
-
-    SmartDashboard.putBoolean("right climb cam connected", getRightClimbCameraConnected());
-    SmartDashboard.putBoolean("left shooter cam connected", getLeftShooterCameraConnected());
   }
 }

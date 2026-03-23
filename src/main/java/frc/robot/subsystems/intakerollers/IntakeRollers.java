@@ -64,8 +64,11 @@ public class IntakeRollers extends SubsystemBase {
   public PIDController rollerController = new PIDController(0, 0, 0);
   public SimpleMotorFeedforward rollerFF = new SimpleMotorFeedforward(0, 0);
 
-  public void setVelocity(AngularVelocity velocity) {
+  public void setTargetVelocity(AngularVelocity velocity) {
     this.targetVelocity = velocity;
+  }
+
+  public void goToVelocity(AngularVelocity velocity) {
     double volts =
         rollerController.calculate(getRollerVelocity().in(RPM), velocity.in(RPM))
             + rollerFF.calculateWithVelocities(getRollerVelocity().in(RPM), velocity.in(RPM));
@@ -84,7 +87,7 @@ public class IntakeRollers extends SubsystemBase {
 
   public void tune(double kP, double kD, double kV, AngularVelocity rollerTargetVelocity) {
     setPID(kP, kD, kV);
-    setVelocity(rollerTargetVelocity);
+    goToVelocity(rollerTargetVelocity);
   }
 
   @Logged(name = "intakeRollersVelocity")
@@ -112,6 +115,7 @@ public class IntakeRollers extends SubsystemBase {
     return rollerMotor.getStatorCurrent().getValue();
   }
 
+  @Override
   public void periodic() {
     SmartDashboard.putNumber("Intake Roller Velocity", getRollerVelocity().in(RPM));
     SmartDashboard.putNumber("Intake Roller Voltage", getVoltage().in(Volts));

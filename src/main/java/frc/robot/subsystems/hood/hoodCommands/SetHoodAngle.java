@@ -20,7 +20,13 @@ public class SetHoodAngle extends Command {
   }
 
   @Override
+  public void initialize() {
+    hood.setTargetAngle(angleSupplier.get());
+  }
+
+  @Override
   public void execute() {
+    hood.setTargetAngle(angleSupplier.get());
     hood.goToAngle(angleSupplier.get());
   }
 

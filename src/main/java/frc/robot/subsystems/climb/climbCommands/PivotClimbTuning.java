@@ -12,15 +12,20 @@ public class PivotClimbTuning extends Command {
   TunableConstant kPivotTargetAngle = new TunableConstant("/Climb/kPivotTargetAngle", 0);
 
   public PivotClimbTuning(Climb climb) {
-
     this.climb = climb;
+    addRequirements(climb);
   }
 
+  @Override
   public void execute() {
     climb.tunePivotClimb(kPivotP.get(), kPivotD.get(), kPivotTargetAngle.get());
   }
 
+  @Override
   public boolean isFinished() {
     return false;
   }
+
+  @Override
+  public void end(boolean interrupted) {}
 }

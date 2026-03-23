@@ -17,6 +17,11 @@ public class HomeHood extends Command {
   }
 
   @Override
+  public void initialize() {
+    hood.setTargetAngle(HoodConstants.kStartingAngle);
+  }
+
+  @Override
   public void execute() {
     hood.runVolts(HoodConstants.kHomingVoltage);
   }

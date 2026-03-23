@@ -13,6 +13,8 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
@@ -45,27 +47,30 @@ public class IntakePivot extends SubsystemBase {
   }
 
   private void motorConfigurations() {
-    //   motorConfigs.withInverted(InvertedValue.Clockwise_Positive);
-    //   motorConfigs.withNeutralMode(NeutralModeValue.Brake);
+    motorConfigs.withInverted(InvertedValue.Clockwise_Positive);
+    motorConfigs.withNeutralMode(NeutralModeValue.Brake);
 
-    //   currentLimitsConfigs.withStatorCurrentLimitEnable(IntakeConstants.kCurrentLimitEnable);
-    //   currentLimitsConfigs.withStatorCurrentLimit(IntakeConstants.kCurrentLimit);
+    currentLimitsConfigs.withStatorCurrentLimitEnable(IntakeConstants.kCurrentLimitEnable);
+    currentLimitsConfigs.withStatorCurrentLimit(IntakeConstants.kCurrentLimit);
 
-    //   feedbackConfigs.withSensorToMechanismRatio(IntakeConstants.kSensorToMechanismRatio);
+    feedbackConfigs.withSensorToMechanismRatio(IntakeConstants.kSensorToMechanismRatio);
 
-    //   // motionMagicConfigs.withMotionMagicCruiseVelocity(IntakeConstants.kMaxVelocity);
+    motionMagicConfigs.withMotionMagicCruiseVelocity(IntakeConstants.kMaxVelocity);
 
-    //   intakePivotMotor.getConfigurator().apply(motorConfigs);
-    //   intakePivotMotor.getConfigurator().apply(currentLimitsConfigs);
-    //   intakePivotMotor.getConfigurator().apply(feedbackConfigs);
-    //   intakePivotMotor.getConfigurator().apply(motionMagicConfigs);
+    intakePivotMotor.getConfigurator().apply(motorConfigs);
+    intakePivotMotor.getConfigurator().apply(currentLimitsConfigs);
+    intakePivotMotor.getConfigurator().apply(feedbackConfigs);
+    intakePivotMotor.getConfigurator().apply(motionMagicConfigs);
   }
 
   public PIDController pivotController = new PIDController(0, 0, 0);
   public ArmFeedforward pivotFeedforward = new ArmFeedforward(0, 0, 0);
 
-  public void goToAngle(Angle angle) {
+  public void setTargetAngle(Angle angle) {
     this.targetAngle = angle;
+  }
+
+  public void goToAngle(Angle angle) {
     double volts =
         pivotController.calculate(getAngle().in(Degrees), angle.in(Degrees))
             + pivotFeedforward.calculate(angle.in(Degrees), 0);
@@ -126,10 +131,7 @@ public class IntakePivot extends SubsystemBase {
     return intakePivotMotor.getStatorCurrent().getValue();
   }
 
-  public boolean atHomedPosition() {
-    return false;
-  }
-
+  @Override
   public void periodic() {
 
     SmartDashboard.putNumber("Intake Pivot Angle", getAngle().in(Degrees));

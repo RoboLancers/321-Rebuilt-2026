@@ -14,13 +14,19 @@ public class ClimbTuning extends Command {
 
   public ClimbTuning(Climb climb) {
     this.climb = climb;
+    addRequirements(climb);
   }
 
+  @Override
   public void execute() {
     climb.tuneClimb(kP.get(), kD.get(), kG.get(), kTargetAngle.get());
   }
 
+  @Override
   public boolean isFinished() {
     return false;
   }
+
+  @Override
+  public void end(boolean interrupted) {}
 }

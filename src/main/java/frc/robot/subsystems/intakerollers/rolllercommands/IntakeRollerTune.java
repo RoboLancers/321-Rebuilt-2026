@@ -2,6 +2,7 @@
 package frc.robot.subsystems.intakerollers.rolllercommands;
 
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.intakerollers.IntakeRollers;
@@ -17,13 +18,21 @@ public class IntakeRollerTune extends Command {
 
   public IntakeRollerTune(IntakeRollers intakeRollers) {
     this.intakeRollers = intakeRollers;
+    addRequirements(intakeRollers);
   }
 
+  @Override
   public void execute() {
     intakeRollers.tune(kP.get(), kD.get(), kV.get(), RPM.of(rollerTargetVelocityRPM.get()));
   }
 
+  @Override
   public boolean isFinished() {
     return false;
+  }
+
+  @Override
+  public void end(boolean interrupted) {
+    intakeRollers.setVoltage(Volts.of(0));
   }
 }
