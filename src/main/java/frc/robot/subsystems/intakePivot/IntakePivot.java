@@ -19,6 +19,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotConstants;
 
@@ -33,6 +34,7 @@ public class IntakePivot extends SubsystemBase {
   private MotionMagicConfigs motionMagicConfigs = new MotionMagicConfigs();
 
   public double targetVoltage = 0;
+  public double loggedAngle = 0;
 
   private Angle targetAngle = IntakeConstants.kStowedPosition;
 
@@ -70,6 +72,7 @@ public class IntakePivot extends SubsystemBase {
   }
 
   public void goToAngle(Angle angle) {
+    loggedAngle = angle.in(Degrees);
     double volts =
         pivotController.calculate(getAngle().in(Radians), angle.in(Radians))
             + pivotFeedforward.calculate(angle.in(Radians), 0);
@@ -134,5 +137,8 @@ public class IntakePivot extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+    SmartDashboard.putNumber("Pivot Target Voltage", targetVoltage);
+    SmartDashboard.putNumber("Pivot Target Angle", loggedAngle);
+  }
 }
