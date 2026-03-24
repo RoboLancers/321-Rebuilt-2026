@@ -16,12 +16,12 @@ public class IntakeConstants {
   public static final Current kCurrentLimit = Amps.of(60);
   public static final boolean kCurrentLimitEnable = true;
   public static final boolean kInverted = true;
-  public static double kG = 0.489;
-  public static double kP = 8;
+  public static double kG = 0;
+  public static double kP = 0;
   public static double kI = 0;
-  public static double kD = 0.2;
+  public static double kD = 0;
   public static Angle angle;
-  public static final double kSensorToMechanismRatio = 6.67;
+  public static final double kSensorToMechanismRatio = 93.33;
   public static final double kRelativeEncoderId = 0;
   public static final Angle kIntakePosition = Degrees.of(0);
   public static final Angle kStowedPosition = Degrees.of(75);
