@@ -81,7 +81,7 @@ public class Indexer extends SubsystemBase {
   }
 
   public AngularVelocity getOscillationVelocity() {
-    double velocity = 500 * Math.sin(2 * Math.PI * Timer.getFPGATimestamp());
+    double velocity = IndexerConstants.kIndexVelocity.in(RPM) + IndexerConstants.kOscillationAmplitude * Math.sin(2 * Math.PI * Timer.getFPGATimestamp());
     return RPM.of(velocity);
   }
 

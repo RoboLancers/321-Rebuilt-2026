@@ -23,6 +23,8 @@ public class IndexerConstants {
 
   public static AngularVelocity kIndexVelocity = RPM.of(300);
 
+  public static double kOscillationAmplitude = 50;
+
   public static AngularVelocity kReleaseVelocity = RPM.of(0);
 
   public static double kP = 0;
