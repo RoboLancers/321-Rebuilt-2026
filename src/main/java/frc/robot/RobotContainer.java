@@ -143,14 +143,15 @@ public class RobotContainer {
     // ShootFuel shootFuel = new ShootFuel();
     IntakeFuel intakeFuel = new IntakeFuel(intakeRollers);
     GoToAngle goToAngle = new GoToAngle(intakePivot, () -> Degrees.of(0));
-    Shoo
 
     ShootAndIndex shootInAuto =
         new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance);
-    NamedCommands.registerCommand(
-        "ShootFuel", Commands.run(() -> shooter.setVoltage(Volts.of(10))));
+    //NamedCommands.registerCommand(
+   //     "ShootFuel", Commands.run(() -> shooter.setVoltage(Volts.of(10))));
     NamedCommands.registerCommand("IntakeFuel", intakeFuel);
     NamedCommands.registerCommand("IntakePivotPosition", goToAngle);
+    NamedCommands.registerCommand("ShootFuel", shootInAuto);
+
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
