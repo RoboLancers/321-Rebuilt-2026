@@ -15,17 +15,14 @@ public class ScoringStatusLED {
   public int kLEDStartIndex;
   public int kLEDEndIndex;
 
-  public Color kDefaultColor = new Color(255, 255, 255); //white
   public Color kAtVelocityColor = new Color(0, 255, 0); //green
   public Color kAlignedColor = new Color(0, 255, 0); //green
     public Color kErrorColor = new Color(255,0,0);
 
-  public Color statusColor = kDefaultColor;
+  public Color statusColor = kErrorColor;
 
   public SolidColor kErrorRequest = new SolidColor(kLEDStartIndex, kLEDEndIndex).withColor(new RGBWColor(kErrorColor));
 
-  public SolidColor kDefaultRequest =
-      new SolidColor(kLEDStartIndex, kLEDEndIndex).withColor(new RGBWColor(kDefaultColor));
 
   public SolidColor kAtVelocity =
       new SolidColor(kLEDStartIndex, kLEDEndIndex).withColor(new RGBWColor(kAtVelocityColor));
@@ -57,21 +54,15 @@ public class ScoringStatusLED {
         ledRequest = kAtVelocity;
         statusColor = kAtVelocityColor;
         break;
-    case Error:
+    default:
         ledRequest = kErrorRequest;
         statusColor = kErrorColor;
-      default:
-        ledRequest = kDefaultRequest;
-        statusColor = kDefaultColor;
+
         break;
     }
     if (!(candle == null)) {
       candle.setControl(ledRequest);
     }
-  }
-
-  public ControlRequest getLEDRequest() {
-    return ledRequest;
   }
 
   public Color getStatusColor() {
