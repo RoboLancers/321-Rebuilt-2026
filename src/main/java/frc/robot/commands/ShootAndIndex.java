@@ -8,7 +8,6 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.indexer.Indexer;
-import frc.robot.subsystems.indexer.IndexerConstants;
 import frc.robot.subsystems.outtake.Shooter;
 import frc.robot.subsystems.tunnel.Tunnel;
 import frc.robot.subsystems.tunnel.TunnelConstants;
@@ -38,19 +37,19 @@ public class ShootAndIndex extends Command {
   }
 
   @Override
-  public void initialize() {}
-
-  @Override
   public void execute() {
-
     Distance hubDistance = hubDistanceSupplier.get();
-    shooter.setVelocity(shooter.getScoreVelocity(hubDistance));
+    shooter.goToVelocity(shooter.getScoreVelocity(hubDistance));
     hood.goToAngle(hood.getScoreAngle(hubDistance));
+    hood.setTargetAngle(hood.getScoreAngle(hubDistance));
+    shooter.setTargetVelocity(shooter.getScoreVelocity(hubDistance));
 
     if (Math.abs(shooter.getTopVelocity().in(RPM) - shooter.getScoreVelocity(hubDistance).in(RPM))
         < 25) {
-      tunnel.runAtVelocity(TunnelConstants.kPassFuelRPM);
-      indexer.goToVelocity(IndexerConstants.kIndexVelocity);
+      tunnel.goToVelocity(TunnelConstants.kPassFuelRPM);
+      indexer.setTargetVelocity(indexer.getOscillationVelocity());
+      indexer.goToVelocity(indexer.getOscillationVelocity());
+      tunnel.setTargetVelocity(TunnelConstants.kPassFuelRPM);
     }
   }
 
@@ -62,8 +61,12 @@ public class ShootAndIndex extends Command {
   @Override
   public void end(boolean interrupted) {
     hood.runVolts(Volts.of(0));
-    shooter.setVelocity(RPM.of(0));
-    tunnel.runAtVelocity(RPM.of(0));
+    shooter.setVoltage(Volts.of(0));
+    tunnel.setVoltage(Volts.of(0));
     indexer.setVoltage(Volts.of(0));
+
+    shooter.setTargetVelocity(RPM.of(0));
+    tunnel.setTargetVelocity(RPM.of(0));
+    indexer.setTargetVelocity(RPM.of(0));
   }
 }

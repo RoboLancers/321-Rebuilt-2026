@@ -13,13 +13,21 @@ public class GoToPivotAngle extends Command {
   public GoToPivotAngle(Climb climb, Angle angle) {
     this.climb = climb;
     this.angle = angle;
+    addRequirements(climb);
   }
 
+  @Override
   public void execute() {
     climb.goToPivotAngle(angle);
   }
 
+  @Override
   public boolean isFinished() {
     return climb.atPivotTargetAngle();
+  }
+
+  @Override
+  public void end(boolean interrupted) {
+    climb.lockPivot();
   }
 }

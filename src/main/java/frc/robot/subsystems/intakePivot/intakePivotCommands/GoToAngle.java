@@ -20,13 +20,20 @@ public class GoToAngle extends Command {
   }
 
   @Override
+  public void initialize() {
+    intakePivot.setTargetAngle(angleSupplier.get());
+  }
+
+  @Override
   public void execute() {
+    intakePivot.setTargetAngle(angleSupplier.get());
     intakePivot.goToAngle(angleSupplier.get());
   }
 
   @Override
   public boolean isFinished() {
-    return intakePivot.atAngle(angleSupplier.get());
+    //   return intakePivot.atAngle(angleSupplier.get());
+    return false; // TODO: reimplement end condition with braking stage
   }
 
   @Override

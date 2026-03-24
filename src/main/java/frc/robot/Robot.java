@@ -1,8 +1,6 @@
 /* (C) RoboLancers 2026 */
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Inches;
-
 import edu.wpi.first.epilogue.Epilogue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
@@ -52,6 +50,7 @@ public class Robot extends TimedRobot {
     chooser.addOption("Top Bump Auto", kTopBumpAuto);
     chooser.addOption("Stationary Auto", kStationaryAuto);
     chooser.setDefaultOption("Disrupt Auto", "Disrupt Auto");
+    chooser.addOption("Test Auto", "Test Auto");
 
     SmartDashboard.putData("Auto choices", chooser);
     Epilogue.bind(this);
@@ -67,8 +66,8 @@ public class Robot extends TimedRobot {
       }
     }
 
-    // SmartDashboard.putNumber("hub distance", m_robotContainer.getHubDistance().in(Inches));
-    m_robotContainer.latestPoseField.setRobotPose(m_robotContainer.getLatestCameraPose().toPose2d());
+    m_robotContainer.latestPoseField.setRobotPose(
+        m_robotContainer.getLatestCameraPose().toPose2d());
     SmartDashboard.putData("latest 2d pose", m_robotContainer.latestPoseField);
   }
 
@@ -87,22 +86,10 @@ public class Robot extends TimedRobot {
     System.out.println("Auto selected: " + autoSelected);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
+    CommandScheduler.getInstance().schedule((new HomeHood(m_robotContainer.hood)));
     if (m_autonomousCommand != null) {
       CommandScheduler.getInstance().schedule(m_autonomousCommand);
     }
-
-    CommandScheduler.getInstance().schedule((new HomeHood(m_robotContainer.hood)));
-    // CommandScheduler.getInstance()
-    //     .schedule(
-    //         new ShootAndIndex(
-    //             m_robotContainer.tunnel,
-    //             m_robotContainer.shooter,
-    //             m_robotContainer.hood,
-    //             m_robotContainer.indexer,
-    //             m_robotContainer::getHubDistance));
-    // Rotation2d rotation = MyAlliance.isBlue() ? Rotation2d.kZero : Rotation2d.k180deg;
-    // m_robotContainer.drivetrain.addVisionMeasurement(new Pose2d(0,0,rotation), 0,
-    // VecBuilder.fill(0,0,0));
   }
 
   @Override

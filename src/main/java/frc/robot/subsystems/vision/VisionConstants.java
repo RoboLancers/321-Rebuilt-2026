@@ -42,17 +42,17 @@ public class VisionConstants {
 
   public static final Transform3d kLeftShooterCameraTransform =
       new Transform3d(
-          Inches.of(-9.026),
-          Inches.of(-11.559),
-          Inches.of(6.062),
-          new Rotation3d(Degrees.of(0), Degrees.of(-45), Degrees.of(-65))); // -75 -> 15
+          Inches.of(-4.310),
+          Inches.of(-3.166),
+          Inches.of(16.330),
+          new Rotation3d(Degrees.of(0), Degrees.of(0), Degrees.of(-115)));
 
   public static final Transform3d kRightShooterCameraTransform =
       new Transform3d(
-          Inches.of(-11.123),
-          Inches.of(-9.808),
-          Inches.of(6.084),
-          new Rotation3d(Degrees.zero(), Degrees.of(-45), Degrees.of(-115))); // -105 -> -15 -> -165
+          Inches.of(-12.000),
+          Inches.of(-3.173),
+          Inches.of(12.948),
+          new Rotation3d(Degrees.zero(), Degrees.of(-15), Degrees.of(-90)));
 
   public static final Distance kAllowedFieldDistance = Meters.of(2.5);
   public static final Distance kAllowedFieldHeight = Meters.of(1.25);
