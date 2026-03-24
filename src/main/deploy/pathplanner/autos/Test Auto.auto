@@ -5,9 +5,9 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Test 1"
+            "name": "IntakeFuel"
           }
         }
       ]

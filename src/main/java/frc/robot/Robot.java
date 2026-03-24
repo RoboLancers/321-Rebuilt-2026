@@ -50,6 +50,7 @@ public class Robot extends TimedRobot {
     chooser.addOption("Top Bump Auto", kTopBumpAuto);
     chooser.addOption("Stationary Auto", kStationaryAuto);
     chooser.setDefaultOption("Disrupt Auto", "Disrupt Auto");
+    chooser.addOption("Test Auto", "Test Auto");
 
     SmartDashboard.putData("Auto choices", chooser);
     Epilogue.bind(this);

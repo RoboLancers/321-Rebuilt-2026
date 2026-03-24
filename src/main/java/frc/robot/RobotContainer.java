@@ -1,6 +1,7 @@
 /* (C) RoboLancers 2026 */
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
@@ -36,10 +37,10 @@ import frc.robot.subsystems.intakePivot.IntakePivot;
 import frc.robot.subsystems.intakePivot.intakePivotCommands.GoToAngle;
 import frc.robot.subsystems.intakePivot.intakePivotCommands.Tune;
 import frc.robot.subsystems.intakerollers.IntakeRollers;
+import frc.robot.subsystems.intakerollers.rolllercommands.IntakeFuel;
 import frc.robot.subsystems.intakerollers.rolllercommands.SetIntakeVelocity;
 import frc.robot.subsystems.outtake.Shooter;
 import frc.robot.subsystems.outtake.commands.SetShooterVelocity;
-import frc.robot.subsystems.outtake.commands.ShootFuel;
 import frc.robot.subsystems.tunnel.Tunnel;
 import frc.robot.subsystems.tunnel.tunnelCommands.RunAtVelocity;
 import frc.robot.subsystems.vision.Vision;
@@ -134,12 +135,16 @@ public class RobotContainer {
   public RobotContainer() {
     configureBindings();
     // configureTuningBindings();
-    ShootFuel shootFuel = new ShootFuel();
+    // ShootFuel shootFuel = new ShootFuel();
+    IntakeFuel intakeFuel = new IntakeFuel(intakeRollers);
+    GoToAngle goToAngle = new GoToAngle(intakePivot, () -> Degrees.of(0));
     ShootAndIndex shootInAuto =
         new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance);
     NamedCommands.registerCommand(
         "ShootFuel", Commands.run(() -> shooter.setVoltage(Volts.of(10))));
-        
+    NamedCommands.registerCommand("IntakeFuel", intakeFuel);
+    NamedCommands.registerCommand("IntakePivotPosition", goToAngle);
+
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
