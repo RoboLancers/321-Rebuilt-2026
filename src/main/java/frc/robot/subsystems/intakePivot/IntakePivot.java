@@ -47,7 +47,6 @@ public class IntakePivot extends SubsystemBase {
   public IntakePivot() {
     motorConfigurations();
     setPID(IntakeConstants.kP, IntakeConstants.kI, IntakeConstants.kD, IntakeConstants.kG);
-    intakePivotMotor.setPosition(Degrees.of(0));
   }
 
   private void motorConfigurations() {
@@ -92,7 +91,7 @@ public class IntakePivot extends SubsystemBase {
 
   @Logged(name = "intakePivotAngle")
   public Angle getAngle() {
-    return intakePivotMotor.getPosition().getValue();
+    return intakeEncoder.getAbsolutePosition().refresh().getValue();
   }
 
   public void zeroEncoder() {
@@ -143,11 +142,5 @@ public class IntakePivot extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {
-
-    SmartDashboard.putNumber("Intake Pivot Angle", getAngle().in(Degrees));
-    SmartDashboard.putNumber("Intake Pivot Voltage", getVoltage().in(Volts));
-    SmartDashboard.putNumber("Intake Pivot Current", getCurrent().in(Amps));
-    SmartDashboard.putNumber("Target Pivot Voltage", targetVoltage);
-  }
+  public void periodic() {}
 }
