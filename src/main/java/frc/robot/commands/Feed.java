@@ -39,10 +39,10 @@ public class Feed extends Command {
 
     if (Math.abs(shooter.getTopVelocity().in(RPM) - OuttakeConstants.kNeutralFeedRPM.in(RPM))
         < 25) {
-      indexer.setTargetVelocity(RPM.of(1400 + indexer.getOscillationVelocity().in(RPM)));
+      indexer.setTargetVelocity(indexer.getOscillationVelocity());
       tunnel.setTargetVelocity(TunnelConstants.kPassFuelRPM);
       tunnel.goToVelocity(TunnelConstants.kPassFuelRPM);
-      indexer.goToVelocity(RPM.of(1400 + indexer.getOscillationVelocity().in(RPM)));
+      indexer.goToVelocity(indexer.getOscillationVelocity());
     }
   }
 

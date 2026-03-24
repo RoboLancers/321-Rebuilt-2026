@@ -50,8 +50,8 @@ public class ShootTesting extends Command {
 
     if (Math.abs(shooter.getTopVelocity().in(RPM) - velocitySupplier.get().in(RPM)) < 25) {
       tunnel.goToVelocity(TunnelConstants.kPassFuelRPM);
-      indexer.setTargetVelocity(RPM.of(1400 + indexer.getOscillationVelocity().in(RPM)));
-      indexer.goToVelocity(RPM.of(1400 + indexer.getOscillationVelocity().in(RPM)));
+      indexer.setTargetVelocity(indexer.getOscillationVelocity());
+      indexer.goToVelocity(indexer.getOscillationVelocity());
       tunnel.setTargetVelocity(TunnelConstants.kPassFuelRPM);
     }
   }
