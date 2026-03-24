@@ -143,6 +143,8 @@ public class RobotContainer {
     // ShootFuel shootFuel = new ShootFuel();
     IntakeFuel intakeFuel = new IntakeFuel(intakeRollers);
     GoToAngle goToAngle = new GoToAngle(intakePivot, () -> Degrees.of(0));
+    Shoo
+
     ShootAndIndex shootInAuto =
         new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance);
     NamedCommands.registerCommand(
