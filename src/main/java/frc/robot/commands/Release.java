@@ -27,13 +27,6 @@ public class Release extends Command {
   }
 
   @Override
-  public void initialize() {
-    shooter.setTargetVelocity(OuttakeConstants.kReleaseRPM);
-    indexer.setTargetVelocity(IndexerConstants.kIndexVelocity);
-    tunnel.setTargetVelocity(TunnelConstants.kPassFuelRPM);
-  }
-
-  @Override
   public void execute() {
     tunnel.goToVelocity(TunnelConstants.kPassFuelRPM);
     shooter.goToVelocity(OuttakeConstants.kReleaseRPM);
