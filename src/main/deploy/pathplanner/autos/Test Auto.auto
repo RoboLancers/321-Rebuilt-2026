@@ -5,9 +5,21 @@
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "Test Path"
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "IntakeFuel"
+            "name": "ShootFuel"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "New New New Path"
           }
         }
       ]

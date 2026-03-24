@@ -27,6 +27,7 @@ public class Robot extends TimedRobot {
   private static final String kTopAuto = "Top Auto";
   private static final String kTopBumpAuto = "Top Bump Auto";
   private static final String kDefaultAuto = "No Auto";
+   private static final String kTestAuto = "Test Auto";
   private static final String kStationaryAuto = "--FAKE--";
 
   @Logged // (name = "autonomousCommandName")
@@ -50,7 +51,8 @@ public class Robot extends TimedRobot {
     chooser.addOption("Top Bump Auto", kTopBumpAuto);
     chooser.addOption("Stationary Auto", kStationaryAuto);
     chooser.setDefaultOption("Disrupt Auto", "Disrupt Auto");
-    chooser.addOption("Test Auto", "Test Auto");
+    chooser.addOption("Test Auto", kTestAuto);
+    chooser.addOption("Center Depot + Outpost Auto", "Center Depot + Outpost Auto");
 
     SmartDashboard.putData("Auto choices", chooser);
     Epilogue.bind(this);
@@ -103,6 +105,7 @@ public class Robot extends TimedRobot {
       case kTopAuto:
       case kBottomBumpAuto:
       case kTopBumpAuto:
+      case kTestAuto:
         break;
     }
   }
