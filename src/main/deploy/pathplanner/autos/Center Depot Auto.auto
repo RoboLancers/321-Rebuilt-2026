@@ -24,12 +24,6 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "Center Depot Path 2"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "Align"
