@@ -4,45 +4,53 @@ package frc.robot.commands;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.hood.Hood;
-import frc.robot.subsystems.hood.HoodConstants;
 import frc.robot.subsystems.indexer.Indexer;
-import frc.robot.subsystems.outtake.OuttakeConstants;
+import frc.robot.subsystems.indexer.IndexerConstants;
 import frc.robot.subsystems.outtake.Shooter;
 import frc.robot.subsystems.tunnel.Tunnel;
 import frc.robot.subsystems.tunnel.TunnelConstants;
+import java.util.function.Supplier;
 
-public class Feed extends Command {
+public class IndexTest extends Command {
 
   Tunnel tunnel;
   Shooter shooter;
   Hood hood;
   Indexer indexer;
+  Supplier<Distance> hubDistanceSupplier;
 
-  public Feed(Tunnel tunnel, Shooter shooter, Hood hood, Indexer indexer) {
+  public IndexTest(
+      Tunnel tunnel,
+      Shooter shooter,
+      Hood hood,
+      Indexer indexer,
+      Supplier<Distance> hubDistanceSupplier) {
     this.tunnel = tunnel;
     this.shooter = shooter;
     this.hood = hood;
     this.indexer = indexer;
+    this.hubDistanceSupplier = hubDistanceSupplier;
 
     addRequirements(tunnel, shooter, hood, indexer);
   }
 
   @Override
   public void execute() {
+    Distance hubDistance = hubDistanceSupplier.get();
+    shooter.goToVelocity(shooter.getScoreVelocity(hubDistance));
+    hood.goToAngle(hood.getScoreAngle(hubDistance));
+    hood.setTargetAngle(hood.getScoreAngle(hubDistance));
+    shooter.setTargetVelocity(shooter.getScoreVelocity(hubDistance));
 
-    shooter.goToVelocity(OuttakeConstants.kNeutralFeedRPM);
-    hood.goToAngle(HoodConstants.kNeutralFeedAngle);
-    hood.setTargetAngle(HoodConstants.kNeutralFeedAngle);
-    shooter.setTargetVelocity(OuttakeConstants.kNeutralFeedRPM);
-
-    if (Math.abs(shooter.getTopVelocity().in(RPM) - OuttakeConstants.kNeutralFeedRPM.in(RPM))
+    if (Math.abs(shooter.getTopVelocity().in(RPM) - shooter.getScoreVelocity(hubDistance).in(RPM))
         < 25) {
-      indexer.setTargetVelocity(indexer.getOscillationVelocity());
-      tunnel.setTargetVelocity(TunnelConstants.kPassFuelRPM);
       tunnel.goToVelocity(TunnelConstants.kPassFuelRPM);
-      indexer.goToVelocity(indexer.getOscillationVelocity());
+      indexer.setTargetVelocity(IndexerConstants.kMaxVelocity);
+      indexer.goToVelocity(IndexerConstants.kMaxVelocity);
+      tunnel.setTargetVelocity(TunnelConstants.kPassFuelRPM);
     }
   }
 

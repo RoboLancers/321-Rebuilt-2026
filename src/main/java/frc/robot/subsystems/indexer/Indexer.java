@@ -19,7 +19,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Indexer extends SubsystemBase {
@@ -79,6 +79,14 @@ public class Indexer extends SubsystemBase {
     this.targetVelocity = velocity;
   }
 
+  public AngularVelocity getOscillationVelocity() {
+    double velocity =
+        IndexerConstants.kIndexVelocity.in(RPM)
+            + IndexerConstants.kOscillationAmplitude
+                * Math.sin(2 * Math.PI * Timer.getFPGATimestamp());
+    return RPM.of(velocity);
+  }
+
   public void goToVelocity(AngularVelocity velocity) {
     targetVelocity = velocity;
     double volts =
@@ -119,11 +127,5 @@ public class Indexer extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {
-    SmartDashboard.putNumber("Spindexer Velocity", motor.getVelocity().getValue().in(RPM));
-    SmartDashboard.putNumber("Spindexer Voltage", motor.getMotorVoltage().getValue().in(Volts));
-    SmartDashboard.putNumber(
-        "Spindexer motor velocity", motor.getRotorVelocity().getValue().in(RPM));
-      SmartDashboard.putNumber("Indexer Target Velocity", targetVelocity.in(RPM));
-  }
+  public void periodic() {}
 }

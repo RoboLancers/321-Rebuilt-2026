@@ -1,7 +1,6 @@
 /* (C) RoboLancers 2026 */
 package frc.robot.subsystems.intakePivot;
 
-import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Volts;
@@ -10,9 +9,6 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -32,23 +28,19 @@ public class IntakePivot extends SubsystemBase {
   @Logged private TalonFX intakePivotMotor = new TalonFX(IntakeConstants.kPivotMotorId);
   @Logged private CANcoder intakeEncoder = new CANcoder(IntakeConstants.kEncoderID);
 
-  private TalonFXConfiguration talonConfigs = new TalonFXConfiguration();
   private MotorOutputConfigs motorConfigs = new MotorOutputConfigs();
   private FeedbackConfigs feedbackConfigs = new FeedbackConfigs();
   private CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
-  private VoltageConfigs voltageConfigs = new VoltageConfigs();
-  private Slot0Configs slot0Configs = new Slot0Configs();
   private MotionMagicConfigs motionMagicConfigs = new MotionMagicConfigs();
 
   public double targetVoltage = 0;
-  public double targetFFVoltage = 0;
+  public double loggedAngle = 0;
 
-  private Angle targetAngle = IntakeConstants.kDefaultPosition;
+  private Angle targetAngle = IntakeConstants.kStowedPosition;
 
   public IntakePivot() {
     motorConfigurations();
-    setPID(IntakeConstants.kP, 0, IntakeConstants.kD, IntakeConstants.kG);
-    intakePivotMotor.setPosition(Degrees.of(0));
+    setPID(IntakeConstants.kP, IntakeConstants.kI, IntakeConstants.kD, IntakeConstants.kG);
   }
 
   private void motorConfigurations() {
@@ -75,16 +67,16 @@ public class IntakePivot extends SubsystemBase {
     this.targetAngle = angle;
   }
 
-  public void setAngle() {
+  public void zero() {
     intakePivotMotor.setPosition(Degrees.of(0));
   }
 
   public void goToAngle(Angle angle) {
+    loggedAngle = angle.in(Degrees);
     double volts =
         pivotController.calculate(getAngle().in(Radians), angle.in(Radians))
             + pivotFeedforward.calculate(angle.in(Radians), 0);
-            targetVoltage = volts;
-            targetFFVoltage = pivotFeedforward.calculate(angle.in(Radians),0);
+    targetVoltage = volts;
     intakePivotMotor.setVoltage(volts);
   }
 
@@ -94,7 +86,7 @@ public class IntakePivot extends SubsystemBase {
 
   @Logged(name = "intakePivotAngle")
   public Angle getAngle() {
-    return intakePivotMotor.getPosition().getValue();
+    return intakeEncoder.getAbsolutePosition().refresh().getValue();
   }
 
   public void zeroEncoder() {
@@ -113,18 +105,15 @@ public class IntakePivot extends SubsystemBase {
 
   public void setPID(double kP, double kI, double kD, double kG) {
     pivotController.setP(kP);
-    pivotController.setD(kD);
     pivotController.setI(kI);
+    pivotController.setD(kD);
+
     pivotFeedforward.setKg(kG);
   }
 
   public void tune(double kP, double kI, double kD, double kG, double angle) {
     setPID(kP, kI, kD, kG);
     goToAngle(Degrees.of(angle));
-  }
-
-  public void zero(){
-    intakePivotMotor.setPosition(Degrees.of(0));
   }
 
   @Logged(name = "intakePivotVOltage")
@@ -149,10 +138,7 @@ public class IntakePivot extends SubsystemBase {
 
   @Override
   public void periodic() {
-
-    SmartDashboard.putNumber("Intake Pivot Angle", getAngle().in(Degrees));
-    SmartDashboard.putNumber("Intake Pivot Voltage", getVoltage().in(Volts));
-    SmartDashboard.putNumber("Intake Target Voltage", targetVoltage);
-    SmartDashboard.putNumber("Intake Target FF Voltage", targetFFVoltage);
+    SmartDashboard.putNumber("Pivot Target Voltage", targetVoltage);
+    SmartDashboard.putNumber("Pivot Target Angle", loggedAngle);
   }
 }

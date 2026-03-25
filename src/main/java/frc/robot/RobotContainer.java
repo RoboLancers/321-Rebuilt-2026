@@ -6,6 +6,8 @@ import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
+import java.util.function.BooleanSupplier;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.epilogue.Logged;
@@ -21,9 +23,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Align;
+import frc.robot.commands.Feed;
+import frc.robot.commands.IndexTest;
+import frc.robot.commands.Release;
 import frc.robot.commands.ShootAndIndex;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainConstants;
@@ -32,11 +38,13 @@ import frc.robot.subsystems.hood.hoodCommands.HomeHood;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.indexerCommands.SetIndexerVelocity;
 import frc.robot.subsystems.indexer.indexerCommands.TuneIndexer;
+import frc.robot.subsystems.intakePivot.IntakeConstants;
 import frc.robot.subsystems.intakePivot.IntakePivot;
 import frc.robot.subsystems.intakePivot.intakePivotCommands.GoToAngle;
 import frc.robot.subsystems.intakePivot.intakePivotCommands.Tune;
+import frc.robot.subsystems.intakePivot.intakePivotCommands.ZeroPosition;
 import frc.robot.subsystems.intakerollers.IntakeRollers;
-import frc.robot.subsystems.intakerollers.rolllercommands.IntakeRollerTune;
+import frc.robot.subsystems.intakerollers.rolllercommands.IntakeFuel;
 import frc.robot.subsystems.intakerollers.rolllercommands.SetIntakeVelocity;
 import frc.robot.subsystems.outtake.Shooter;
 import frc.robot.subsystems.outtake.commands.SetShooterVelocity;
@@ -132,8 +140,8 @@ public class RobotContainer {
   }
 
   public RobotContainer() {
-    // configureBindings();
-    configureTuningBindings();
+    configureBindings();
+    // configureTuningBindings();
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -149,41 +157,33 @@ public class RobotContainer {
         Commands.run(() -> intakeRollers.setVoltage(Volts.of(0)), intakeRollers));
 
     intakePivot.setDefaultCommand(
-        Commands.run(() -> intakePivot.setVoltage(Volts.of(0)), intakePivot));
+       Commands.run(()->intakePivot.setVoltage(Volts.of(0)), intakePivot));
 
     indexer.setDefaultCommand(Commands.run(() -> indexer.setVoltage(Volts.of(0)), indexer));
 
-    driver.a().whileTrue(new Tune(intakePivot));
-    driver.y().onTrue(Commands.runOnce(()->intakePivot.zero(), intakePivot));
+    driver.rightTrigger().whileTrue(new Release(tunnel, shooter,indexer));
   }
 
   private void configureBindings() {
     tunnel.setDefaultCommand(new RunAtVelocity(tunnel, () -> RPM.of(0)));
     intakeRollers.setDefaultCommand(new SetIntakeVelocity(intakeRollers, () -> RPM.of(0)));
     indexer.setDefaultCommand(new SetIndexerVelocity(indexer, () -> RPM.of(0)));
-    intakePivot.setDefaultCommand(new GoToAngle(intakePivot, intakePivot::getTargetAngle));
+    intakePivot.setDefaultCommand(new GoToAngle(intakePivot, ()->IntakeConstants.kStowedPosition));
     hood.setDefaultCommand(Commands.run(() -> hood.runVolts(Volts.of(0)), hood));
     shooter.setDefaultCommand(new SetShooterVelocity(shooter, () -> RPM.of(0)));
 
     drivetrain.setDefaultCommand(
         drivetrain.teleopDrive(this::getDriverForward, this::getDriverStrafe, this::getDriverTurn));
 
-    // driver.a().onTrue(Commands.runOnce(()->drivetrain.getPigeon2().setYaw(Degrees.of(0))));
-
-    driver.y().whileTrue(new HomeHood(hood));
-
-    driver.a().onTrue(Commands.runOnce(() -> intakePivot.setAngle()));
-
-    // driver
-    // .leftBumper()
-    // .whileTrue(new GoToIntakePosition(intakePivot).andThen(new
-    // IntakeFuel(intakeRollers)));
-
-    // driver.leftBumper().whileTrue(new IntakeWithVoltage(intakeRollers));
-
-    // driver.a().onTrue(new GoToAngle(intakePivot, () -> IntakeConstants.kDefaultPosition));
-
-    // driver.leftBumper().whileTrue(new IntakeFuel(intakeRollers));
+    driver
+        .leftBumper()
+        .whileTrue(
+            new GoToAngle(intakePivot, () -> IntakeConstants.kIntakePosition)
+                .alongWith(
+                    new // TODO: change to and then once end criteria is reimplemented
+                    IntakeFuel(intakeRollers)));
+    
+    driver.y().toggleOnTrue(new GoToAngle(intakePivot, ()->IntakeConstants.kIntakePosition));
 
     driver
         .leftTrigger()
@@ -195,22 +195,13 @@ public class RobotContainer {
                 this::getHubHeading,
                 drivetrain::getPose));
 
-    //  driver.rightTrigger().whileTrue((new ShootToHub(tunnel, shooter, hood,
-    // this::getHubDistance)));
-
-    //   driver.x().whileTrue(new SetIndexerVelocity(indexer, () ->
-    // IndexerConstants.kIndexVelocity));
-
     driver
         .rightTrigger()
-        .whileTrue(new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance));
+        .whileTrue(new HomeHood(hood).andThen(new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance)));
 
-    // driver
-    //     .rightBumper()
-    //     .whileTrue(
-    //         new Feed(tunnel, shooter, hood));
-
-    // driver.rightTrigger().whileTrue(new ShootTest(tunnel, shooter, indexer));
+    driver.rightBumper().whileTrue(new HomeHood(hood).andThen(new Feed(tunnel, shooter, hood, indexer)));
+    driver.x().onTrue(new HomeHood(hood));
+    driver.b().whileTrue(drivetrain.jostle());
   }
 
   @Logged(name = "autonomousCommand")

@@ -8,8 +8,6 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -19,7 +17,6 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakeRollers extends SubsystemBase {
@@ -28,9 +25,7 @@ public class IntakeRollers extends SubsystemBase {
 
   private CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
   private MotorOutputConfigs motorConfigs = new MotorOutputConfigs();
-  private VoltageConfigs voltageConfigs = new VoltageConfigs();
   private FeedbackConfigs feedbackConfigs = new FeedbackConfigs();
-  private Slot0Configs slot0Configs = new Slot0Configs();
   private MotionMagicConfigs motionMagicConfigs = new MotionMagicConfigs();
 
   private AngularVelocity targetVelocity = RPM.of(0);
@@ -116,8 +111,5 @@ public class IntakeRollers extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {
-    SmartDashboard.putNumber("Intake Roller Velocity", getRollerVelocity().in(RPM));
-    SmartDashboard.putNumber("Intake Roller Voltage", getVoltage().in(Volts));
-  }
+  public void periodic() {}
 }
