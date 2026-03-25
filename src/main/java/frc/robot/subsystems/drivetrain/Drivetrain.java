@@ -2,6 +2,7 @@
 package frc.robot.subsystems.drivetrain;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Radians;
@@ -37,6 +38,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -451,6 +453,19 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
                     .getDegrees())
             < rotTol.in(Degrees);
   }
+
+  
+  public Pose2d getJostlePose() {
+    Distance x =
+        Inches.of(
+            getPose().getMeasureX().in(Inches) + 2 * Math.sin(2* Math.PI * Timer.getFPGATimestamp()));
+    Distance y =
+        Inches.of(
+            getPose().getMeasureY().in(Inches) + 2 * Math.cos(2 * Math.PI * Timer.getFPGATimestamp()));
+
+    Rotation2d yaw = getPose().getRotation();
+    return new Pose2d(x, y, yaw);
+  } 
 
   public void setSwerveModuleStates(SwerveModuleState[] states) {
     for (int i = 0; i < super.getModules().length; i++) {
