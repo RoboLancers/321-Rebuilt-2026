@@ -467,6 +467,12 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
     return new Pose2d(x, y, yaw);
   } 
 
+  
+  public Command jostle() {
+    return driveToFieldPoseCommand(this::getJostlePose, this::getPose);
+  }
+
+
   public void setSwerveModuleStates(SwerveModuleState[] states) {
     for (int i = 0; i < super.getModules().length; i++) {
       super.getModule(i).apply(new ModuleRequest().withState(states[i]));
