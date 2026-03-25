@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Align;
 import frc.robot.commands.Feed;
+import frc.robot.commands.IndexTest;
 import frc.robot.commands.Release;
 import frc.robot.commands.ShootAndIndex;
 import frc.robot.subsystems.drivetrain.Drivetrain;
