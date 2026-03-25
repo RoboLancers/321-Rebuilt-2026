@@ -27,7 +27,7 @@ public class Robot extends TimedRobot {
   private static final String kTopAuto = "Top Auto";
   private static final String kTopBumpAuto = "Top Bump Auto";
   private static final String kDefaultAuto = "No Auto";
-   private static final String kTestAuto = "Test Auto";
+  private static final String kTestAuto = "Test Auto";
   private static final String kStationaryAuto = "--FAKE--";
 
   @Logged // (name = "autonomousCommandName")

@@ -5,21 +5,34 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Center Depot Path 1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "IntakeFuel"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeFuel"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Center Depot Path 1"
+                }
+              }
+            ]
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "Center Depot Path 2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Align"
           }
         },
         {
