@@ -6,6 +6,8 @@ import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
+import java.util.function.BooleanSupplier;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.epilogue.Logged;
@@ -21,6 +23,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Align;
@@ -164,7 +167,7 @@ public class RobotContainer {
     tunnel.setDefaultCommand(new RunAtVelocity(tunnel, () -> RPM.of(0)));
     intakeRollers.setDefaultCommand(new SetIntakeVelocity(intakeRollers, () -> RPM.of(0)));
     indexer.setDefaultCommand(new SetIndexerVelocity(indexer, () -> RPM.of(0)));
-    intakePivot.setDefaultCommand(Commands.run(()->intakePivot.setVoltage(Volts.of(0)), intakePivot));
+    intakePivot.setDefaultCommand(new GoToAngle(intakePivot, ()->IntakeConstants.kStowedPosition));
     hood.setDefaultCommand(Commands.run(() -> hood.runVolts(Volts.of(0)), hood));
     shooter.setDefaultCommand(new SetShooterVelocity(shooter, () -> RPM.of(0)));
 
@@ -179,7 +182,7 @@ public class RobotContainer {
                     new // TODO: change to and then once end criteria is reimplemented
                     IntakeFuel(intakeRollers)));
     
-    driver.y().onTrue(new GoToAngle(intakePivot, ()->IntakeConstants.kStowedPosition));
+    driver.y().toggleOnTrue(new GoToAngle(intakePivot, ()->IntakeConstants.kIntakePosition));
 
     driver
         .leftTrigger()
@@ -195,7 +198,7 @@ public class RobotContainer {
         .rightTrigger()
         .whileTrue(new HomeHood(hood).andThen(new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance)));
 
-    driver.rightBumper().whileTrue(new Feed(tunnel, shooter, hood, indexer));
+    driver.rightBumper().whileTrue(new HomeHood(hood).andThen(new Feed(tunnel, shooter, hood, indexer)));
     driver.x().onTrue(new HomeHood(hood));
   }
 
