@@ -6,8 +6,6 @@ import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
-import java.util.function.BooleanSupplier;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.epilogue.Logged;
@@ -30,7 +28,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Align;
 import frc.robot.commands.Feed;
-import frc.robot.commands.IndexTest;
 import frc.robot.commands.Release;
 import frc.robot.commands.ShootAndIndex;
 import frc.robot.subsystems.drivetrain.Drivetrain;
@@ -39,12 +36,9 @@ import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.hood.hoodCommands.HomeHood;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.indexerCommands.SetIndexerVelocity;
-import frc.robot.subsystems.indexer.indexerCommands.TuneIndexer;
 import frc.robot.subsystems.intakePivot.IntakeConstants;
 import frc.robot.subsystems.intakePivot.IntakePivot;
 import frc.robot.subsystems.intakePivot.intakePivotCommands.GoToAngle;
-import frc.robot.subsystems.intakePivot.intakePivotCommands.Tune;
-import frc.robot.subsystems.intakePivot.intakePivotCommands.ZeroPosition;
 import frc.robot.subsystems.intakerollers.IntakeRollers;
 import frc.robot.subsystems.intakerollers.rolllercommands.IntakeFuel;
 import frc.robot.subsystems.intakerollers.rolllercommands.SetIntakeVelocity;
@@ -160,18 +154,19 @@ public class RobotContainer {
         Commands.run(() -> intakeRollers.setVoltage(Volts.of(0)), intakeRollers));
 
     intakePivot.setDefaultCommand(
-       Commands.run(()->intakePivot.setVoltage(Volts.of(0)), intakePivot));
+        Commands.run(() -> intakePivot.setVoltage(Volts.of(0)), intakePivot));
 
     indexer.setDefaultCommand(Commands.run(() -> indexer.setVoltage(Volts.of(0)), indexer));
 
-    driver.rightTrigger().whileTrue(new Release(tunnel, shooter,indexer));
+    driver.rightTrigger().whileTrue(new Release(tunnel, shooter, indexer));
   }
 
   private void configureBindings() {
     tunnel.setDefaultCommand(new RunAtVelocity(tunnel, () -> RPM.of(0)));
     intakeRollers.setDefaultCommand(new SetIntakeVelocity(intakeRollers, () -> RPM.of(0)));
     indexer.setDefaultCommand(new SetIndexerVelocity(indexer, () -> RPM.of(0)));
-    intakePivot.setDefaultCommand(new GoToAngle(intakePivot, ()->IntakeConstants.kStowedPosition));
+    intakePivot.setDefaultCommand(
+        new GoToAngle(intakePivot, () -> IntakeConstants.kStowedPosition));
     hood.setDefaultCommand(Commands.run(() -> hood.runVolts(Volts.of(0)), hood));
     shooter.setDefaultCommand(new SetShooterVelocity(shooter, () -> RPM.of(0)));
 
@@ -184,7 +179,7 @@ public class RobotContainer {
             new GoToAngle(intakePivot, () -> IntakeConstants.kIntakePosition)
                 .alongWith(
                     new // TODO: change to and then once end criteria is reimplemented
-                    IntakeFuel(intakeRollers)));
+                    IntakeFuel(intakeRollers, intakePivot)));
     
     // driver.y().toggleOnTrue(new GoToAngle(intakePivot, ()->IntakeConstants.kIntakePosition));
 
