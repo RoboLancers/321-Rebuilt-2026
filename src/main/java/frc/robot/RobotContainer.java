@@ -201,6 +201,7 @@ public class RobotContainer {
 
     driver.rightBumper().whileTrue(new HomeHood(hood).andThen(new Feed(tunnel, shooter, hood, indexer)));
     driver.x().onTrue(new HomeHood(hood));
+    driver.b().whileTrue(drivetrain.jostle());
   }
 
   @Logged(name = "autonomousCommand")
