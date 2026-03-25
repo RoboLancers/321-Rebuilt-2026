@@ -30,6 +30,7 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -475,45 +476,48 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
      Pose2d jostlePose = getPose();
     double xLeft =
       
-         -  2 * Math.sin(Math.PI - getPose().getRotation().getRadians());
+  2 * Math.sin(Math.PI - getPose().getRotation().getRadians());
     double yLeft =
 
-          -  2 * Math.cos(Math.PI - getPose().getRotation().getRadians());
+           2 * Math.cos(Math.PI - getPose().getRotation().getRadians());
 
               Rotation2d yaw = getPose().getRotation();
-    jostlePose = MyAlliance.isBlue() ?  new Pose2d(Inches.of(getPose().getMeasureX().in(Inches)-xLeft), Inches.of(getPose().getMeasureY().in(Inches)-yLeft), yaw) :  new Pose2d(Inches.of(getPose().getMeasureX().in(Inches)+xLeft), Inches.of(getPose().getMeasureY().in(Inches)+yLeft), yaw);
+    jostlePose = MyAlliance.isBlue() ?  new Pose2d(Inches.of(getPose().getMeasureX().in(Inches)+xLeft), Inches.of(getPose().getMeasureY().in(Inches)+yLeft), yaw) :  new Pose2d(Inches.of(getPose().getMeasureX().in(Inches)-xLeft), Inches.of(getPose().getMeasureY().in(Inches)-yLeft), yaw);
   
     return new Pose2d(xLeft, yLeft, yaw);
   } 
-  // public void jostleDrivetrain(){
-  //    driveRobotCentric( 
-                
-  //                 0,
-  //               DriveFeedforwards.zeros(4))
-  // }
 
+ public Command jostleDrivetrain(){
+  return (driveRobotCentric(()->-1,()->0,()->0).withTimeout(0.2))
+  .andThen(driveRobotCentric(()->1, ()->0, ()->0).withTimeout(0.215));
+ }
+
+ public Command jostle(Pose2d setpoint){
+  return (driveRobotCentric(()->-1,()->0,()->0).withTimeout(0.2))
+  .andThen(driveToFieldPoseCommand(this::getPose, ()->setpoint).withTimeout(0.2))
+  .andThen(
+    driveRobotCentric(()->1, ()->0, ()->0).withTimeout(0.2))
+    .andThen(driveToFieldPoseCommand(this::getPose, ()->setpoint).withTimeout(0.2));
+ }
+
+ public Command jostle2(Pose2d setpoint){
+  Pose2d leftPose = setpoint.plus(new Transform2d(Inches.of(0), Inches.of(12), Rotation2d.kZero));
+  Pose2d rightPose = setpoint.plus(new Transform2d(Inches.of(0), Inches.of(-12), Rotation2d.kZero));
+  return (driveToFieldPoseCommand(this::getPose, ()->leftPose).withTimeout(0.2))
+  .andThen(driveToFieldPoseCommand(this::getPose, ()->rightPose).withTimeout(0.2));
+ }
+
+ public Command jostle3(Pose2d setpoint){
+  Pose2d leftPose = setpoint.plus(new Transform2d(Inches.of(0), Inches.of(2), Rotation2d.kZero));
+  Pose2d rightPose = setpoint.plus(new Transform2d(Inches.of(0), Inches.of(-2), Rotation2d.kZero));
+  return (driveToFieldPoseCommand(this::getPose, ()->leftPose).withTimeout(0.2))
+  .andThen(driveToFieldPoseCommand(this::getPose, ()->setpoint).withTimeout(0.2))
+  .andThen(
+    driveToFieldPoseCommand(this::getPose, ()->rightPose).withTimeout(0.2))
+    .andThen(driveToFieldPoseCommand(this::getPose, ()->setpoint).withTimeout(0.2));
+
+ }
   
-  public Command jostle() {
-    return (driveToFieldPoseCommand(this::getPose, this::getJostlePoseLeft).withTimeout(0.4))
-    .andThen(driveToFieldPoseCommand(this::getPose, this::getJostlePoseRight).withTimeout(0.4))
-    .andThen(driveToFieldPoseCommand(this::getPose, this::getJostlePoseLeft).withTimeout(0.4))
-    .andThen(driveToFieldPoseCommand(this::getPose, this::getJostlePoseRight).withTimeout(0.4))
-    .andThen(driveToFieldPoseCommand(this::getPose, this::getJostlePoseLeft).withTimeout(0.4))
-    .andThen(driveToFieldPoseCommand(this::getPose, this::getJostlePoseRight).withTimeout(0.4))
-    .andThen(driveToFieldPoseCommand(this::getPose, this::getJostlePoseLeft).withTimeout(0.4))
-    .andThen(driveToFieldPoseCommand(this::getPose, this::getJostlePoseRight).withTimeout(0.4))
-    .andThen(driveToFieldPoseCommand(this::getPose, this::getJostlePoseLeft).withTimeout(0.4))
-    .andThen(driveToFieldPoseCommand(this::getPose, this::getJostlePoseRight).withTimeout(0.4))
-    .andThen(driveToFieldPoseCommand(this::getPose, this::getJostlePoseLeft).withTimeout(0.4))
-    .andThen(driveToFieldPoseCommand(this::getPose, this::getJostlePoseRight).withTimeout(0.4))
-    .andThen(driveToFieldPoseCommand(this::getPose, this::getJostlePoseLeft).withTimeout(0.4))
-    .andThen(driveToFieldPoseCommand(this::getPose, this::getJostlePoseRight).withTimeout(0.4))
-    .andThen(driveToFieldPoseCommand(this::getPose, this::getJostlePoseLeft).withTimeout(0.4))
-    .andThen(driveToFieldPoseCommand(this::getPose, this::getJostlePoseRight).withTimeout(0.4))
-    .andThen(driveToFieldPoseCommand(this::getPose, this::getJostlePoseLeft).withTimeout(0.4))
-    .andThen(driveToFieldPoseCommand(this::getPose, this::getJostlePoseRight).withTimeout(0.4));
-  }
-
 
   public void setSwerveModuleStates(SwerveModuleState[] states) {
     for (int i = 0; i < super.getModules().length; i++) {

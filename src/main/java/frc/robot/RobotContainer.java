@@ -12,6 +12,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
@@ -24,6 +25,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Align;
@@ -150,6 +152,7 @@ public class RobotContainer {
     // NamedCommands.registerCommand("IntakeFuel", intakeFuel);
     // NamedCommands.registerCommand("ShootFuel", shootFuel.releaseFuel(shooter));
   }
+   Pose2d setpoint = new Pose2d(0,0,Rotation2d.kZero);
 
   private void configureTuningBindings() {
 
@@ -183,7 +186,7 @@ public class RobotContainer {
                     new // TODO: change to and then once end criteria is reimplemented
                     IntakeFuel(intakeRollers)));
     
-    driver.y().toggleOnTrue(new GoToAngle(intakePivot, ()->IntakeConstants.kIntakePosition));
+    // driver.y().toggleOnTrue(new GoToAngle(intakePivot, ()->IntakeConstants.kIntakePosition));
 
     driver
         .leftTrigger()
@@ -197,13 +200,18 @@ public class RobotContainer {
 
     driver
         .rightTrigger()
-        .whileTrue(new HomeHood(hood).andThen(new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance)));
+        .whileTrue(new HomeHood(hood).andThen(new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance).alongWith(new RepeatCommand(drivetrain.jostleDrivetrain()))));
 
     driver.rightBumper().whileTrue(new HomeHood(hood).andThen(new Feed(tunnel, shooter, hood, indexer)));
-    driver.x().onTrue(new HomeHood(hood));
-    driver.b().whileTrue(drivetrain.jostle());
+    // driver.x().onTrue(new HomeHood(hood));
+   
+    driver.povLeft().onTrue(Commands.runOnce(()->{setpoint = drivetrain.getPose();}));
+    driver.y().whileTrue(new RepeatCommand(drivetrain.jostleDrivetrain()));
+    driver.b().whileTrue(new RepeatCommand(drivetrain.jostle(setpoint)));
+    
+    driver.a().whileTrue(new RepeatCommand(drivetrain.jostle2(setpoint)));
+    driver.x().whileTrue(new RepeatCommand(drivetrain.jostle3(setpoint)));
   }
-
   @Logged(name = "autonomousCommand")
   public Command getAutonomousCommand() {
 
