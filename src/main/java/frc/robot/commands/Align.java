@@ -105,7 +105,7 @@ public final class Align {
 
   public static Command rotateToHub(
       Drivetrain drivetrain, DoubleSupplier translationX, DoubleSupplier translationY, Supplier<Rotation2d> hubHeading, Supplier<Pose2d> robotPose) {
-   return lockOnHub(drivetrain, translationX, translationY, hubHeading, robotPose).until(drivetrain.atHeading(hubHeading));
+   return lockOnHub(drivetrain, translationX, translationY, hubHeading, robotPose).until(()->drivetrain.atHeading(hubHeading.get()));
   }
 
   public static Command lockOnHub(

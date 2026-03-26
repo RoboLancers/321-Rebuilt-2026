@@ -181,22 +181,13 @@ public class RobotContainer {
     driver.y().toggleOnTrue(new GoToAngle(intakePivot, () -> IntakeConstants.kIntakePosition));
 
     driver
-        .leftTrigger()
-        .whileTrue(
-            Align.rotateToHubWhileDriving(
-                drivetrain,
-                this::getDriverForward,
-                this::getDriverStrafe,
-                this::getHubHeading,
-                drivetrain::getPose));
+        .rightTrigger()
+        .whileTrue((Align.rotateToHub(drivetrain, this::getDriverForward, this::getDriverStrafe, this::getHubHeading, drivetrain::getPose).alongWith(new HomeHood(hood))).andThen(new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance).alongWith(Align.lockOnHub(drivetrain,this::getDriverForward, this::getDriverStrafe, this::getHubHeading, drivetrain::getPose))));
 
     driver
-        .rightTrigger()
-        .whileTrue(
-            new HomeHood(hood)
-                .andThen(
-                    new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance)
-                        .alongWith(new RepeatCommand(drivetrain.jostleDrivetrain()))));
+        .leftTrigger()
+        .whileTrue((Align.rotateToHub(drivetrain, this::getDriverForward, this::getDriverStrafe, this::getHubHeading, drivetrain::getPose).alongWith(new HomeHood(hood))).andThen(new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance).alongWith(new RepeatCommand(drivetrain.jostleDrivetrain()))));
+
 
     driver
         .rightBumper()
