@@ -28,6 +28,7 @@ import frc.robot.commands.Align;
 import frc.robot.commands.Feed;
 import frc.robot.commands.Release;
 import frc.robot.commands.ShootAndIndex;
+import frc.robot.commands.StaticShoot;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainConstants;
 import frc.robot.subsystems.hood.Hood;
@@ -198,15 +199,15 @@ public class RobotContainer {
         .whileTrue(
             new HomeHood(hood)
                 .andThen(
-                    new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance)
-                        .alongWith(new RepeatCommand(drivetrain.jostleDrivetrain()))));
+                    new StaticShoot(tunnel, shooter, indexer)
+                        ));
 
     driver
         .b()
         .whileTrue(
             new HomeHood(hood)
                 .andThen(
-                    new Feed(tunnel, shooter, hood, indexer)
+                    new StaticShoot(tunnel, shooter, indexer)
                         .alongWith(new RepeatCommand(drivetrain.jostleDrivetrain()))));
   }
 
