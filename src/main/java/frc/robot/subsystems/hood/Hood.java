@@ -186,6 +186,16 @@ public class Hood extends SubsystemBase {
     return hoodMotor.getStatorCurrent().getValue();
   }
 
+  @Logged(name = "hoodMotorConnected")
+  public boolean isHoodMotorConnected() {
+    return hoodMotor.getVersion().getStatus().isOK();
+  }
+
+  @Logged(name = "hoodCANdiConnected")
+  public boolean isHoodCANdiConnected() {
+    return magneticLimitSwitch.getVersion().getStatus().isOK();
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Hood Angle", hoodMotor.getPosition().getValue().in(Degrees));

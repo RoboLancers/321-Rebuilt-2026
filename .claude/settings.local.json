@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:i.imgur.com)",
+      "Bash(python -c \"import PIL; print\\(PIL.__version__\\)\")",
+      "Bash(pip install:*)",
+      "Bash(python scripts/process_images.py)",
+      "Read(//tmp/**)",
+      "Bash(unzip -o /c/Users/Izz/.gradle/caches/modules-2/files-2.1/com.playingwithfusion.frc/PlayingWithFusion-java/2026.3.05/1e7bd81a0e52d9aa1d05f8c6fd4282aedf93494d/PlayingWithFusion-java-2026.3.05-sources.jar \"*.java\" -d .)",
+      "Bash(mkdir -p /tmp/pwf)",
+      "Bash(unzip -o /c/Users/Izz/.gradle/caches/modules-2/files-2.1/com.playingwithfusion.frc/PlayingWithFusion-java/2026.3.05/1e7bd81a0e52d9aa1d05f8c6fd4282aedf93494d/PlayingWithFusion-java-2026.3.05-sources.jar -d .)",
+      "Bash(powershell.exe -Command \"Get-Process | Where-Object { $_.Modules.FileName -like ''*robot-dashboard*'' } | Select-Object Name, Id\")"
+    ]
+  }
+}

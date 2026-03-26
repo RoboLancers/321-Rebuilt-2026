@@ -115,6 +115,11 @@ public class IntakeRollers extends SubsystemBase {
     return rollerMotor.getStatorCurrent().getValue();
   }
 
+  @Logged(name = "intakeRollerMotorConnected")
+  public boolean isMotorConnected() {
+    return rollerMotor.getVersion().getStatus().isOK();
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Intake Roller Velocity", getRollerVelocity().in(RPM));

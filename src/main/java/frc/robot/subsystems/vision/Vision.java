@@ -59,6 +59,8 @@ public class Vision extends SubsystemBase {
   private Dictionary<PhotonCamera, CameraStatusLED> cameraStatusLEDs =
       new Hashtable<PhotonCamera, CameraStatusLED>(4);
 
+  private int[] targetCounts = new int[4];
+
   private PhotonCamera leftClimbCamera = new PhotonCamera(VisionConstants.kLeftClimbCameraName);
 
   private PhotonCamera rightClimbCamera = new PhotonCamera(VisionConstants.kRightClimbCameraName);
@@ -126,6 +128,7 @@ public class Vision extends SubsystemBase {
 
       CameraStatusLED statusLED = cameraStatusLEDs.get(cameras.get(i));
       if (cameras.get(i) == null || !cameras.get(i).isConnected()) {
+        targetCounts[i] = 0;
         statusLED.updateStatusColor(StatusType.Error);
         continue;
       }
@@ -135,6 +138,7 @@ public class Vision extends SubsystemBase {
         continue;
       }
       PhotonPipelineResult latestResult = unreadResults.get(unreadResults.size() - 1);
+      targetCounts[i] = latestResult.getTargets().size();
 
       if (!latestResult.hasTargets() || unreadResults.isEmpty()) {
         statusLED.updateStatusColor(StatusType.NotDetected);
@@ -251,6 +255,26 @@ public class Vision extends SubsystemBase {
   @Logged(name = "rightShooterCameraConnected")
   public boolean getRightShooterCameraConnected() {
     return rightShooterCamera.isConnected();
+  }
+
+  @Logged(name = "leftClimbCameraTargetCount")
+  public int getLeftClimbCameraTargetCount() {
+    return targetCounts[0];
+  }
+
+  @Logged(name = "rightClimbCameraTargetCount")
+  public int getRightClimbCameraTargetCount() {
+    return targetCounts[1];
+  }
+
+  @Logged(name = "leftShooterCameraTargetCount")
+  public int getLeftShooterCameraTargetCount() {
+    return targetCounts[2];
+  }
+
+  @Logged(name = "rightShooterCameraTargetCount")
+  public int getRightShooterCameraTargetCount() {
+    return targetCounts[3];
   }
 
   @Override

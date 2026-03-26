@@ -131,6 +131,11 @@ public class IntakePivot extends SubsystemBase {
     return intakePivotMotor.getStatorCurrent().getValue();
   }
 
+  @Logged(name = "intakePivotMotorConnected")
+  public boolean isMotorConnected() {
+    return intakePivotMotor.getVersion().getStatus().isOK();
+  }
+
   @Override
   public void periodic() {
 

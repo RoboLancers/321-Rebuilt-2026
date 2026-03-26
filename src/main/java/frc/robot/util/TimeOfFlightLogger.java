@@ -20,5 +20,6 @@ public class TimeOfFlightLogger extends ClassSpecificLogger<TimeOfFlight> {
     dataLogger.log("Range (mm)", object.getRange());
     dataLogger.log("Range STDDEV (mm)", object.getRangeSigma());
     dataLogger.log("Light Level", object.getAmbientLightLevel());
+    dataLogger.log("Connected", object.isConnected());
   }
 }

@@ -117,6 +117,11 @@ public class Indexer extends SubsystemBase {
     return motor.getStatorCurrent().getValue();
   }
 
+  @Logged(name = "indexerMotorConnected")
+  public boolean isMotorConnected() {
+    return motor.getVersion().getStatus().isOK();
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Spindexer Velocity", motor.getVelocity().getValue().in(RPM));

@@ -1,0 +1,214 @@
+/* ── Reset & base ──────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #0f1117;
+  --surface:   #1a1d27;
+  --border:    #2a2d3a;
+  --text:      #e2e8f0;
+  --muted:     #64748b;
+  --accent:    #6366f1;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size:   14px;
+  color:       var(--text);
+  background:  var(--bg);
+}
+
+body { min-height: 100vh; }
+
+/* ── Layout ────────────────────────────────────────────────────────────── */
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.app-title {
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.04em;
+  color: var(--text);
+}
+
+.app-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  gap: 0;
+}
+
+/* ── Robot views ───────────────────────────────────────────────────────── */
+.views-row {
+  display: flex;
+  flex: 1;
+  gap: 12px;
+  padding: 12px;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.view-card {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.view-title {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.calibrate-badge {
+  font-size: 10px;
+  background: #f9731622;
+  color: #f97316;
+  border: 1px solid #f9731644;
+  border-radius: 4px;
+  padding: 1px 6px;
+  letter-spacing: 0.05em;
+}
+
+/* ── Robot image + overlay container ───────────────────────────────────── */
+.robot-image-wrapper {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff08;
+}
+
+.robot-base-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+  user-select: none;
+}
+
+/* The arm overlay sits on top of the base image, exactly matching its
+   rendered size and position. Because both images are displayed with
+   object-fit: contain, we match that with the same CSS so they align. */
+.arm-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  /* Centre the image the same way object-fit: contain does.
+     This uses CSS to replicate contain behaviour — the actual pixel offset
+     is handled by the browser's layout for the base image. We use a JS-driven
+     approach below if sub-pixel alignment is needed; for now this is close
+     enough for most aspect ratios. */
+  transform-origin: 50% 50%; /* overridden inline by the component */
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+/* ── Status panel ───────────────────────────────────────────────────────── */
+.status-panel {
+  width: 220px;
+  flex-shrink: 0;
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  overflow-y: auto;
+  padding: 8px 0;
+}
+
+.status-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.status-section-header td {
+  padding: 10px 12px 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border-top: 1px solid var(--border);
+}
+
+.status-section-header:first-child td {
+  border-top: none;
+}
+
+.status-label {
+  padding: 3px 12px;
+  color: var(--muted);
+  white-space: nowrap;
+  font-size: 12px;
+}
+
+.status-value {
+  padding: 3px 12px 3px 4px;
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.status-unit {
+  font-weight: 400;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+/* ── Connection badge ───────────────────────────────────────────────────── */
+.connection-badge {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+}
+
+.connection-badge.connected    { color: #22c55e; border-color: #22c55e44; background: #22c55e11; }
+.connection-badge.disconnected { color: #ef4444; border-color: #ef444444; background: #ef444411; }
+
+.connection-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.connection-badge.connected    .connection-dot { background: #22c55e; box-shadow: 0 0 6px #22c55e; }
+.connection-badge.disconnected .connection-dot { background: #ef4444; animation: pulse 1.4s ease infinite; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+

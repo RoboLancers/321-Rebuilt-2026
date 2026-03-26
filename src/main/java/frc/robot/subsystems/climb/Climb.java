@@ -244,4 +244,24 @@ public class Climb extends SubsystemBase {
   public void turnOffMagnet() {
     magnetRelay.set(Value.kOff);
   }
+
+  @Logged(name = "climbMotorConnected")
+  public boolean isClimbMotorConnected() {
+    return climbMotor.getVersion().getStatus().isOK();
+  }
+
+  @Logged(name = "pivotClimbMotorConnected")
+  public boolean isPivotClimbMotorConnected() {
+    return pivotClimbMotor.getVersion().getStatus().isOK();
+  }
+
+  @Logged(name = "climbEncoderConnected")
+  public boolean isClimbEncoderConnected() {
+    return climbEncoder.getVersion().getStatus().isOK();
+  }
+
+  @Logged(name = "pivotEncoderConnected")
+  public boolean isPivotEncoderConnected() {
+    return pivotEncoder.getVersion().getStatus().isOK();
+  }
 }

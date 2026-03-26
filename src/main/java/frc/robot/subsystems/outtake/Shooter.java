@@ -174,6 +174,21 @@ public class Shooter extends SubsystemBase {
     return distanceSensor.getRange() < OuttakeConstants.kFuelRange;
   }
 
+  @Logged(name = "topShooterConnected")
+  public boolean isTopShooterConnected() {
+    return topShooterMotor.getVersion().getStatus().isOK();
+  }
+
+  @Logged(name = "bottomShooterConnected")
+  public boolean isBottomShooterConnected() {
+    return bottomShooterMotor.getVersion().getStatus().isOK();
+  }
+
+  @Logged(name = "tofConnected")
+  public boolean isTofConnected() {
+    return distanceSensor.isConnected();
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putNumber(
