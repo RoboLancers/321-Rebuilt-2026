@@ -10,7 +10,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
@@ -22,7 +21,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -179,8 +177,8 @@ public class RobotContainer {
                 .alongWith(
                     new // TODO: change to and then once end criteria is reimplemented
                     IntakeFuel(intakeRollers, intakePivot)));
-    
-    driver.y().toggleOnTrue(new GoToAngle(intakePivot, ()->IntakeConstants.kIntakePosition));
+
+    driver.y().toggleOnTrue(new GoToAngle(intakePivot, () -> IntakeConstants.kIntakePosition));
 
     driver
         .leftTrigger()
@@ -194,19 +192,33 @@ public class RobotContainer {
 
     driver
         .rightTrigger()
-        .whileTrue(new HomeHood(hood).andThen(new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance).alongWith(new RepeatCommand(drivetrain.jostleDrivetrain()))));
+        .whileTrue(
+            new HomeHood(hood)
+                .andThen(
+                    new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance)
+                        .alongWith(new RepeatCommand(drivetrain.jostleDrivetrain()))));
 
-    driver.rightBumper().whileTrue(new HomeHood(hood).andThen(new Feed(tunnel, shooter, hood, indexer)));
-   
-    driver.a().whileTrue(new HomeHood(hood).andThen(
-      new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance).alongWith(
-     new RepeatCommand(drivetrain.jostleDrivetrain()))));
+    driver
+        .rightBumper()
+        .whileTrue(new HomeHood(hood).andThen(new Feed(tunnel, shooter, hood, indexer)));
 
-    driver.b().whileTrue(new HomeHood(hood).andThen(
-      new Feed(tunnel, shooter, hood, indexer).alongWith(
-     new RepeatCommand(drivetrain.jostleDrivetrain()))));
-   
+    driver
+        .a()
+        .whileTrue(
+            new HomeHood(hood)
+                .andThen(
+                    new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance)
+                        .alongWith(new RepeatCommand(drivetrain.jostleDrivetrain()))));
+
+    driver
+        .b()
+        .whileTrue(
+            new HomeHood(hood)
+                .andThen(
+                    new Feed(tunnel, shooter, hood, indexer)
+                        .alongWith(new RepeatCommand(drivetrain.jostleDrivetrain()))));
   }
+
   @Logged(name = "autonomousCommand")
   public Command getAutonomousCommand() {
 

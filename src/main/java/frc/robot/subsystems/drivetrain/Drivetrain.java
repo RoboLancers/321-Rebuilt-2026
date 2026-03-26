@@ -2,7 +2,6 @@
 package frc.robot.subsystems.drivetrain;
 
 import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Radians;
@@ -30,7 +29,6 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -454,11 +452,10 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
             < rotTol.in(Degrees);
   }
 
-
- public Command jostleDrivetrain(){
-  return (driveRobotCentric(()->-1,()->0,()->0).withTimeout(0.2))
-  .andThen(driveRobotCentric(()->1, ()->0, ()->0).withTimeout(0.215));
- }
+  public Command jostleDrivetrain() {
+    return (driveRobotCentric(() -> -1, () -> 0, () -> 0).withTimeout(0.2))
+        .andThen(driveRobotCentric(() -> 1, () -> 0, () -> 0).withTimeout(0.215));
+  }
 
   public void setSwerveModuleStates(SwerveModuleState[] states) {
     for (int i = 0; i < super.getModules().length; i++) {
