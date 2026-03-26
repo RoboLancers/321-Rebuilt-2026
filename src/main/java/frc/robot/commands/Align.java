@@ -104,18 +104,11 @@ public final class Align {
   }
 
   public static Command rotateToHub(
-      Drivetrain drivetrain, Supplier<Rotation2d> hubHeading, Supplier<Pose2d> robotPose) {
-    return rotateToHubWhileDriving(
-        drivetrain,
-        () -> 0,
-        () -> 0,
-        () ->
-            new Rotation2d(
-                Degrees.of(hubHeading.get().getDegrees() + shooterFaceOffset.in(Degrees))),
-        robotPose);
+      Drivetrain drivetrain, DoubleSupplier translationX, DoubleSupplier translationY, Supplier<Rotation2d> hubHeading, Supplier<Pose2d> robotPose) {
+   return lockOnHub(drivetrain, translationX, translationY, hubHeading, robotPose).until(drivetrain.atHeading(hubHeading));
   }
 
-  public static Command rotateToHubWhileDriving(
+  public static Command lockOnHub(
       Drivetrain drivetrain,
       DoubleSupplier translationX,
       DoubleSupplier translationY,
@@ -128,6 +121,8 @@ public final class Align {
             new Rotation2d(
                 Degrees.of(hubHeading.get().getDegrees() + shooterFaceOffset.in(Degrees))));
   }
+
+  
 
   public static Command alignLeftClimb(Drivetrain drivetrain, Supplier<Pose2d> robotPose) {
     Pose2d climbPose =
