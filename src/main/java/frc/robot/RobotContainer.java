@@ -146,7 +146,6 @@ public class RobotContainer {
     // NamedCommands.registerCommand("IntakeFuel", intakeFuel);
     // NamedCommands.registerCommand("ShootFuel", shootFuel.releaseFuel(shooter));
   }
-   Pose2d setpoint = new Pose2d(0,0,Rotation2d.kZero);
 
   private void configureTuningBindings() {
 
@@ -181,7 +180,7 @@ public class RobotContainer {
                     new // TODO: change to and then once end criteria is reimplemented
                     IntakeFuel(intakeRollers, intakePivot)));
     
-    // driver.y().toggleOnTrue(new GoToAngle(intakePivot, ()->IntakeConstants.kIntakePosition));
+    driver.y().toggleOnTrue(new GoToAngle(intakePivot, ()->IntakeConstants.kIntakePosition));
 
     driver
         .leftTrigger()
@@ -198,14 +197,15 @@ public class RobotContainer {
         .whileTrue(new HomeHood(hood).andThen(new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance).alongWith(new RepeatCommand(drivetrain.jostleDrivetrain()))));
 
     driver.rightBumper().whileTrue(new HomeHood(hood).andThen(new Feed(tunnel, shooter, hood, indexer)));
-    // driver.x().onTrue(new HomeHood(hood));
    
-    driver.povLeft().onTrue(Commands.runOnce(()->{setpoint = drivetrain.getPose();}));
-    driver.y().whileTrue(new RepeatCommand(drivetrain.jostleDrivetrain()));
-    driver.b().whileTrue(new RepeatCommand(drivetrain.jostle(setpoint)));
-    
-    driver.a().whileTrue(new RepeatCommand(drivetrain.jostle2(setpoint)));
-    driver.x().whileTrue(new RepeatCommand(drivetrain.jostle3(setpoint)));
+    driver.a().whileTrue(new HomeHood(hood).andThen(
+      new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance).alongWith(
+     new RepeatCommand(drivetrain.jostleDrivetrain()))));
+
+    driver.b().whileTrue(new HomeHood(hood).andThen(
+      new Feed(tunnel, shooter, hood, indexer).alongWith(
+     new RepeatCommand(drivetrain.jostleDrivetrain()))));
+   
   }
   @Logged(name = "autonomousCommand")
   public Command getAutonomousCommand() {

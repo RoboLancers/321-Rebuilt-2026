@@ -22,13 +22,9 @@ public class IntakeFuel extends Command {
   }
 
   @Override
-  public void initialize() {
-    intakeRollers.setTargetVelocity(IntakeRollerConstants.kIntakeFuelVelocity);
-  }
-
-  @Override
   public void execute() {
     if (intakePivot.getAngle().in(Degrees) < 30) {
+      intakeRollers.setTargetVelocity(IntakeRollerConstants.kIntakeFuelVelocity);
       intakeRollers.goToVelocity(IntakeRollerConstants.kIntakeFuelVelocity);
     }
   }
