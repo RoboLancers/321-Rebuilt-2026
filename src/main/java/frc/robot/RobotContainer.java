@@ -7,7 +7,6 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -18,20 +17,14 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.Align;
-import frc.robot.commands.Feed;
-import frc.robot.commands.Release;
-import frc.robot.commands.ShootAndIndex;
+import frc.robot.commands.DemoShooting;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainConstants;
 import frc.robot.subsystems.hood.Hood;
-import frc.robot.subsystems.hood.hoodCommands.HomeHood;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.indexerCommands.SetIndexerVelocity;
 import frc.robot.subsystems.intakePivot.IntakeConstants;
@@ -113,15 +106,15 @@ public class RobotContainer {
     return rawJoystick;
   }
 
-  public double getDemoForward(){
+  public double getDemoForward() {
     return 0.15 * getDriverForward();
   }
 
-  public double getDemoStrafe(){
+  public double getDemoStrafe() {
     return 0.15 * getDriverStrafe();
   }
 
-  public double getDemoTurn(){
+  public double getDemoTurn() {
     return 0.3 * getDriverTurn();
   }
 
@@ -181,7 +174,8 @@ public class RobotContainer {
   //   shooter.setDefaultCommand(new SetShooterVelocity(shooter, () -> RPM.of(0)));
 
   //   drivetrain.setDefaultCommand(
-  //       drivetrain.teleopDrive(this::getDriverForward, this::getDriverStrafe, this::getDriverTurn));
+  //       drivetrain.teleopDrive(this::getDriverForward, this::getDriverStrafe,
+  // this::getDriverTurn));
 
   //   driver
   //       .leftBumper()
@@ -232,7 +226,7 @@ public class RobotContainer {
   //                       .alongWith(new RepeatCommand(drivetrain.jostleDrivetrain()))));
   // }
 
-  public void configureDemoBindings(){
+  public void configureDemoBindings() {
     tunnel.setDefaultCommand(new RunAtVelocity(tunnel, () -> RPM.of(0)));
     intakeRollers.setDefaultCommand(new SetIntakeVelocity(intakeRollers, () -> RPM.of(0)));
     indexer.setDefaultCommand(new SetIndexerVelocity(indexer, () -> RPM.of(0)));
@@ -254,10 +248,7 @@ public class RobotContainer {
 
     driver.y().toggleOnTrue(new GoToAngle(intakePivot, () -> IntakeConstants.kIntakePosition));
 
-    driver
-        .rightTrigger()
-        .whileTrue(
-                    new Release(tunnel, shooter, indexer));
+    driver.rightTrigger().whileTrue(new DemoShooting(tunnel, shooter, indexer));
   }
 
   @Logged(name = "autonomousCommand")
