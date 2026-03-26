@@ -113,6 +113,18 @@ public class RobotContainer {
     return rawJoystick;
   }
 
+  public double getDemoForward(){
+    return 0.15 * getDriverForward();
+  }
+
+  public double getDemoStrafe(){
+    return 0.15 * getDriverStrafe();
+  }
+
+  public double getDemoTurn(){
+    return 0.3 * getDriverTurn();
+  }
+
   @Logged(name = "calculatedHubHeading")
   public Rotation2d getHubHeading() {
     return RebuiltUtil.getHubHeading(drivetrain::getPose);
@@ -134,8 +146,9 @@ public class RobotContainer {
   }
 
   public RobotContainer() {
-    configureBindings();
+    // configureBindings();
     // configureTuningBindings();
+    configureDemoBindings();
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -217,6 +230,34 @@ public class RobotContainer {
                 .andThen(
                     new Feed(tunnel, shooter, hood, indexer)
                         .alongWith(new RepeatCommand(drivetrain.jostleDrivetrain()))));
+  }
+
+  public void configureDemoBindings(){
+    tunnel.setDefaultCommand(new RunAtVelocity(tunnel, () -> RPM.of(0)));
+    intakeRollers.setDefaultCommand(new SetIntakeVelocity(intakeRollers, () -> RPM.of(0)));
+    indexer.setDefaultCommand(new SetIndexerVelocity(indexer, () -> RPM.of(0)));
+    intakePivot.setDefaultCommand(
+        new GoToAngle(intakePivot, () -> IntakeConstants.kStowedPosition));
+    hood.setDefaultCommand(Commands.run(() -> hood.runVolts(Volts.of(0)), hood));
+    shooter.setDefaultCommand(new SetShooterVelocity(shooter, () -> RPM.of(0)));
+
+    drivetrain.setDefaultCommand(
+        drivetrain.teleopDrive(this::getDemoForward, this::getDemoStrafe, this::getDemoTurn));
+
+    driver
+        .leftBumper()
+        .whileTrue(
+            new GoToAngle(intakePivot, () -> IntakeConstants.kIntakePosition)
+                .alongWith(
+                    new // TODO: change to and then once end criteria is reimplemented
+                    IntakeFuel(intakeRollers, intakePivot)));
+
+    driver.y().toggleOnTrue(new GoToAngle(intakePivot, () -> IntakeConstants.kIntakePosition));
+
+    driver
+        .rightTrigger()
+        .whileTrue(
+                    new Release(tunnel, shooter, indexer));
   }
 
   @Logged(name = "autonomousCommand")
