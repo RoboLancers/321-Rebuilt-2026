@@ -31,7 +31,7 @@ public class StaticShoot extends Command {
     shooter.goToVelocity(OuttakeConstants.kStaticScoreRPM);
     shooter.setTargetVelocity(OuttakeConstants.kStaticScoreRPM);
 
-    if (Math.abs(shooter.getTopVelocity().in(RPM) - OuttakeConstants.kNeutralFeedRPM.in(RPM))
+    if (Math.abs(shooter.getTopVelocity().in(RPM) - OuttakeConstants.kStaticScoreRPM.in(RPM))
         < 25) {
       indexer.setTargetVelocity(indexer.getOscillationVelocity());
       tunnel.setTargetVelocity(TunnelConstants.kPassFuelRPM);

@@ -119,6 +119,16 @@ public class RobotContainer {
     return RebuiltUtil.getHubHeading(drivetrain::getPose);
   }
 
+  @Logged(name = "hubAngle")
+  public double getHubAngle() {
+    return getHubHeading().getDegrees();
+  }
+
+  @Logged(name = "robotAngle")
+  public double getRobotAngle() {
+    return drivetrain.getPose().getRotation().getDegrees();
+  }
+
   @Logged(name = "calculatedHubDistance")
   public Distance getHubDistance() {
     return RebuiltUtil.getHubDistance(drivetrain::getPose);
@@ -183,24 +193,43 @@ public class RobotContainer {
 
     driver
         .rightTrigger()
-        .whileTrue((Align.rotateToHub(drivetrain, this::getDriverForward, this::getDriverStrafe, this::getHubHeading, drivetrain::getPose).alongWith(new HomeHood(hood))).andThen(new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance).alongWith(Align.lockOnHub(drivetrain,this::getDriverForward, this::getDriverStrafe, this::getHubHeading, drivetrain::getPose))));
+        .whileTrue(
+            (Align.rotateToHub(
+                        drivetrain,
+                        this::getDriverForward,
+                        this::getDriverStrafe,
+                        this::getHubHeading,
+                        drivetrain::getPose)
+                    .alongWith(new HomeHood(hood)))
+                .andThen(
+                    new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance)
+                        .alongWith(
+                            Align.lockOnHub(
+                                drivetrain,
+                                this::getDriverForward,
+                                this::getDriverStrafe,
+                                this::getHubHeading,
+                                drivetrain::getPose))));
 
     driver
         .leftTrigger()
-        .whileTrue((Align.rotateToHub(drivetrain, this::getDriverForward, this::getDriverStrafe, this::getHubHeading, drivetrain::getPose).alongWith(new HomeHood(hood))).andThen(new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance).alongWith(new RepeatCommand(drivetrain.jostleDrivetrain()))));
-
+        .whileTrue(
+            (Align.rotateToHub(
+                        drivetrain,
+                        this::getDriverForward,
+                        this::getDriverStrafe,
+                        this::getHubHeading,
+                        drivetrain::getPose)
+                    .alongWith(new HomeHood(hood)))
+                .andThen(
+                    new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance)
+                        .alongWith(new RepeatCommand(drivetrain.jostleDrivetrain()))));
 
     driver
         .rightBumper()
         .whileTrue(new HomeHood(hood).andThen(new Feed(tunnel, shooter, hood, indexer)));
 
-    driver
-        .a()
-        .whileTrue(
-            new HomeHood(hood)
-                .andThen(
-                    new StaticShoot(tunnel, shooter, indexer)
-                        ));
+    driver.a().whileTrue(new HomeHood(hood).andThen(new StaticShoot(tunnel, shooter, indexer)));
 
     driver
         .b()

@@ -463,10 +463,6 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
     }
   }
 
-  public boolean atHeading(Rotation2d heading){
-    return Math.abs(getPose().getRotation().getDegrees() - heading.getDegrees()) <= 5;
-  }
-
   @Logged(name = "MeasuredModuleStates")
   public SwerveModuleState[] getMeasuredModuleStates() {
     return super.getState().ModuleStates;
