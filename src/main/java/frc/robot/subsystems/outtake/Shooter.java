@@ -23,6 +23,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Shooter extends SubsystemBase {
@@ -174,5 +175,18 @@ public class Shooter extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+    SmartDashboard.putNumber(
+        "Top Motor Velocity", topShooterMotor.getVelocity().getValue().in(RPM));
+    SmartDashboard.putNumber(
+        "Bottom Motor Velocity", bottomShooterMotor.getVelocity().getValue().in(RPM));
+    SmartDashboard.putNumber(
+        "Top Shooter Motor Voltage", topShooterMotor.getMotorVoltage().getValue().in(Volts));
+    SmartDashboard.putNumber(
+        "Bottom Shooter Motor Voltage", bottomShooterMotor.getMotorVoltage().getValue().in(Volts));
+    SmartDashboard.putNumber(
+        "Top Rotor Velocity", topShooterMotor.getRotorVelocity().getValue().in(RPM));
+    SmartDashboard.putNumber(
+        "Bottom Rotor Velocity", bottomShooterMotor.getRotorVelocity().getValue().in(RPM));
+  }
 }

@@ -1,6 +1,7 @@
 /* (C) RoboLancers 2026 */
 package frc.robot.subsystems.intakePivot;
 
+import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Volts;
@@ -138,6 +139,9 @@ public class IntakePivot extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("Intake Pivot Angle", getAngle().in(Degrees));
+    SmartDashboard.putNumber("Intake Pivot Voltage", getVoltage().in(Volts));
+    SmartDashboard.putNumber("Intake Pivot Current", getCurrent().in(Amps));
     SmartDashboard.putNumber("Pivot Target Voltage", targetVoltage);
     SmartDashboard.putNumber("Pivot Target Angle", loggedAngle);
   }
