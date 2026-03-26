@@ -148,89 +148,89 @@ public class RobotContainer {
   public RobotContainer() {
     // configureBindings();
     // configureTuningBindings();
-    configureDemoBindings();
+    // configureDemoBindings();
     autoChooser = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData("Auto Chooser", autoChooser);
+    // SmartDashboard.putData("Auto Chooser", autoChooser);
 
     // autoChooser.addOption("Test Auto", new PathPlannerAuto("Test Auto"));
-    autoChooser.addOption("Disrupt Auto", new PathPlannerAuto("Disrupt Auto"));
+    // autoChooser.addOption("Disrupt Auto", new PathPlannerAuto("Disrupt Auto"));
     // NamedCommands.registerCommand("IntakeFuel", intakeFuel);
     // NamedCommands.registerCommand("ShootFuel", shootFuel.releaseFuel(shooter));
   }
 
-  private void configureTuningBindings() {
+  // private void configureTuningBindings() {
 
-    intakeRollers.setDefaultCommand(
-        Commands.run(() -> intakeRollers.setVoltage(Volts.of(0)), intakeRollers));
+  //   intakeRollers.setDefaultCommand(
+  //       Commands.run(() -> intakeRollers.setVoltage(Volts.of(0)), intakeRollers));
 
-    intakePivot.setDefaultCommand(
-        Commands.run(() -> intakePivot.setVoltage(Volts.of(0)), intakePivot));
+  //   intakePivot.setDefaultCommand(
+  //       Commands.run(() -> intakePivot.setVoltage(Volts.of(0)), intakePivot));
 
-    indexer.setDefaultCommand(Commands.run(() -> indexer.setVoltage(Volts.of(0)), indexer));
+  //   indexer.setDefaultCommand(Commands.run(() -> indexer.setVoltage(Volts.of(0)), indexer));
 
-    driver.rightTrigger().whileTrue(new Release(tunnel, shooter, indexer));
-  }
+  //   driver.rightTrigger().whileTrue(new Release(tunnel, shooter, indexer));
+  // }
 
-  private void configureBindings() {
-    tunnel.setDefaultCommand(new RunAtVelocity(tunnel, () -> RPM.of(0)));
-    intakeRollers.setDefaultCommand(new SetIntakeVelocity(intakeRollers, () -> RPM.of(0)));
-    indexer.setDefaultCommand(new SetIndexerVelocity(indexer, () -> RPM.of(0)));
-    intakePivot.setDefaultCommand(
-        new GoToAngle(intakePivot, () -> IntakeConstants.kStowedPosition));
-    hood.setDefaultCommand(Commands.run(() -> hood.runVolts(Volts.of(0)), hood));
-    shooter.setDefaultCommand(new SetShooterVelocity(shooter, () -> RPM.of(0)));
+  // private void configureBindings() {
+  //   tunnel.setDefaultCommand(new RunAtVelocity(tunnel, () -> RPM.of(0)));
+  //   intakeRollers.setDefaultCommand(new SetIntakeVelocity(intakeRollers, () -> RPM.of(0)));
+  //   indexer.setDefaultCommand(new SetIndexerVelocity(indexer, () -> RPM.of(0)));
+  //   intakePivot.setDefaultCommand(
+  //       new GoToAngle(intakePivot, () -> IntakeConstants.kStowedPosition));
+  //   hood.setDefaultCommand(Commands.run(() -> hood.runVolts(Volts.of(0)), hood));
+  //   shooter.setDefaultCommand(new SetShooterVelocity(shooter, () -> RPM.of(0)));
 
-    drivetrain.setDefaultCommand(
-        drivetrain.teleopDrive(this::getDriverForward, this::getDriverStrafe, this::getDriverTurn));
+  //   drivetrain.setDefaultCommand(
+  //       drivetrain.teleopDrive(this::getDriverForward, this::getDriverStrafe, this::getDriverTurn));
 
-    driver
-        .leftBumper()
-        .whileTrue(
-            new GoToAngle(intakePivot, () -> IntakeConstants.kIntakePosition)
-                .alongWith(
-                    new // TODO: change to and then once end criteria is reimplemented
-                    IntakeFuel(intakeRollers, intakePivot)));
+  //   driver
+  //       .leftBumper()
+  //       .whileTrue(
+  //           new GoToAngle(intakePivot, () -> IntakeConstants.kIntakePosition)
+  //               .alongWith(
+  //                   new // TODO: change to and then once end criteria is reimplemented
+  //                   IntakeFuel(intakeRollers, intakePivot)));
 
-    driver.y().toggleOnTrue(new GoToAngle(intakePivot, () -> IntakeConstants.kIntakePosition));
+  //   driver.y().toggleOnTrue(new GoToAngle(intakePivot, () -> IntakeConstants.kIntakePosition));
 
-    driver
-        .leftTrigger()
-        .whileTrue(
-            Align.rotateToHubWhileDriving(
-                drivetrain,
-                this::getDriverForward,
-                this::getDriverStrafe,
-                this::getHubHeading,
-                drivetrain::getPose));
+  //   driver
+  //       .leftTrigger()
+  //       .whileTrue(
+  //           Align.rotateToHubWhileDriving(
+  //               drivetrain,
+  //               this::getDriverForward,
+  //               this::getDriverStrafe,
+  //               this::getHubHeading,
+  //               drivetrain::getPose));
 
-    driver
-        .rightTrigger()
-        .whileTrue(
-            new HomeHood(hood)
-                .andThen(
-                    new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance)
-                        .alongWith(new RepeatCommand(drivetrain.jostleDrivetrain()))));
+  //   driver
+  //       .rightTrigger()
+  //       .whileTrue(
+  //           new HomeHood(hood)
+  //               .andThen(
+  //                   new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance)
+  //                       .alongWith(new RepeatCommand(drivetrain.jostleDrivetrain()))));
 
-    driver
-        .rightBumper()
-        .whileTrue(new HomeHood(hood).andThen(new Feed(tunnel, shooter, hood, indexer)));
+  //   driver
+  //       .rightBumper()
+  //       .whileTrue(new HomeHood(hood).andThen(new Feed(tunnel, shooter, hood, indexer)));
 
-    driver
-        .a()
-        .whileTrue(
-            new HomeHood(hood)
-                .andThen(
-                    new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance)
-                        .alongWith(new RepeatCommand(drivetrain.jostleDrivetrain()))));
+  //   driver
+  //       .a()
+  //       .whileTrue(
+  //           new HomeHood(hood)
+  //               .andThen(
+  //                   new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance)
+  //                       .alongWith(new RepeatCommand(drivetrain.jostleDrivetrain()))));
 
-    driver
-        .b()
-        .whileTrue(
-            new HomeHood(hood)
-                .andThen(
-                    new Feed(tunnel, shooter, hood, indexer)
-                        .alongWith(new RepeatCommand(drivetrain.jostleDrivetrain()))));
-  }
+  //   driver
+  //       .b()
+  //       .whileTrue(
+  //           new HomeHood(hood)
+  //               .andThen(
+  //                   new Feed(tunnel, shooter, hood, indexer)
+  //                       .alongWith(new RepeatCommand(drivetrain.jostleDrivetrain()))));
+  // }
 
   public void configureDemoBindings(){
     tunnel.setDefaultCommand(new RunAtVelocity(tunnel, () -> RPM.of(0)));
