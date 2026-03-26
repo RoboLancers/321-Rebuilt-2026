@@ -8,7 +8,6 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.indexer.Indexer;
-import frc.robot.subsystems.indexer.IndexerConstants;
 import frc.robot.subsystems.outtake.Shooter;
 import frc.robot.subsystems.tunnel.Tunnel;
 import frc.robot.subsystems.tunnel.TunnelConstants;
@@ -37,18 +36,9 @@ public class ShootAndIndex extends Command {
     addRequirements(tunnel, shooter, hood, indexer);
   }
 
-  Distance hubDistance = hubDistanceSupplier.get();
-
-  @Override
-  public void initialize() {
-    hood.setTargetAngle(hood.getScoreAngle(hubDistance));
-    shooter.setTargetVelocity(shooter.getScoreVelocity(hubDistance));
-    indexer.setTargetVelocity(IndexerConstants.kIndexVelocity);
-    tunnel.setTargetVelocity(TunnelConstants.kPassFuelRPM);
-  }
-
   @Override
   public void execute() {
+    Distance hubDistance = hubDistanceSupplier.get();
     shooter.goToVelocity(shooter.getScoreVelocity(hubDistance));
     hood.goToAngle(hood.getScoreAngle(hubDistance));
     hood.setTargetAngle(hood.getScoreAngle(hubDistance));
@@ -57,8 +47,8 @@ public class ShootAndIndex extends Command {
     if (Math.abs(shooter.getTopVelocity().in(RPM) - shooter.getScoreVelocity(hubDistance).in(RPM))
         < 25) {
       tunnel.goToVelocity(TunnelConstants.kPassFuelRPM);
-      indexer.goToVelocity(IndexerConstants.kIndexVelocity);
-      indexer.setTargetVelocity(IndexerConstants.kIndexVelocity);
+      indexer.setTargetVelocity(indexer.getOscillationVelocity());
+      indexer.goToVelocity(indexer.getOscillationVelocity());
       tunnel.setTargetVelocity(TunnelConstants.kPassFuelRPM);
     }
   }

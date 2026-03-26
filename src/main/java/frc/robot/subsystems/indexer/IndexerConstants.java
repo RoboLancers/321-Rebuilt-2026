@@ -13,20 +13,22 @@ public class IndexerConstants {
 
   public static double kCurrentLimit = 60;
 
-  public static boolean kInverted = true;
+  public static boolean kInverted = false;
 
-  public static double kGearing = 4;
+  public static double kGearing = 9;
 
-  public static AngularVelocity kMaxVelocity = RPM.of(1000);
+  public static AngularVelocity kMaxVelocity = RPM.of(615);
 
-  public static AngularAcceleration kMaxAcceleration = RotationsPerSecondPerSecond.of(16);
+  public static AngularAcceleration kMaxAcceleration = RotationsPerSecondPerSecond.of(18);
 
-  public static AngularVelocity kIndexVelocity = RPM.of(500);
+  public static AngularVelocity kIndexVelocity = RPM.of(560);
+
+  public static double kOscillationAmplitude = 40;
 
   public static AngularVelocity kReleaseVelocity = RPM.of(0);
 
   public static double kP = 0;
   public static double kD = 0;
-  public static double kV = 0.00795;
-  public static double kS = 0.50;
+  public static double kV = 0.018;
+  public static double kS = 0;
 }

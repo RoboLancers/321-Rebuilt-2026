@@ -32,7 +32,8 @@ public class GoToAngle extends Command {
 
   @Override
   public boolean isFinished() {
-    return intakePivot.atAngle(angleSupplier.get());
+    //   return intakePivot.atAngle(angleSupplier.get());
+    return false; // TODO: reimplement end condition with braking stage
   }
 
   @Override
