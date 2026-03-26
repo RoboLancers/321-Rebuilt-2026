@@ -36,5 +36,5 @@ public class TunnelConstants {
 
   public static final AngularVelocity kTunnelMaxVelocity = RPM.of(700);
   public static final AngularAcceleration kTunnelMaxAcceleration =
-      RotationsPerSecondPerSecond.of(1000);
+      RotationsPerSecondPerSecond.of(12);
 }
