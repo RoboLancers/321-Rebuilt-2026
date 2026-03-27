@@ -30,7 +30,7 @@ public class VisionConstants {
       new Transform3d(
           Inches.of(-11.113),
           Inches.of(9.233),
-          Inches.of(14.460),
+          Inches.of(15.160),
           new Rotation3d(Degrees.zero(), Degrees.zero(), Degrees.of(48)));
 
   public static final Transform3d kRightClimbCameraTransform =
