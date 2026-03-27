@@ -208,7 +208,7 @@ public class RobotContainer {
     driver
         .leftTrigger()
         .whileTrue(
-            Align.rotateToHub(
+            Align.lockOnHub(
                         drivetrain,
                         this::getDriverForward,
                         this::getDriverStrafe,

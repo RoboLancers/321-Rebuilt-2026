@@ -103,16 +103,6 @@ public final class Align {
     return drivetrain.driveToFieldPoseCommand(() -> getHubScoringPose(robotPose), robotPose);
   }
 
-  public static Command rotateToHub(
-      Drivetrain drivetrain,
-      DoubleSupplier translationX,
-      DoubleSupplier translationY,
-      Supplier<Rotation2d> hubHeading,
-      Supplier<Pose2d> robotPose) {
-    return lockOnHub(drivetrain, translationX, translationY, hubHeading, robotPose)
-        .withTimeout(0.5);
-  }
-
   public static Command lockOnHub(
       Drivetrain drivetrain,
       DoubleSupplier translationX,
