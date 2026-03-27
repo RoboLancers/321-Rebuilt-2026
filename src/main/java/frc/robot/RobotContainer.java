@@ -142,14 +142,12 @@ public class RobotContainer {
     IntakeFuel intakeFuel = new IntakeFuel(intakeRollers);
     GoToAngle goToAngle = new GoToAngle(intakePivot, () -> Degrees.of(0));
     ParallelRaceGroup intakeInAuto = new ParallelRaceGroup(intakeFuel.withTimeout(6), goToAngle);
-    Command align = Commands.run(
-            () ->
-                Align.rotateToHubWhileDriving(
+    Command align = Align.rotateToHubWhileDriving(
                     drivetrain,
-                    this::getDriverForward,
-                    this::getDriverStrafe,
+                    () -> 0,
+                    () -> 0,
                     this::getHubHeading,
-                    drivetrain::getPose));
+                    drivetrain::getPose);
     ParallelRaceGroup alignInAuto = new ParallelRaceGroup(align.withTimeout(2));
 
     ShootAndIndex shootInAuto =
