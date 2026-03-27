@@ -172,12 +172,8 @@ public class RobotContainer {
     IntakeFuel intakeFuel = new IntakeFuel(intakeRollers, intakePivot);
     GoToAngle goToAngle = new GoToAngle(intakePivot, () -> Degrees.of(0));
     ParallelRaceGroup intakeInAuto = new ParallelRaceGroup(intakeFuel.withTimeout(6), goToAngle);
-    Command align = Align.lockOnHub(
-                    drivetrain,
-                    () -> 0,
-                    () -> 0,
-                    this::getHubHeading,
-                    drivetrain::getPose);
+    Command align =
+        Align.lockOnHub(drivetrain, () -> 0, () -> 0, this::getHubHeading, drivetrain::getPose);
     ParallelRaceGroup alignInAuto = new ParallelRaceGroup(align.withTimeout(2));
 
     ShootAndIndex shootInAuto =
@@ -189,7 +185,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("IntakePivotPosition", goToAngle);
     NamedCommands.registerCommand("ShootFuel", shootInAuto);
     NamedCommands.registerCommand("Align", alignInAuto);
-        
+
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
