@@ -452,11 +452,6 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
             < rotTol.in(Degrees);
   }
 
-  public Command jostleDrivetrain() {
-    return (driveRobotCentric(() -> -1, () -> 0, () -> 0).withTimeout(0.2))
-        .andThen(driveRobotCentric(() -> 1, () -> 0, () -> 0).withTimeout(0.215));
-  }
-
   public void setSwerveModuleStates(SwerveModuleState[] states) {
     for (int i = 0; i < super.getModules().length; i++) {
       super.getModule(i).apply(new ModuleRequest().withState(states[i]));
