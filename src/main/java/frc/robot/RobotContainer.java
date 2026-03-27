@@ -1,13 +1,14 @@
 /* (C) RoboLancers 2026 */
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -21,6 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Align;
@@ -72,7 +74,7 @@ public class RobotContainer {
     return vision.getLatestBestPose();
   }
 
-  private final SendableChooser<Command> autoChooser;
+  private SendableChooser<Command> autoChooser;
 
   public Trigger slowMode = driver.b();
 
@@ -165,13 +167,29 @@ public class RobotContainer {
   public RobotContainer() {
     configureBindings();
     // configureTuningBindings();
+    configureNamedAutoCommands();
+    configureAutoChooser();
+  }
+
+  private void configureNamedAutoCommands() {
+    IntakeFuel intakeFuel = new IntakeFuel(intakeRollers, intakePivot);
+    GoToAngle goToAngle = new GoToAngle(intakePivot, () -> Degrees.of(0));
+    ParallelRaceGroup intakeInAuto = new ParallelRaceGroup(intakeFuel.withTimeout(6), goToAngle);
+    Command align =
+        Align.lockOnHub(drivetrain, () -> 0, () -> 0, this::getHubHeading, drivetrain::getPose);
+    ParallelRaceGroup alignInAuto = new ParallelRaceGroup(align.withTimeout(2));
+    ShootAndIndex shootInAuto =
+        new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance);
+
+    NamedCommands.registerCommand("IntakeFuel", intakeInAuto);
+    NamedCommands.registerCommand("IntakePivotPosition", goToAngle);
+    NamedCommands.registerCommand("ShootFuel", shootInAuto);
+    NamedCommands.registerCommand("Align", alignInAuto);
+  }
+
+  private void configureAutoChooser() {
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
-
-    // autoChooser.addOption("Test Auto", new PathPlannerAuto("Test Auto"));
-    autoChooser.addOption("Disrupt Auto", new PathPlannerAuto("Disrupt Auto"));
-    // NamedCommands.registerCommand("IntakeFuel", intakeFuel);
-    // NamedCommands.registerCommand("ShootFuel", shootFuel.releaseFuel(shooter));
   }
 
   private void configureTuningBindings() {

@@ -7,25 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Top Depot Path 1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "IntakeFuel"
+            "pathName": "Top depot path"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Top Depot Path 2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootFuel"
+            "pathName": "TopDepotPath2"
           }
         }
       ]
