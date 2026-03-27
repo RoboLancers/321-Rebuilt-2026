@@ -125,7 +125,7 @@ public final class Align {
                     hubHeading.get().getDegrees()
                         + RobotConstants.kShooterFaceOffset.in(Degrees))));
   }
-
+  
   public static Command alignLeftClimb(Drivetrain drivetrain, Supplier<Pose2d> robotPose) {
     Pose2d climbPose =
         (MyAlliance.isRed()
