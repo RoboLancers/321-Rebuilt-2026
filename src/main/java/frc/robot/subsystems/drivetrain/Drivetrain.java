@@ -458,6 +458,17 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
     }
   }
 
+  public boolean shooterAtHeading(Rotation2d heading) {
+    return Math.abs(
+            Math.floorMod(
+                    Math.round(
+                        getPose().getRotation().getDegrees()
+                            - RobotConstants.kShooterFaceOffset.in(Degrees)),
+                    360)
+                - Math.floorMod(Math.round(heading.getDegrees()), 360))
+        <= DrivetrainConstants.kSpinupRange.in(Degrees);
+  }
+
   @Logged(name = "MeasuredModuleStates")
   public SwerveModuleState[] getMeasuredModuleStates() {
     return super.getState().ModuleStates;

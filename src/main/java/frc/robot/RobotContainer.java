@@ -30,10 +30,10 @@ import frc.robot.commands.Align;
 import frc.robot.commands.Feed;
 import frc.robot.commands.Release;
 import frc.robot.commands.ShootAndIndex;
+import frc.robot.commands.StaticShoot;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainConstants;
 import frc.robot.subsystems.hood.Hood;
-import frc.robot.subsystems.hood.hoodCommands.HomeHood;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.indexerCommands.SetIndexerVelocity;
 import frc.robot.subsystems.intakePivot.IntakeConstants;
@@ -120,6 +120,36 @@ public class RobotContainer {
     return RebuiltUtil.getHubHeading(drivetrain::getPose);
   }
 
+  @Logged(name = "hubAngle")
+  public double getHubAngle() {
+    return getHubHeading().getDegrees();
+  }
+
+  @Logged(name = "robotAngle")
+  public double getRobotAngle() {
+    return drivetrain.getPose().getRotation().getDegrees();
+  }
+
+  @Logged(name = "shooterAngle")
+  public double getShooterAngle() {
+    return getRobotAngle() - 90;
+  }
+
+  @Logged(name = "finalShooterAngle")
+  public double getFinalShooterAngle() {
+    return Math.floorMod(Math.round(getShooterAngle()), 360);
+  }
+
+  @Logged(name = "finalHubAngle")
+  public double getFinalHubAngle() {
+    return Math.floorMod(Math.round(getHubAngle()), 360);
+  }
+
+  @Logged(name = "shooterAtHeading")
+  public boolean shooterAtHeading() {
+    return drivetrain.shooterAtHeading(getHubHeading());
+  }
+
   @Logged(name = "calculatedHubDistance")
   public Distance getHubDistance() {
     return RebuiltUtil.getHubDistance(drivetrain::getPose);
@@ -139,10 +169,10 @@ public class RobotContainer {
     configureBindings();
     // configureTuningBindings();
     // ShootFuel shootFuel = new ShootFuel();
-    IntakeFuel intakeFuel = new IntakeFuel(intakeRollers);
+    IntakeFuel intakeFuel = new IntakeFuel(intakeRollers, intakePivot);
     GoToAngle goToAngle = new GoToAngle(intakePivot, () -> Degrees.of(0));
     ParallelRaceGroup intakeInAuto = new ParallelRaceGroup(intakeFuel.withTimeout(6), goToAngle);
-    Command align = Align.rotateToHubWhileDriving(
+    Command align = Align.lockOnHub(
                     drivetrain,
                     () -> 0,
                     () -> 0,
@@ -186,7 +216,7 @@ public class RobotContainer {
     intakeRollers.setDefaultCommand(new SetIntakeVelocity(intakeRollers, () -> RPM.of(0)));
     indexer.setDefaultCommand(new SetIndexerVelocity(indexer, () -> RPM.of(0)));
     intakePivot.setDefaultCommand(
-        Commands.run(() -> intakePivot.setVoltage(Volts.of(0)), intakePivot));
+        new GoToAngle(intakePivot, () -> IntakeConstants.kStowedPosition));
     hood.setDefaultCommand(Commands.run(() -> hood.runVolts(Volts.of(0)), hood));
     shooter.setDefaultCommand(new SetShooterVelocity(shooter, () -> RPM.of(0)));
 
@@ -199,28 +229,42 @@ public class RobotContainer {
             new GoToAngle(intakePivot, () -> IntakeConstants.kIntakePosition)
                 .alongWith(
                     new // TODO: change to and then once end criteria is reimplemented
-                    IntakeFuel(intakeRollers)));
+                    IntakeFuel(intakeRollers, intakePivot)));
 
-    driver.y().onTrue(new GoToAngle(intakePivot, () -> IntakeConstants.kStowedPosition));
+    driver.y().toggleOnTrue(new GoToAngle(intakePivot, () -> IntakeConstants.kIntakePosition));
+
+    driver
+        .rightTrigger()
+        .whileTrue(
+            (Align.rotateToHub(
+                    drivetrain,
+                    this::getDriverForward,
+                    this::getDriverStrafe,
+                    this::getHubHeading,
+                    drivetrain::getPose))
+                .andThen(
+                    new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance)
+                        .alongWith(
+                            Align.lockOnHub(
+                                drivetrain,
+                                this::getDriverForward,
+                                this::getDriverStrafe,
+                                this::getHubHeading,
+                                drivetrain::getPose))));
 
     driver
         .leftTrigger()
         .whileTrue(
-            Align.rotateToHubWhileDriving(
+            Align.lockOnHub(
                 drivetrain,
                 this::getDriverForward,
                 this::getDriverStrafe,
                 this::getHubHeading,
                 drivetrain::getPose));
 
-    driver
-        .rightTrigger()
-        .whileTrue(
-            new HomeHood(hood)
-                .andThen(new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance)));
-
     driver.rightBumper().whileTrue(new Feed(tunnel, shooter, hood, indexer));
-    driver.x().onTrue(new HomeHood(hood));
+
+    driver.a().whileTrue(new StaticShoot(tunnel, shooter, indexer));
   }
 
   @Logged(name = "autonomousCommand")

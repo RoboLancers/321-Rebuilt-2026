@@ -118,6 +118,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    CommandScheduler.getInstance().schedule(new HomeHood(m_robotContainer.hood));
   }
 
   @Override
