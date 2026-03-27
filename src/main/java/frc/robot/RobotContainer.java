@@ -75,7 +75,7 @@ public class RobotContainer {
     return vision.getLatestBestPose();
   }
 
-  private final SendableChooser<Command> autoChooser;
+  private SendableChooser<Command> autoChooser;
 
   public Trigger slowMode = driver.b();
 
@@ -168,30 +168,53 @@ public class RobotContainer {
   public RobotContainer() {
     configureBindings();
     // configureTuningBindings();
-    // ShootFuel shootFuel = new ShootFuel();
+    configureNamedAutoCommands();
+    configureAutoChooser();
+  }
+
+  private void configureNamedAutoCommands() {
     IntakeFuel intakeFuel = new IntakeFuel(intakeRollers, intakePivot);
     GoToAngle goToAngle = new GoToAngle(intakePivot, () -> Degrees.of(0));
     ParallelRaceGroup intakeInAuto = new ParallelRaceGroup(intakeFuel.withTimeout(6), goToAngle);
     Command align =
         Align.lockOnHub(drivetrain, () -> 0, () -> 0, this::getHubHeading, drivetrain::getPose);
     ParallelRaceGroup alignInAuto = new ParallelRaceGroup(align.withTimeout(2));
-
     ShootAndIndex shootInAuto =
         new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance);
 
-    // NamedCommands.registerCommand(
-    //     "ShootFuel", Commands.run(() -> shooter.setVoltage(Volts.of(10))));
     NamedCommands.registerCommand("IntakeFuel", intakeInAuto);
     NamedCommands.registerCommand("IntakePivotPosition", goToAngle);
     NamedCommands.registerCommand("ShootFuel", shootInAuto);
     NamedCommands.registerCommand("Align", alignInAuto);
+  }
 
+  private void configureAutoChooser(){
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
-    // autoChooser.addOption("Test Auto", new PathPlannerAuto("Test Auto"));
+  // private static final String kCenterDepotAuto = "Center Depot Auto";
+  // private static final String kTopDepotAuto = "Top Depot Auto";
+  // private static final String kBottomDepotAuto = "Bottom Depot Auto";
+  // private static final String kBottomAuto = "Bottom Auto";
+  // private static final String kBottomBumpAuto = "Bottom Bump Auto";
+  // private static final String kCenterAuto = "Center Auto";
+  // private static final String kTopAuto = "Top Auto";
+  // private static final String kTopBumpAuto = "Top Bump Auto";
+  // private static final String kDefaultAuto = "No Auto";
+  // private static final String kTestAuto = "Test Auto";
+  // private static final String kStationaryAuto = "--FAKE--";
+
+    autoChooser.setDefaultOption("No Auto", Commands.none());
     autoChooser.addOption("Disrupt Auto", new PathPlannerAuto("Disrupt Auto"));
-    // NamedCommands.registerCommand("IntakeFuel", intakeFuel);
+    autoChooser.addOption("Top Depot Auto", new PathPlannerAuto("Top Depot Auto"));
+    autoChooser.addOption("Bottom Depot Auto", new PathPlannerAuto("Bottom Depot Auto"));
+    autoChooser.addOption("Bottom Auto", new PathPlannerAuto("Bottom Auto"));
+    autoChooser.addOption("Bottom Bump Auto", new PathPlannerAuto("Bottom Bump Auto"));
+    autoChooser.addOption("Center Auto", new PathPlannerAuto("Center Auto"));
+    autoChooser.addOption("Top Auto", new PathPlannerAuto("Top Auto"));
+    autoChooser.addOption("Top Bump Auto", new PathPlannerAuto("Top Bump Auto"));
+    autoChooser.addOption("Test Auto", new PathPlannerAuto("Test Auto"));
+    autoChooser.addOption("Stationary Auto", new PathPlannerAuto("Stationary Auto"));
   }
 
   private void configureTuningBindings() {
@@ -266,6 +289,7 @@ public class RobotContainer {
   @Logged(name = "autonomousCommand")
   public Command getAutonomousCommand() {
 
+  
     return autoChooser.getSelected();
   }
 }

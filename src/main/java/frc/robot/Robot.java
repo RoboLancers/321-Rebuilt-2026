@@ -15,25 +15,7 @@ import frc.robot.subsystems.hood.hoodCommands.HomeHood;
 
 @Logged
 public class Robot extends TimedRobot {
-  @NotLogged private String autoSelected;
-  private SendableChooser<String> chooser = new SendableChooser<>();
   @NotLogged private Command m_autonomousCommand;
-  private static final String kCenterDepotAuto = "Center Depot Auto";
-  private static final String kTopDepotAuto = "Top Depot Auto";
-  private static final String kBottomDepotAuto = "Bottom Depot Auto";
-  private static final String kBottomAuto = "Bottom Auto";
-  private static final String kBottomBumpAuto = "Bottom Bump Auto";
-  private static final String kCenterAuto = "Center Auto";
-  private static final String kTopAuto = "Top Auto";
-  private static final String kTopBumpAuto = "Top Bump Auto";
-  private static final String kDefaultAuto = "No Auto";
-  private static final String kTestAuto = "Test Auto";
-  private static final String kStationaryAuto = "--FAKE--";
-
-  @Logged // (name = "autonomousCommandName")
-  public String getAutonomousCommand() {
-    return chooser.getSelected();
-  }
 
   private final RobotContainer m_robotContainer;
 
@@ -41,20 +23,6 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
     DataLogManager.start();
     DriverStation.startDataLog(DataLogManager.getLog());
-    chooser.addOption("Center Depot Auto", kCenterDepotAuto);
-    chooser.addOption("Top Depot Auto", kTopDepotAuto);
-    chooser.addOption("Bottom Depot Auto", kBottomDepotAuto);
-    chooser.addOption("Bottom Auto", kBottomAuto);
-    chooser.addOption("Center Auto", kCenterAuto);
-    chooser.addOption("Top Auto", kTopAuto);
-    chooser.addOption("Bottom Bump Auto", kBottomBumpAuto);
-    chooser.addOption("Top Bump Auto", kTopBumpAuto);
-    chooser.addOption("Stationary Auto", kStationaryAuto);
-    chooser.setDefaultOption("Disrupt Auto", "Disrupt Auto");
-    chooser.addOption("Test Auto", kTestAuto);
-    chooser.addOption("Center Depot + Outpost Auto", "Center Depot + Outpost Auto");
-
-    SmartDashboard.putData("Auto choices", chooser);
     Epilogue.bind(this);
   }
 
@@ -84,8 +52,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    autoSelected = chooser.getSelected();
-    System.out.println("Auto selected: " + autoSelected);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     CommandScheduler.getInstance().schedule((new HomeHood(m_robotContainer.hood)));
@@ -96,19 +62,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
-    switch (autoSelected) {
-      case kCenterDepotAuto:
-      case kTopDepotAuto:
-      case kBottomDepotAuto:
-      case kBottomAuto:
-      case kCenterAuto:
-      case kTopAuto:
-      case kBottomBumpAuto:
-      case kTopBumpAuto:
-      case kTestAuto:
-        break;
-    }
   }
+  
 
   @Override
   public void autonomousExit() {}
