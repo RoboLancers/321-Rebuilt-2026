@@ -134,17 +134,17 @@ public class RobotContainer {
   }
 
   @Logged(name = "finalShooterAngle")
-  public double getFinalShooterAngle(){
+  public double getFinalShooterAngle() {
     return Math.floorMod(Math.round(getShooterAngle()), 360);
   }
 
   @Logged(name = "finalHubAngle")
-  public double getFinalHubAngle(){
-    return Math.floorMod(Math.round(getHubAngle()),360);
+  public double getFinalHubAngle() {
+    return Math.floorMod(Math.round(getHubAngle()), 360);
   }
 
   @Logged(name = "shooterAtHeading")
-  public boolean shooterAtHeading(){
+  public boolean shooterAtHeading() {
     return drivetrain.shooterAtHeading(getHubHeading());
   }
 
@@ -213,7 +213,14 @@ public class RobotContainer {
     driver
         .rightTrigger()
         .whileTrue(
-            (new HomeHood(hood).alongWith(Align.rotateToHub(drivetrain, this::getDriverForward, this::getDriverStrafe, this::getHubHeading, drivetrain::getPose)))
+            (new HomeHood(hood)
+                    .alongWith(
+                        Align.rotateToHub(
+                            drivetrain,
+                            this::getDriverForward,
+                            this::getDriverStrafe,
+                            this::getHubHeading,
+                            drivetrain::getPose)))
                 .andThen(
                     new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance)
                         .alongWith(
@@ -228,11 +235,11 @@ public class RobotContainer {
         .leftTrigger()
         .whileTrue(
             Align.lockOnHub(
-                    drivetrain,
-                    this::getDriverForward,
-                    this::getDriverStrafe,
-                    this::getHubHeading,
-                    drivetrain::getPose));
+                drivetrain,
+                this::getDriverForward,
+                this::getDriverStrafe,
+                this::getHubHeading,
+                drivetrain::getPose));
 
     driver
         .rightBumper()
@@ -241,7 +248,7 @@ public class RobotContainer {
     driver.a().whileTrue(new HomeHood(hood).andThen(new StaticShoot(tunnel, shooter, indexer)));
   }
 
-  @Logged(name = "autonomousCommand") 
+  @Logged(name = "autonomousCommand")
   public Command getAutonomousCommand() {
 
     return autoChooser.getSelected();
