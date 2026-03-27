@@ -188,21 +188,21 @@ public class RobotContainer {
     NamedCommands.registerCommand("Align", alignInAuto);
   }
 
-  private void configureAutoChooser(){
+  private void configureAutoChooser() {
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
-  // private static final String kCenterDepotAuto = "Center Depot Auto";
-  // private static final String kTopDepotAuto = "Top Depot Auto";
-  // private static final String kBottomDepotAuto = "Bottom Depot Auto";
-  // private static final String kBottomAuto = "Bottom Auto";
-  // private static final String kBottomBumpAuto = "Bottom Bump Auto";
-  // private static final String kCenterAuto = "Center Auto";
-  // private static final String kTopAuto = "Top Auto";
-  // private static final String kTopBumpAuto = "Top Bump Auto";
-  // private static final String kDefaultAuto = "No Auto";
-  // private static final String kTestAuto = "Test Auto";
-  // private static final String kStationaryAuto = "--FAKE--";
+    // private static final String kCenterDepotAuto = "Center Depot Auto";
+    // private static final String kTopDepotAuto = "Top Depot Auto";
+    // private static final String kBottomDepotAuto = "Bottom Depot Auto";
+    // private static final String kBottomAuto = "Bottom Auto";
+    // private static final String kBottomBumpAuto = "Bottom Bump Auto";
+    // private static final String kCenterAuto = "Center Auto";
+    // private static final String kTopAuto = "Top Auto";
+    // private static final String kTopBumpAuto = "Top Bump Auto";
+    // private static final String kDefaultAuto = "No Auto";
+    // private static final String kTestAuto = "Test Auto";
+    // private static final String kStationaryAuto = "--FAKE--";
 
     autoChooser.setDefaultOption("No Auto", Commands.none());
     autoChooser.addOption("Disrupt Auto", new PathPlannerAuto("Disrupt Auto"));
@@ -289,7 +289,6 @@ public class RobotContainer {
   @Logged(name = "autonomousCommand")
   public Command getAutonomousCommand() {
 
-  
     return autoChooser.getSelected();
   }
 }
