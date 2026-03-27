@@ -191,30 +191,6 @@ public class RobotContainer {
   private void configureAutoChooser() {
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
-
-    // private static final String kCenterDepotAuto = "Center Depot Auto";
-    // private static final String kTopDepotAuto = "Top Depot Auto";
-    // private static final String kBottomDepotAuto = "Bottom Depot Auto";
-    // private static final String kBottomAuto = "Bottom Auto";
-    // private static final String kBottomBumpAuto = "Bottom Bump Auto";
-    // private static final String kCenterAuto = "Center Auto";
-    // private static final String kTopAuto = "Top Auto";
-    // private static final String kTopBumpAuto = "Top Bump Auto";
-    // private static final String kDefaultAuto = "No Auto";
-    // private static final String kTestAuto = "Test Auto";
-    // private static final String kStationaryAuto = "--FAKE--";
-
-    autoChooser.setDefaultOption("No Auto", Commands.none());
-    autoChooser.addOption("Disrupt Auto", new PathPlannerAuto("Disrupt Auto"));
-    autoChooser.addOption("Top Depot Auto", new PathPlannerAuto("Top Depot Auto"));
-    autoChooser.addOption("Bottom Depot Auto", new PathPlannerAuto("Bottom Depot Auto"));
-    autoChooser.addOption("Bottom Auto", new PathPlannerAuto("Bottom Auto"));
-    autoChooser.addOption("Bottom Bump Auto", new PathPlannerAuto("Bottom Bump Auto"));
-    autoChooser.addOption("Center Auto", new PathPlannerAuto("Center Auto"));
-    autoChooser.addOption("Top Auto", new PathPlannerAuto("Top Auto"));
-    autoChooser.addOption("Top Bump Auto", new PathPlannerAuto("Top Bump Auto"));
-    autoChooser.addOption("Test Auto", new PathPlannerAuto("Test Auto"));
-    autoChooser.addOption("Stationary Auto", new PathPlannerAuto("Stationary Auto"));
   }
 
   private void configureTuningBindings() {
