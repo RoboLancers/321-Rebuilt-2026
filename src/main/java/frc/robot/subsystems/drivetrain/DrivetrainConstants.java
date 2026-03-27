@@ -56,6 +56,8 @@ public class DrivetrainConstants {
       Meters.of(0.1); // distance at which to end changing weights from velocity control to PID when
   // aligning
 
+  public static final Angle kSpinupRange = Degrees.of(20);
+
   public static final double kMaxPathVelocity = 3.0;
   public static final double kMaxPathAcceleration = 4.0;
   public static final double kMaxPathAngularVelocity = 540;

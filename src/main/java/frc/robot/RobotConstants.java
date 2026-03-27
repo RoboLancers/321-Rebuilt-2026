@@ -16,4 +16,5 @@ public class RobotConstants {
       AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
 
   public static final Angle kAngleTolerance = Degrees.of(0.5);
+  public static final Angle kShooterFaceOffset = Degrees.of(90);
 }

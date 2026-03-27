@@ -128,6 +128,26 @@ public class RobotContainer {
     return drivetrain.getPose().getRotation().getDegrees();
   }
 
+  @Logged(name = "shooterAngle")
+  public double getShooterAngle() {
+    return getRobotAngle() - 90;
+  }
+
+  @Logged(name = "finalShooterAngle")
+  public double getFinalShooterAngle(){
+    return Math.floorMod(Math.round(getShooterAngle()), 360);
+  }
+
+  @Logged(name = "finalHubAngle")
+  public double getFinalHubAngle(){
+    return Math.floorMod(Math.round(getHubAngle()),360);
+  }
+
+  @Logged(name = "shooterAtHeading")
+  public boolean shooterAtHeading(){
+    return drivetrain.shooterAtHeading(getHubHeading());
+  }
+
   @Logged(name = "calculatedHubDistance")
   public Distance getHubDistance() {
     return RebuiltUtil.getHubDistance(drivetrain::getPose);
@@ -193,7 +213,7 @@ public class RobotContainer {
     driver
         .rightTrigger()
         .whileTrue(
-            (new HomeHood(hood))
+            (new HomeHood(hood).alongWith(Align.rotateToHub(drivetrain, this::getDriverForward, this::getDriverStrafe, this::getHubHeading, drivetrain::getPose)))
                 .andThen(
                     new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance)
                         .alongWith(
@@ -212,8 +232,7 @@ public class RobotContainer {
                     this::getDriverForward,
                     this::getDriverStrafe,
                     this::getHubHeading,
-                    drivetrain::getPose)
-                .alongWith(new HomeHood(hood)));
+                    drivetrain::getPose));
 
     driver
         .rightBumper()
@@ -222,7 +241,7 @@ public class RobotContainer {
     driver.a().whileTrue(new HomeHood(hood).andThen(new StaticShoot(tunnel, shooter, indexer)));
   }
 
-  @Logged(name = "autonomousCommand")
+  @Logged(name = "autonomousCommand") 
   public Command getAutonomousCommand() {
 
     return autoChooser.getSelected();
