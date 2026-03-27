@@ -194,13 +194,7 @@ public class RobotContainer {
     driver
         .rightTrigger()
         .whileTrue(
-            (Align.rotateToHub(
-                        drivetrain,
-                        this::getDriverForward,
-                        this::getDriverStrafe,
-                        this::getHubHeading,
-                        drivetrain::getPose)
-                    .alongWith(new HomeHood(hood)))
+            (new HomeHood(hood))
                 .andThen(
                     new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance)
                         .alongWith(
@@ -214,30 +208,19 @@ public class RobotContainer {
     driver
         .leftTrigger()
         .whileTrue(
-            (Align.rotateToHub(
+            Align.rotateToHub(
                         drivetrain,
                         this::getDriverForward,
                         this::getDriverStrafe,
                         this::getHubHeading,
                         drivetrain::getPose)
-                    .alongWith(new HomeHood(hood)))
-                .andThen(
-                    new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance)
-                        .alongWith(new RepeatCommand(drivetrain.jostleDrivetrain()))));
+                    .alongWith(new HomeHood(hood)));
 
     driver
         .rightBumper()
         .whileTrue(new HomeHood(hood).andThen(new Feed(tunnel, shooter, hood, indexer)));
 
     driver.a().whileTrue(new HomeHood(hood).andThen(new StaticShoot(tunnel, shooter, indexer)));
-
-    driver
-        .b()
-        .whileTrue(
-            new HomeHood(hood)
-                .andThen(
-                    new StaticShoot(tunnel, shooter, indexer)
-                        .alongWith(new RepeatCommand(drivetrain.jostleDrivetrain()))));
   }
 
   @Logged(name = "autonomousCommand")
