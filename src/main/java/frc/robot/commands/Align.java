@@ -8,7 +8,6 @@ import static edu.wpi.first.units.Units.Meters;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotConstants;
@@ -46,8 +45,6 @@ public final class Align {
 
   private static final Transform2d troughAlign =
       new Transform2d(Meters.zero(), Meters.zero(), Rotation2d.kZero);
-
-  private static final Angle shooterFaceOffset = Degrees.of(90);
 
   public Command driveToPose(
       Drivetrain drivetrain, Supplier<Pose2d> pose, Supplier<Pose2d> robotPose) {
@@ -103,6 +100,16 @@ public final class Align {
     return drivetrain.driveToFieldPoseCommand(() -> getHubScoringPose(robotPose), robotPose);
   }
 
+  public static Command rotateToHub(
+      Drivetrain drivetrain,
+      DoubleSupplier translationX,
+      DoubleSupplier translationY,
+      Supplier<Rotation2d> hubHeading,
+      Supplier<Pose2d> robotPose) {
+    return lockOnHub(drivetrain, translationX, translationY, hubHeading, robotPose)
+        .until(() -> drivetrain.shooterAtHeading(hubHeading.get()));
+  }
+
   public static Command lockOnHub(
       Drivetrain drivetrain,
       DoubleSupplier translationX,
@@ -114,7 +121,9 @@ public final class Align {
         translationY,
         () ->
             new Rotation2d(
-                Degrees.of(hubHeading.get().getDegrees() + shooterFaceOffset.in(Degrees))));
+                Degrees.of(
+                    hubHeading.get().getDegrees()
+                        + RobotConstants.kShooterFaceOffset.in(Degrees))));
   }
 
   public static Command alignLeftClimb(Drivetrain drivetrain, Supplier<Pose2d> robotPose) {
