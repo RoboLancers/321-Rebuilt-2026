@@ -9,19 +9,19 @@
       "prevControl": null,
       "nextControl": {
         "x": 3.0834638196915787,
-        "y": 2.534092526690391
+        "y": 2.5340925266903906
       },
       "isLocked": false,
       "linkedName": "Bottom Path 1"
     },
     {
       "anchor": {
-        "x": 1.0505812574139983,
+        "x": 1.0613404507710564,
         "y": 2.534092526690391
       },
       "prevControl": {
-        "x": 0.5771767497034408,
-        "y": 2.5233333333333325
+        "x": 0.8138530773557648,
+        "y": 2.4987371876310633
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 5.0,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -45,7 +45,7 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Bottom Auto",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

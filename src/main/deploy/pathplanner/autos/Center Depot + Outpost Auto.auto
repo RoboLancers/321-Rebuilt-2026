@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "IntakePivotPosition"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
@@ -17,22 +23,22 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Center Depot Path 1"
+                  "pathName": "Center Depot + Outpost 1"
                 }
               }
             ]
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "Align"
+            "pathName": "Center Depot + Outpost 2"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "ShootFuel"
+            "pathName": "Center Depot + Outpost 3"
           }
         }
       ]

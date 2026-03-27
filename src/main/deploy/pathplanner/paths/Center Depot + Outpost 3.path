@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.0,
-        "y": 5.589703440094898
+        "x": 0.506804564907275,
+        "y": 0.6644793152639101
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.000000000000001,
-        "y": 5.589703440094898
+        "x": 1.2184308131241082,
+        "y": 1.1173323823109853
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Center+Outpost 2"
     },
     {
       "anchor": {
-        "x": 7.301672597864768,
-        "y": 7.171304863582444
+        "x": 1.9171184022824534,
+        "y": 2.0618544935805994
       },
       "prevControl": {
-        "x": 6.301672597864768,
-        "y": 7.171304863582444
+        "x": 1.9171184022824534,
+        "y": 1.5618544935805994
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "TopBumpPath1"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 5.0,
-    "maxAcceleration": 4.0,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 126.12400000000001
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 90.0
   },
   "useDefaultConstraints": true
 }
