@@ -103,19 +103,7 @@ public final class Align {
     return drivetrain.driveToFieldPoseCommand(() -> getHubScoringPose(robotPose), robotPose);
   }
 
-  public static Command rotateToHub(
-      Drivetrain drivetrain, Supplier<Rotation2d> hubHeading, Supplier<Pose2d> robotPose) {
-    return rotateToHubWhileDriving(
-        drivetrain,
-        () -> 0,
-        () -> 0,
-        () ->
-            new Rotation2d(
-                Degrees.of(hubHeading.get().getDegrees() + shooterFaceOffset.in(Degrees))),
-        robotPose);
-  }
-
-  public static Command rotateToHubWhileDriving(
+  public static Command lockOnHub(
       Drivetrain drivetrain,
       DoubleSupplier translationX,
       DoubleSupplier translationY,

@@ -21,13 +21,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Align;
 import frc.robot.commands.Feed;
 import frc.robot.commands.Release;
 import frc.robot.commands.ShootAndIndex;
+import frc.robot.commands.StaticShoot;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainConstants;
 import frc.robot.subsystems.hood.Hood;
@@ -118,6 +118,16 @@ public class RobotContainer {
     return RebuiltUtil.getHubHeading(drivetrain::getPose);
   }
 
+  @Logged(name = "hubAngle")
+  public double getHubAngle() {
+    return getHubHeading().getDegrees();
+  }
+
+  @Logged(name = "robotAngle")
+  public double getRobotAngle() {
+    return drivetrain.getPose().getRotation().getDegrees();
+  }
+
   @Logged(name = "calculatedHubDistance")
   public Distance getHubDistance() {
     return RebuiltUtil.getHubDistance(drivetrain::getPose);
@@ -181,42 +191,35 @@ public class RobotContainer {
     driver.y().toggleOnTrue(new GoToAngle(intakePivot, () -> IntakeConstants.kIntakePosition));
 
     driver
-        .leftTrigger()
-        .whileTrue(
-            Align.rotateToHubWhileDriving(
-                drivetrain,
-                this::getDriverForward,
-                this::getDriverStrafe,
-                this::getHubHeading,
-                drivetrain::getPose));
-
-    driver
         .rightTrigger()
         .whileTrue(
-            new HomeHood(hood)
+            (new HomeHood(hood))
                 .andThen(
                     new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance)
-                        .alongWith(new RepeatCommand(drivetrain.jostleDrivetrain()))));
+                        .alongWith(
+                            Align.lockOnHub(
+                                drivetrain,
+                                this::getDriverForward,
+                                this::getDriverStrafe,
+                                this::getHubHeading,
+                                drivetrain::getPose))));
+
+    driver
+        .leftTrigger()
+        .whileTrue(
+            Align.lockOnHub(
+                    drivetrain,
+                    this::getDriverForward,
+                    this::getDriverStrafe,
+                    this::getHubHeading,
+                    drivetrain::getPose)
+                .alongWith(new HomeHood(hood)));
 
     driver
         .rightBumper()
         .whileTrue(new HomeHood(hood).andThen(new Feed(tunnel, shooter, hood, indexer)));
 
-    driver
-        .a()
-        .whileTrue(
-            new HomeHood(hood)
-                .andThen(
-                    new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance)
-                        .alongWith(new RepeatCommand(drivetrain.jostleDrivetrain()))));
-
-    driver
-        .b()
-        .whileTrue(
-            new HomeHood(hood)
-                .andThen(
-                    new Feed(tunnel, shooter, hood, indexer)
-                        .alongWith(new RepeatCommand(drivetrain.jostleDrivetrain()))));
+    driver.a().whileTrue(new HomeHood(hood).andThen(new StaticShoot(tunnel, shooter, indexer)));
   }
 
   @Logged(name = "autonomousCommand")
