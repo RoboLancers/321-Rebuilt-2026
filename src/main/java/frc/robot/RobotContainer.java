@@ -31,7 +31,6 @@ import frc.robot.commands.StaticShoot;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainConstants;
 import frc.robot.subsystems.hood.Hood;
-import frc.robot.subsystems.hood.hoodCommands.HomeHood;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.indexerCommands.SetIndexerVelocity;
 import frc.robot.subsystems.intakePivot.IntakeConstants;
@@ -213,14 +212,12 @@ public class RobotContainer {
     driver
         .rightTrigger()
         .whileTrue(
-            (new HomeHood(hood)
-                    .alongWith(
-                        Align.rotateToHub(
-                            drivetrain,
-                            this::getDriverForward,
-                            this::getDriverStrafe,
-                            this::getHubHeading,
-                            drivetrain::getPose)))
+            (Align.rotateToHub(
+                    drivetrain,
+                    this::getDriverForward,
+                    this::getDriverStrafe,
+                    this::getHubHeading,
+                    drivetrain::getPose))
                 .andThen(
                     new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance)
                         .alongWith(
@@ -241,11 +238,9 @@ public class RobotContainer {
                 this::getHubHeading,
                 drivetrain::getPose));
 
-    driver
-        .rightBumper()
-        .whileTrue(new HomeHood(hood).andThen(new Feed(tunnel, shooter, hood, indexer)));
+    driver.rightBumper().whileTrue(new Feed(tunnel, shooter, hood, indexer));
 
-    driver.a().whileTrue(new HomeHood(hood).andThen(new StaticShoot(tunnel, shooter, indexer)));
+    driver.a().whileTrue(new StaticShoot(tunnel, shooter, indexer));
   }
 
   @Logged(name = "autonomousCommand")
