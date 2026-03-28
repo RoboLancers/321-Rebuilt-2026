@@ -5,15 +5,28 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Top path1"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Top path1"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Top Path 2"
+            "name": "Align"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootFuel"
           }
         }
       ]
