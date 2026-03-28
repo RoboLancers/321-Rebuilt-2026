@@ -17,6 +17,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
@@ -113,9 +114,21 @@ public class IntakePivot extends SubsystemBase {
     pivotFeedforward.setKg(kG);
   }
 
-  public void tune(double kP, double kI, double kD, double kG, double angle, double d, double e) {
+  public void tune(
+      double kP,
+      double kI,
+      double kD,
+      double kG,
+      double angle,
+      double maxVelocity,
+      double maxAcceleration) {
     setPID(kP, kI, kD, kG);
+    setConstraints(new Constraints(maxAcceleration, maxVelocity));
     goToAngle(Degrees.of(angle));
+  }
+
+  public void setConstraints(Constraints constraints) {
+    pivotController.setConstraints(constraints);
   }
 
   @Logged(name = "intakePivotVOltage")

@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 1.8265477888772765,
-        "y": 5.891697574892937
+        "x": 0.506804564907275,
+        "y": 6.0081455064194005
       },
       "prevControl": {
-        "x": 2.8486711577977966,
-        "y": 6.591045143101716
+        "x": 1.528927933827795,
+        "y": 6.707493074628179
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "CenterDepotPath1"
+      "linkedName": "centerDepotPath"
     }
   ],
   "rotationTargets": [],
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 171.25383773744488
+    "rotation": 178.69804732742114
   },
   "reversed": false,
   "folder": null,
