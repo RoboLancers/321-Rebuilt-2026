@@ -37,6 +37,7 @@ import frc.robot.subsystems.indexer.indexerCommands.SetIndexerVelocity;
 import frc.robot.subsystems.intakePivot.IntakeConstants;
 import frc.robot.subsystems.intakePivot.IntakePivot;
 import frc.robot.subsystems.intakePivot.intakePivotCommands.GoToAngle;
+import frc.robot.subsystems.intakerollers.IntakeRollerConstants;
 import frc.robot.subsystems.intakerollers.IntakeRollers;
 import frc.robot.subsystems.intakerollers.rolllercommands.IntakeFuel;
 import frc.robot.subsystems.intakerollers.rolllercommands.SetIntakeVelocity;
@@ -209,7 +210,7 @@ public class RobotContainer {
 
   private void configureBindings() {
     tunnel.setDefaultCommand(new RunAtVelocity(tunnel, () -> RPM.of(0)));
-    intakeRollers.setDefaultCommand(new SetIntakeVelocity(intakeRollers, () -> RPM.of(0)));
+    intakeRollers.setDefaultCommand(Commands.run(()->intakeRollers.setVoltage(Volts.of(0)), intakeRollers));
     indexer.setDefaultCommand(new SetIndexerVelocity(indexer, () -> RPM.of(0)));
     intakePivot.setDefaultCommand(
         new GoToAngle(intakePivot, () -> IntakeConstants.kStowedPosition));
@@ -266,7 +267,8 @@ public class RobotContainer {
 
     driver.a().whileTrue(new StaticShoot(tunnel, shooter, indexer));
     driver.b().whileTrue(new Feed(tunnel, shooter, hood, indexer));
-    driver.x().whileTrue(new Release(tunnel, shooter, indexer));
+    driver.x().whileTrue(new SetIntakeVelocity(intakeRollers, intakePivot, ()->IntakeRollerConstants.kReleaseVelocity));
+    driver.povLeft().whileTrue(new Release(tunnel, shooter, indexer));
   }
 
   @Logged(name = "autonomousCommand")
