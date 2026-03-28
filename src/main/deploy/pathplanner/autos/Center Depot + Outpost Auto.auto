@@ -5,13 +5,26 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "deadline",
           "data": {
-            "name": "IntakePivotPosition"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Center Depot + Outpost 1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeFuel"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
               {
@@ -21,9 +34,9 @@
                 }
               },
               {
-                "type": "path",
+                "type": "wait",
                 "data": {
-                  "pathName": "Center Depot + Outpost 1"
+                  "waitTime": 1.0
                 }
               }
             ]
@@ -36,9 +49,53 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 4.5
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Center Depot + Outpost 3"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "deadline",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "IntakePivotStow"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 1.0
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Align"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootFuel"
           }
         }
       ]

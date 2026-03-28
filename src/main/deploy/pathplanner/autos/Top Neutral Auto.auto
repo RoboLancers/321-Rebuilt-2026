@@ -7,19 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Test Path"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootFuel"
+            "pathName": "Top Neutral Path 1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": null
+            "pathName": "Top Neutral Path 2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Top Neutral Path 3"
           }
         }
       ]

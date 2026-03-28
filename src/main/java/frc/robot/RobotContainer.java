@@ -1,6 +1,7 @@
 /* (C) RoboLancers 2026 */
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degree;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RPM;
@@ -173,16 +174,18 @@ public class RobotContainer {
 
   private void configureNamedAutoCommands() {
     IntakeFuel intakeFuel = new IntakeFuel(intakeRollers, intakePivot);
-    GoToAngle goToAngle = new GoToAngle(intakePivot, () -> Degrees.of(0));
-    ParallelRaceGroup intakeInAuto = new ParallelRaceGroup(intakeFuel.withTimeout(6), goToAngle);
+    GoToAngle intakePivotStow = new GoToAngle(intakePivot, () -> Degrees.of(75));
+    GoToAngle intakePivotOut = new GoToAngle(intakePivot, () -> Degrees.of(0));
+    ParallelRaceGroup intakeInAuto = new ParallelRaceGroup(intakeFuel, intakePivotOut);
     Command align =
-        Align.lockOnHub(drivetrain, () -> 0, () -> 0, this::getHubHeading, drivetrain::getPose);
-    ParallelRaceGroup alignInAuto = new ParallelRaceGroup(align.withTimeout(2));
+        Align.rotateToHub(drivetrain, () -> 0, () -> 0, this::getHubHeading, drivetrain::getPose);
+    ParallelRaceGroup alignInAuto = new ParallelRaceGroup(align);
     ShootAndIndex shootInAuto =
         new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance);
 
+    NamedCommands.registerCommand("IntakePivotStow", intakePivotStow);
     NamedCommands.registerCommand("IntakeFuel", intakeInAuto);
-    NamedCommands.registerCommand("IntakePivotPosition", goToAngle);
+    NamedCommands.registerCommand("IntakePivotOut", intakePivotOut);
     NamedCommands.registerCommand("ShootFuel", shootInAuto);
     NamedCommands.registerCommand("Align", alignInAuto);
   }
