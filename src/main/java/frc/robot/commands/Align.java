@@ -131,7 +131,7 @@ public final class Align {
     return drivetrain.driveFixedHeading(
         translationX,
         translationY,
-        () -> new Rotation2d(Degrees.of(180 + RobotConstants.kShooterFaceOffset.in(Degrees))));
+        () -> new Rotation2d(Degrees.of(RobotConstants.kShooterFaceOffset.in(Degrees))));
   }
 
   public static Command alignLeftClimb(Drivetrain drivetrain, Supplier<Pose2d> robotPose) {
