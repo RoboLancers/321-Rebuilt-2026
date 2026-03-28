@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.297433734939758,
-        "y": 2.90944578313253
+        "x": 7.549134045077107,
+        "y": 5.482111506524318
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.49413253012048,
-        "y": 1.6195060240963854
+        "x": 7.74583284025783,
+        "y": 4.192171747488173
       },
       "isLocked": false,
       "linkedName": "Disrupt endpoint 1"
@@ -48,7 +48,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 102.99461679191656
   },
   "useDefaultConstraints": true
 }

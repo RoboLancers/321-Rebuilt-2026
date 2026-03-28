@@ -9,12 +9,6 @@
           "data": {
             "pathName": "Bottom Bump Path 1"
           }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Bottom Bump Path 2"
-          }
         }
       ]
     }
