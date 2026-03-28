@@ -257,9 +257,14 @@ public class RobotContainer {
                 this::getHubHeading,
                 drivetrain::getPose));
 
-    driver.rightBumper().whileTrue(Align.faceAllianceZone(drivetrain, this::getDriverForward, this::getDriverStrafe).alongWith(new Feed(tunnel, shooter, hood, indexer)));
+    driver
+        .rightBumper()
+        .whileTrue(
+            Align.faceAllianceZone(drivetrain, this::getDriverForward, this::getDriverStrafe)
+                .alongWith(new Feed(tunnel, shooter, hood, indexer)));
 
     driver.a().whileTrue(new StaticShoot(tunnel, shooter, indexer));
+    driver.b().whileTrue(new Feed(tunnel, shooter, hood, indexer));
   }
 
   @Logged(name = "autonomousCommand")

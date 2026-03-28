@@ -126,8 +126,9 @@ public final class Align {
                         + RobotConstants.kShooterFaceOffset.in(Degrees))));
   }
 
-  public static Command faceAllianceZone(Drivetrain drivetrain, DoubleSupplier translationX, DoubleSupplier translationY){
-    return drivetrain.driveFixedHeading(translationX, translationY, ()->Rotation2d.k180deg);
+  public static Command faceAllianceZone(
+      Drivetrain drivetrain, DoubleSupplier translationX, DoubleSupplier translationY) {
+    return drivetrain.driveFixedHeading(translationX, translationY, () -> Rotation2d.k180deg);
   }
 
   public static Command alignLeftClimb(Drivetrain drivetrain, Supplier<Pose2d> robotPose) {
