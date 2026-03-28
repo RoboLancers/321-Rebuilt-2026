@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.6,
-        "y": 5.9339976275207595
+        "x": 1.8265477888772765,
+        "y": 5.891697574892937
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6000000000000003,
-        "y": 5.9339976275207595
+        "x": 2.826547788877277,
+        "y": 5.891697574892937
       },
       "isLocked": false,
       "linkedName": "CenterDepotPath1"
@@ -48,7 +48,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 171.25383773744488
   },
   "useDefaultConstraints": true
 }
