@@ -14,7 +14,9 @@ public class Tune extends Command {
   TunableConstant kI = new TunableConstant("/IntakePivot/kI", 0);
   TunableConstant kD = new TunableConstant("/IntakePivot/kD", 0);
   TunableConstant kG = new TunableConstant("/IntakePivot/kG", 0);
-  TunableConstant angle = new TunableConstant("/IntakePivot/angle", 0);
+  TunableConstant angle = new TunableConstant("/IntakePivot/angle", 2 * (Math.PI));
+  TunableConstant acceleration = new TunableConstant("IntakePivot/acceleration", 0);
+  TunableConstant velocity = new TunableConstant("IntakePivot/velocity", Math.PI / 2);
 
   public Tune(IntakePivot intakePivot) {
     this.intakePivot = intakePivot;
@@ -23,7 +25,8 @@ public class Tune extends Command {
 
   @Override
   public void execute() {
-    intakePivot.tune(kP.get(), kI.get(), kD.get(), kG.get(), angle.get());
+    intakePivot.tune(
+        kP.get(), kI.get(), kD.get(), kG.get(), angle.get(), acceleration.get(), velocity.get());
   }
 
   @Override
