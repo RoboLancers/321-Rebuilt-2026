@@ -266,6 +266,7 @@ public class RobotContainer {
 
     driver.a().whileTrue(new StaticShoot(tunnel, shooter, indexer));
     driver.b().whileTrue(new Feed(tunnel, shooter, hood, indexer));
+    driver.x().whileTrue(new Release(tunnel, shooter, indexer));
   }
 
   @Logged(name = "autonomousCommand")
