@@ -33,6 +33,7 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainConstants;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.indexer.Indexer;
+import frc.robot.subsystems.indexer.IndexerConstants;
 import frc.robot.subsystems.indexer.indexerCommands.SetIndexerVelocity;
 import frc.robot.subsystems.intakePivot.IntakeConstants;
 import frc.robot.subsystems.intakePivot.IntakePivot;
@@ -272,7 +273,9 @@ public class RobotContainer {
         .x()
         .whileTrue(
             new SetIntakeVelocity(
-                intakeRollers, intakePivot, () -> IntakeRollerConstants.kReleaseVelocity));
+                    intakeRollers, intakePivot, () -> IntakeRollerConstants.kReleaseVelocity)
+                .alongWith(
+                    new SetIndexerVelocity(indexer, () -> IndexerConstants.kReleaseVelocity)));
     driver.povLeft().whileTrue(new Release(tunnel, shooter, indexer));
   }
 
