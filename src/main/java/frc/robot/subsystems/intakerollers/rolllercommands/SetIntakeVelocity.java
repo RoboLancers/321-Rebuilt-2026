@@ -18,7 +18,9 @@ public class SetIntakeVelocity extends Command {
   Supplier<AngularVelocity> velocitySupplier;
 
   public SetIntakeVelocity(
-      IntakeRollers intakeRollers, IntakePivot intakePivot, Supplier<AngularVelocity> velocitySupplier) {
+      IntakeRollers intakeRollers,
+      IntakePivot intakePivot,
+      Supplier<AngularVelocity> velocitySupplier) {
     this.intakeRollers = intakeRollers;
     this.intakePivot = intakePivot;
     this.velocitySupplier = velocitySupplier;
@@ -27,9 +29,9 @@ public class SetIntakeVelocity extends Command {
 
   @Override
   public void execute() {
-    if(intakePivot.getAngle().in(Degrees)<=30){
-    intakeRollers.setTargetVelocity(velocitySupplier.get());
-    intakeRollers.goToVelocity(velocitySupplier.get());
+    if (intakePivot.getAngle().in(Degrees) <= 30) {
+      intakeRollers.setTargetVelocity(velocitySupplier.get());
+      intakeRollers.goToVelocity(velocitySupplier.get());
     }
   }
 

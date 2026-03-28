@@ -210,7 +210,8 @@ public class RobotContainer {
 
   private void configureBindings() {
     tunnel.setDefaultCommand(new RunAtVelocity(tunnel, () -> RPM.of(0)));
-    intakeRollers.setDefaultCommand(Commands.run(()->intakeRollers.setVoltage(Volts.of(0)), intakeRollers));
+    intakeRollers.setDefaultCommand(
+        Commands.run(() -> intakeRollers.setVoltage(Volts.of(0)), intakeRollers));
     indexer.setDefaultCommand(new SetIndexerVelocity(indexer, () -> RPM.of(0)));
     intakePivot.setDefaultCommand(
         new GoToAngle(intakePivot, () -> IntakeConstants.kStowedPosition));
@@ -267,7 +268,11 @@ public class RobotContainer {
 
     driver.a().whileTrue(new StaticShoot(tunnel, shooter, indexer));
     driver.b().whileTrue(new Feed(tunnel, shooter, hood, indexer));
-    driver.x().whileTrue(new SetIntakeVelocity(intakeRollers, intakePivot, ()->IntakeRollerConstants.kReleaseVelocity));
+    driver
+        .x()
+        .whileTrue(
+            new SetIntakeVelocity(
+                intakeRollers, intakePivot, () -> IntakeRollerConstants.kReleaseVelocity));
     driver.povLeft().whileTrue(new Release(tunnel, shooter, indexer));
   }
 
