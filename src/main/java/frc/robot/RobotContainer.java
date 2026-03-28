@@ -41,6 +41,7 @@ import frc.robot.subsystems.intakePivot.intakePivotCommands.GoToAngle;
 import frc.robot.subsystems.intakerollers.IntakeRollers;
 import frc.robot.subsystems.intakerollers.rolllercommands.IntakeFuel;
 import frc.robot.subsystems.intakerollers.rolllercommands.SetIntakeVelocity;
+import frc.robot.subsystems.outtake.OuttakeConstants;
 import frc.robot.subsystems.outtake.Shooter;
 import frc.robot.subsystems.outtake.commands.SetShooterVelocity;
 import frc.robot.subsystems.tunnel.Tunnel;
@@ -212,7 +213,7 @@ public class RobotContainer {
     intakePivot.setDefaultCommand(
         new GoToAngle(intakePivot, () -> IntakeConstants.kStowedPosition));
     hood.setDefaultCommand(Commands.run(() -> hood.runVolts(Volts.of(0)), hood));
-    shooter.setDefaultCommand(new SetShooterVelocity(shooter, () -> RPM.of(0)));
+    shooter.setDefaultCommand(new SetShooterVelocity(shooter, () -> OuttakeConstants.kDefaultRPM));
 
     drivetrain.setDefaultCommand(
         drivetrain.teleopDrive(this::getDriverForward, this::getDriverStrafe, this::getDriverTurn));
@@ -256,9 +257,14 @@ public class RobotContainer {
                 this::getHubHeading,
                 drivetrain::getPose));
 
-    driver.rightBumper().whileTrue(new Feed(tunnel, shooter, hood, indexer));
+    driver
+        .rightBumper()
+        .whileTrue(
+            Align.faceAllianceZone(drivetrain, this::getDriverForward, this::getDriverStrafe)
+                .alongWith(new Feed(tunnel, shooter, hood, indexer)));
 
     driver.a().whileTrue(new StaticShoot(tunnel, shooter, indexer));
+    driver.b().whileTrue(new Feed(tunnel, shooter, hood, indexer));
   }
 
   @Logged(name = "autonomousCommand")
