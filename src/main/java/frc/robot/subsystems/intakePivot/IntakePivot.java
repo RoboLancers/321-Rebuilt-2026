@@ -123,7 +123,7 @@ public class IntakePivot extends SubsystemBase {
       double maxVelocity,
       double maxAcceleration) {
     setPID(kP, kI, kD, kG);
-    setConstraints(new Constraints(maxAcceleration, maxVelocity));
+    setConstraints(new Constraints(maxVelocity, maxAcceleration));
     goToAngle(Degrees.of(angle));
   }
 
