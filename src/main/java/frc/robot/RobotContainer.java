@@ -45,6 +45,7 @@ import frc.robot.subsystems.intakerollers.rolllercommands.IntakeFuel;
 import frc.robot.subsystems.intakerollers.rolllercommands.SetIntakeVelocity;
 import frc.robot.subsystems.outtake.Shooter;
 import frc.robot.subsystems.outtake.commands.SetShooterVelocity;
+import frc.robot.subsystems.outtake.commands.ShooterDefaultBehavior;
 import frc.robot.subsystems.tunnel.Tunnel;
 import frc.robot.subsystems.tunnel.tunnelCommands.RunAtVelocity;
 import frc.robot.subsystems.vision.Vision;
@@ -220,7 +221,8 @@ public class RobotContainer {
     intakePivot.setDefaultCommand(
         new GoToAngle(intakePivot, () -> IntakeConstants.kStowedPosition));
     hood.setDefaultCommand(Commands.run(() -> hood.runVolts(Volts.of(0)), hood));
-    shooter.setDefaultCommand(new SetShooterVelocity(shooter, () -> RPM.of(0)));
+    // shooter.setDefaultCommand(new SetShooterVelocity(shooter, () -> RPM.of(0)));
+     shooter.setDefaultCommand(new ShooterDefaultBehavior(shooter, drivetrain::getPose));
 
     drivetrain.setDefaultCommand(
         drivetrain.teleopDrive(this::getDriverForward, this::getDriverStrafe, this::getDriverTurn));
