@@ -166,6 +166,11 @@ public class RobotContainer {
     return shooter.getScoreVelocity(getHubDistance());
   }
 
+  @Logged(name = "robotInAllianceZone")
+  public boolean inAllianceZone(){
+    return RebuiltUtil.InAllianceZone(drivetrain.getPose());
+  }
+
   public RobotContainer() {
     configureBindings();
     // configureTuningBindings();
