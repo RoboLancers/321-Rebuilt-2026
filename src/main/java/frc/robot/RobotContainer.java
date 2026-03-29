@@ -167,7 +167,7 @@ public class RobotContainer {
   }
 
   @Logged(name = "robotInAllianceZone")
-  public boolean inAllianceZone(){
+  public boolean inAllianceZone() {
     return RebuiltUtil.InAllianceZone(drivetrain.getPose());
   }
 
