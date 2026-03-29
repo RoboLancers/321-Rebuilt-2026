@@ -38,6 +38,7 @@ import frc.robot.subsystems.indexer.indexerCommands.SetIndexerVelocity;
 import frc.robot.subsystems.intakePivot.IntakeConstants;
 import frc.robot.subsystems.intakePivot.IntakePivot;
 import frc.robot.subsystems.intakePivot.intakePivotCommands.GoToAngle;
+import frc.robot.subsystems.intakePivot.intakePivotCommands.Tune;
 import frc.robot.subsystems.intakerollers.IntakeRollerConstants;
 import frc.robot.subsystems.intakerollers.IntakeRollers;
 import frc.robot.subsystems.intakerollers.rolllercommands.IntakeFuel;
@@ -197,15 +198,18 @@ public class RobotContainer {
 
   private void configureTuningBindings() {
 
-    intakeRollers.setDefaultCommand(
-        Commands.run(() -> intakeRollers.setVoltage(Volts.of(0)), intakeRollers));
+    //   intakeRollers.setDefaultCommand(
+    //       Commands.run(() -> intakeRollers.setVoltage(Volts.of(0)), intakeRollers));
 
     intakePivot.setDefaultCommand(
         Commands.run(() -> intakePivot.setVoltage(Volts.of(0)), intakePivot));
 
-    indexer.setDefaultCommand(Commands.run(() -> indexer.setVoltage(Volts.of(0)), indexer));
+    //   indexer.setDefaultCommand(Commands.run(() -> indexer.setVoltage(Volts.of(0)), indexer));
 
-    driver.rightTrigger().whileTrue(new Release(tunnel, shooter, indexer));
+    driver.a().whileTrue(new Tune(intakePivot));
+
+    //   driver.rightTrigger().whileTrue(new Release(tunnel, shooter, indexer));
+
   }
 
   private void configureBindings() {
