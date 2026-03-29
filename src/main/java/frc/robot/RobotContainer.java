@@ -198,20 +198,19 @@ public class RobotContainer {
 
   private void configureTuningBindings() {
 
-  //   intakeRollers.setDefaultCommand(
-  //       Commands.run(() -> intakeRollers.setVoltage(Volts.of(0)), intakeRollers));
+    //   intakeRollers.setDefaultCommand(
+    //       Commands.run(() -> intakeRollers.setVoltage(Volts.of(0)), intakeRollers));
 
     intakePivot.setDefaultCommand(
         Commands.run(() -> intakePivot.setVoltage(Volts.of(0)), intakePivot));
 
-  //   indexer.setDefaultCommand(Commands.run(() -> indexer.setVoltage(Volts.of(0)), indexer));
+    //   indexer.setDefaultCommand(Commands.run(() -> indexer.setVoltage(Volts.of(0)), indexer));
 
-driver.a().whileTrue(new Tune(intakePivot));
+    driver.a().whileTrue(new Tune(intakePivot));
 
-  //   driver.rightTrigger().whileTrue(new Release(tunnel, shooter, indexer));
+    //   driver.rightTrigger().whileTrue(new Release(tunnel, shooter, indexer));
 
-
-   }
+  }
 
   private void configureBindings() {
     tunnel.setDefaultCommand(new RunAtVelocity(tunnel, () -> RPM.of(0)));
