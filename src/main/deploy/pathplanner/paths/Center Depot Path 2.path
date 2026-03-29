@@ -3,24 +3,24 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.506804564907275,
-        "y": 6.0081455064194005
+        "x": 0.3189561091340457,
+        "y": 5.98
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.506804564907275,
-        "y": 6.0081455064194005
+        "x": 1.3189561091340445,
+        "y": 5.98
       },
       "isLocked": false,
       "linkedName": "centerDepotPath"
     },
     {
       "anchor": {
-        "x": 1.9171184022824534,
+        "x": 2.2986476868327412,
         "y": 6.0081455064194005
       },
       "prevControl": {
-        "x": 0.9171184022824534,
+        "x": 1.2986476868327412,
         "y": 6.0081455064194005
       },
       "nextControl": null,
@@ -62,7 +62,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 178.69804732742114
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }
