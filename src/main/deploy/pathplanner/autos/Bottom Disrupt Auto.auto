@@ -7,19 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Test Path"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootFuel"
+            "pathName": "Bottom Disrupt Path 1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": null
+            "pathName": "Bottom Disrupt Path 2"
           }
         }
       ]

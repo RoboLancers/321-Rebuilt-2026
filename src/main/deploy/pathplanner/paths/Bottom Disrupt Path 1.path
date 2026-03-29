@@ -3,55 +3,51 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.54922891566265,
-        "y": 5.641373493975904
+        "x": 3.561988439306358,
+        "y": 2.498867052023121
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.653705128205129,
-        "y": 6.3373846153846145
+        "x": 4.5619884393063534,
+        "y": 2.498867052023121
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.107179487179488,
-        "y": 0.9651538461538463
+        "x": 4.6419999999999995,
+        "y": 2.498867052023121
       },
       "prevControl": {
-        "x": 6.4676282051282055,
-        "y": 1.6744743589743596
+        "x": 4.252761501681007,
+        "y": 2.498867052023121
       },
       "nextControl": {
-        "x": 8.407632824409818,
-        "y": -0.4771671278652456
+        "x": 5.093110161409926,
+        "y": 2.498867052023121
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.549134045077107,
-        "y": 5.482111506524318
+        "x": 6.875421965317919,
+        "y": 1.2615722543352603
       },
       "prevControl": {
-        "x": 7.226358244365363,
-        "y": 5.729572953736655
+        "x": 5.875421965317919,
+        "y": 1.2615722543352603
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Disrupt endpoint 1"
+      "linkedName": "BottomDisruptPath1"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.2024866785079953,
-      "rotationDegrees": 0.0
-    },
-    {
       "waypointRelativePos": 1.0,
-      "rotationDegrees": 63.434948822921776
+      "rotationDegrees": 0.0
     }
   ],
   "constraintZones": [],
@@ -67,7 +63,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 102.99461679191656
+    "rotation": 48.57633437499726
   },
   "reversed": false,
   "folder": null,
