@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.outtake.OuttakeConstants;
 import frc.robot.subsystems.outtake.Shooter;
 import frc.robot.util.RebuiltUtil;
-
 import java.util.function.Supplier;
 
 public class ShooterDefaultBehavior extends Command {
@@ -31,7 +30,6 @@ public class ShooterDefaultBehavior extends Command {
     } else {
       shooter.setVoltage(Volts.of(0));
     }
-
   }
 
   @Override
