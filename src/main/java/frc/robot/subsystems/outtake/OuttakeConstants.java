@@ -50,6 +50,8 @@ public class OuttakeConstants {
 
   public static final AngularVelocity kStaticScoreRPM = RPM.of(700);
 
+  public static final AngularVelocity kAllianceZoneDefaultRPM = RPM.of(500);
+
   public static final AngularAcceleration kMaxAcceleration = RotationsPerSecondPerSecond.of(1000);
 
   public static final MotorAlignmentValue kFollowerReversed = MotorAlignmentValue.Opposed;

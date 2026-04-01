@@ -3,10 +3,13 @@ package frc.robot.subsystems.intakePivot;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
@@ -16,17 +19,21 @@ public class IntakeConstants {
   public static final Current kCurrentLimit = Amps.of(60);
   public static final boolean kCurrentLimitEnable = true;
   public static final boolean kInverted = true;
-  public static double kG = 0.24;
-  public static double kP = 4.8;
-  public static double kI = 0;
-  public static double kD = 0;
-  public static Angle angle;
+  public static final double kG = 0.24;
+  public static final double kP = 4.8;
+  public static final double kI = 0;
+  public static final double kD = 0;
   public static final double kSensorToMechanismRatio = 72;
   public static final double kRelativeEncoderId = 0;
   public static final Angle kIntakePosition = Degrees.of(0);
-  public static final Angle kStowedPosition = Degrees.of(75);
+  public static final Angle kStowedPosition = Degrees.of(120);
   public static final int kEncoderID = 0;
   public static final Angle kAngleTolerance = Degrees.of(0);
   public static final Voltage kHomingVoltage = Volts.of(-2.0);
-  public static final AngularVelocity kMaxVelocity = RotationsPerSecond.of(0.125);
+  public static final AngularVelocity kMaxVelocity = RadiansPerSecond.of(Math.PI / 2);
+  public static final AngularAcceleration kMaxAcceleration =
+      RadiansPerSecondPerSecond.of(2 * (Math.PI));
+  public static final Constraints kMaxPivotConstraints =
+      new Constraints(
+          kMaxVelocity.in(RadiansPerSecond), kMaxAcceleration.in(RadiansPerSecondPerSecond));
 }

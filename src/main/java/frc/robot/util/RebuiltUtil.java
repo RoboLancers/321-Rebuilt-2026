@@ -7,8 +7,10 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Radians;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rectangle2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.Distance;
 import java.util.List;
 import java.util.function.Supplier;
@@ -28,6 +30,11 @@ public class RebuiltUtil {
   public static final Pose2d blueHubPose =
       new Pose2d(Meters.of(4.6169), Meters.of(4.03), new Rotation2d(Degrees.of(180)));
 
+  public static final Rectangle2d redAllianceZone =
+      new Rectangle2d(new Translation2d(16.5, 0), new Translation2d(12.5, 8));
+  public static final Rectangle2d blueAllianceZone =
+      new Rectangle2d(new Translation2d(0, 0), new Translation2d(4, 8));
+
   public static final int redClimbTagID = 15;
   public static final int blueClimbTagID = 31;
 
@@ -36,6 +43,14 @@ public class RebuiltUtil {
 
   public static Pose2d getHubPose() {
     return MyAlliance.isRed() ? redHubPose : blueHubPose;
+  }
+
+  public static Rectangle2d getAllianceZone() {
+    return MyAlliance.isRed() ? redAllianceZone : blueAllianceZone;
+  }
+
+  public static boolean InAllianceZone(Pose2d pose) {
+    return getAllianceZone().contains(pose.getTranslation());
   }
 
   public static TunableConstant xTransform = new TunableConstant("X Transform", 0);

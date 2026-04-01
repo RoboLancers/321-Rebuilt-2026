@@ -1,35 +1,38 @@
 /* (C) RoboLancers 2026 */
 package frc.robot.subsystems.intakerollers.rolllercommands;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.intakePivot.IntakePivot;
 import frc.robot.subsystems.intakerollers.IntakeRollers;
 import java.util.function.Supplier;
 
 public class SetIntakeVelocity extends Command {
 
   IntakeRollers intakeRollers;
+  IntakePivot intakePivot;
   Supplier<AngularVelocity> velocitySupplier;
 
   public SetIntakeVelocity(
-      IntakeRollers intakeRollers, Supplier<AngularVelocity> velocitySupplier) {
+      IntakeRollers intakeRollers,
+      IntakePivot intakePivot,
+      Supplier<AngularVelocity> velocitySupplier) {
     this.intakeRollers = intakeRollers;
+    this.intakePivot = intakePivot;
     this.velocitySupplier = velocitySupplier;
     addRequirements(intakeRollers);
   }
 
   @Override
-  public void initialize() {
-    intakeRollers.setTargetVelocity(velocitySupplier.get());
-  }
-
-  @Override
   public void execute() {
-    intakeRollers.setTargetVelocity(velocitySupplier.get());
-    intakeRollers.goToVelocity(velocitySupplier.get());
+    if (intakePivot.getAngle().in(Degrees) <= 30) {
+      intakeRollers.setTargetVelocity(velocitySupplier.get());
+      intakeRollers.goToVelocity(velocitySupplier.get());
+    }
   }
 
   @Override

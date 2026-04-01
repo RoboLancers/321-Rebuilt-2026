@@ -1,7 +1,6 @@
 /* (C) RoboLancers 2026 */
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
@@ -34,15 +33,18 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainConstants;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.indexer.Indexer;
+import frc.robot.subsystems.indexer.IndexerConstants;
 import frc.robot.subsystems.indexer.indexerCommands.SetIndexerVelocity;
 import frc.robot.subsystems.intakePivot.IntakeConstants;
 import frc.robot.subsystems.intakePivot.IntakePivot;
 import frc.robot.subsystems.intakePivot.intakePivotCommands.GoToAngle;
+import frc.robot.subsystems.intakePivot.intakePivotCommands.Tune;
+import frc.robot.subsystems.intakerollers.IntakeRollerConstants;
 import frc.robot.subsystems.intakerollers.IntakeRollers;
 import frc.robot.subsystems.intakerollers.rolllercommands.IntakeFuel;
 import frc.robot.subsystems.intakerollers.rolllercommands.SetIntakeVelocity;
 import frc.robot.subsystems.outtake.Shooter;
-import frc.robot.subsystems.outtake.commands.SetShooterVelocity;
+import frc.robot.subsystems.outtake.commands.ShooterDefaultBehavior;
 import frc.robot.subsystems.tunnel.Tunnel;
 import frc.robot.subsystems.tunnel.tunnelCommands.RunAtVelocity;
 import frc.robot.subsystems.vision.Vision;
@@ -164,6 +166,11 @@ public class RobotContainer {
     return shooter.getScoreVelocity(getHubDistance());
   }
 
+  @Logged(name = "robotInAllianceZone")
+  public boolean inAllianceZone() {
+    return RebuiltUtil.InAllianceZone(drivetrain.getPose());
+  }
+
   public RobotContainer() {
     configureBindings();
     // configureTuningBindings();
@@ -173,16 +180,18 @@ public class RobotContainer {
 
   private void configureNamedAutoCommands() {
     IntakeFuel intakeFuel = new IntakeFuel(intakeRollers, intakePivot);
-    GoToAngle goToAngle = new GoToAngle(intakePivot, () -> Degrees.of(0));
-    ParallelRaceGroup intakeInAuto = new ParallelRaceGroup(intakeFuel.withTimeout(6), goToAngle);
+    GoToAngle intakePivotStow = new GoToAngle(intakePivot, () -> IntakeConstants.kStowedPosition);
+    GoToAngle intakePivotOut = new GoToAngle(intakePivot, () -> IntakeConstants.kIntakePosition);
+    ParallelRaceGroup intakeInAuto = new ParallelRaceGroup(intakeFuel, intakePivotOut);
     Command align =
-        Align.lockOnHub(drivetrain, () -> 0, () -> 0, this::getHubHeading, drivetrain::getPose);
-    ParallelRaceGroup alignInAuto = new ParallelRaceGroup(align.withTimeout(2));
+        Align.rotateToHub(drivetrain, () -> 0, () -> 0, this::getHubHeading, drivetrain::getPose);
+    ParallelRaceGroup alignInAuto = new ParallelRaceGroup(align);
     ShootAndIndex shootInAuto =
         new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance);
 
+    NamedCommands.registerCommand("IntakePivotStow", intakePivotStow);
     NamedCommands.registerCommand("IntakeFuel", intakeInAuto);
-    NamedCommands.registerCommand("IntakePivotPosition", goToAngle);
+    NamedCommands.registerCommand("IntakePivotOut", intakePivotOut);
     NamedCommands.registerCommand("ShootFuel", shootInAuto);
     NamedCommands.registerCommand("Align", alignInAuto);
   }
@@ -194,25 +203,30 @@ public class RobotContainer {
 
   private void configureTuningBindings() {
 
-    intakeRollers.setDefaultCommand(
-        Commands.run(() -> intakeRollers.setVoltage(Volts.of(0)), intakeRollers));
+    //   intakeRollers.setDefaultCommand(
+    //       Commands.run(() -> intakeRollers.setVoltage(Volts.of(0)), intakeRollers));
 
     intakePivot.setDefaultCommand(
         Commands.run(() -> intakePivot.setVoltage(Volts.of(0)), intakePivot));
 
-    indexer.setDefaultCommand(Commands.run(() -> indexer.setVoltage(Volts.of(0)), indexer));
+    //   indexer.setDefaultCommand(Commands.run(() -> indexer.setVoltage(Volts.of(0)), indexer));
 
-    driver.rightTrigger().whileTrue(new Release(tunnel, shooter, indexer));
+    driver.a().whileTrue(new Tune(intakePivot));
+
+    //   driver.rightTrigger().whileTrue(new Release(tunnel, shooter, indexer));
+
   }
 
   private void configureBindings() {
     tunnel.setDefaultCommand(new RunAtVelocity(tunnel, () -> RPM.of(0)));
-    intakeRollers.setDefaultCommand(new SetIntakeVelocity(intakeRollers, () -> RPM.of(0)));
+    intakeRollers.setDefaultCommand(
+        Commands.run(() -> intakeRollers.setVoltage(Volts.of(0)), intakeRollers));
     indexer.setDefaultCommand(new SetIndexerVelocity(indexer, () -> RPM.of(0)));
     intakePivot.setDefaultCommand(
         new GoToAngle(intakePivot, () -> IntakeConstants.kStowedPosition));
     hood.setDefaultCommand(Commands.run(() -> hood.runVolts(Volts.of(0)), hood));
-    shooter.setDefaultCommand(new SetShooterVelocity(shooter, () -> RPM.of(0)));
+    // shooter.setDefaultCommand(new SetShooterVelocity(shooter, () -> RPM.of(0)));
+    shooter.setDefaultCommand(new ShooterDefaultBehavior(shooter, drivetrain::getPose));
 
     drivetrain.setDefaultCommand(
         drivetrain.teleopDrive(this::getDriverForward, this::getDriverStrafe, this::getDriverTurn));
@@ -256,9 +270,22 @@ public class RobotContainer {
                 this::getHubHeading,
                 drivetrain::getPose));
 
-    driver.rightBumper().whileTrue(new Feed(tunnel, shooter, hood, indexer));
+    driver
+        .rightBumper()
+        .whileTrue(
+            Align.faceAllianceZone(drivetrain, this::getDriverForward, this::getDriverStrafe)
+                .alongWith(new Feed(tunnel, shooter, hood, indexer)));
 
     driver.a().whileTrue(new StaticShoot(tunnel, shooter, indexer));
+    driver.b().whileTrue(new Feed(tunnel, shooter, hood, indexer));
+    driver
+        .x()
+        .whileTrue(
+            new SetIntakeVelocity(
+                    intakeRollers, intakePivot, () -> IntakeRollerConstants.kReleaseVelocity)
+                .alongWith(
+                    new SetIndexerVelocity(indexer, () -> IndexerConstants.kReleaseVelocity)));
+    driver.povLeft().whileTrue(new Release(tunnel, shooter, indexer));
   }
 
   @Logged(name = "autonomousCommand")

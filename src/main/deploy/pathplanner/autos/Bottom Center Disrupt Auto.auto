@@ -7,19 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Center Path "
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Align"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootFuel"
+            "pathName": "Bottom Center Disrupt Path 1"
           }
         }
       ]

@@ -7,19 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Center Path "
+            "pathName": "Half Bottom Disrupt Path 1"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "Align"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootFuel"
+            "pathName": "Half Bottom Disrupt Path 2"
           }
         }
       ]
