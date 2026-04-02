@@ -79,6 +79,7 @@ public class RobotContainer {
   private SendableChooser<Command> autoChooser;
 
   public Trigger slowMode = driver.b();
+  public Trigger defenseMode = driver.povUp();
 
   @Logged(name = "driverForwardValue")
   public double getDriverForward() {
@@ -114,6 +115,26 @@ public class RobotContainer {
         -MathUtil.applyDeadband(driver.getRightX(), DrivetrainConstants.kRotationDeadband)
             * DrivetrainConstants.kMaxAngularVelocity.in(RadiansPerSecond);
     return rawJoystick;
+  }
+
+  @Logged(name = "forwardVelocityValue")
+  public double getForwardVelocity() {
+    double forwardVelocity =
+        (defenseMode.getAsBoolean() && !RebuiltUtil.inDefenseZone(drivetrain.getPose()))
+            ? MathUtil.clamp(
+                getDriverForward(), 0, DrivetrainConstants.kMaxLinearVelocity.in(MetersPerSecond))
+            : getDriverForward();
+    return forwardVelocity;
+  }
+
+  @Logged(name = "strafeVelocityValue")
+  public double getStrafeVelocity() {
+    return getDriverStrafe();
+  }
+
+  @Logged(name = "turnVelocityValue")
+  public double getTurnVelocity() {
+    return getDriverTurn();
   }
 
   @Logged(name = "calculatedHubHeading")
