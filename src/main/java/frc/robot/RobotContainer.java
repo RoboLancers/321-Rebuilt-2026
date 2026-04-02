@@ -252,7 +252,7 @@ public class RobotContainer {
 
     drivetrain.setDefaultCommand(
         drivetrain.defenseDrive(
-            this::getDriverForward, this::getDriverStrafe, this::getDriverTurn));
+            this::getForwardVelocity, this::getStrafeVelocity, this::getTurnVelocity, defenseMode));
 
     driver
         .leftBumper()
