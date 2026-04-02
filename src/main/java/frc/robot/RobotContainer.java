@@ -49,7 +49,6 @@ import frc.robot.subsystems.tunnel.Tunnel;
 import frc.robot.subsystems.tunnel.tunnelCommands.RunAtVelocity;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.util.RebuiltUtil;
-import java.util.function.BooleanSupplier;
 
 @Logged
 public class RobotContainer {
@@ -80,7 +79,7 @@ public class RobotContainer {
   private SendableChooser<Command> autoChooser;
 
   public Trigger slowMode = driver.b();
-  public BooleanSupplier defenseMode = () -> false;
+  public Trigger defenseMode = driver.x();
 
   @Logged(name = "driverForwardValue")
   public double getDriverForward() {
@@ -302,13 +301,13 @@ public class RobotContainer {
     driver.a().whileTrue(new StaticShoot(tunnel, shooter, indexer));
     driver.b().whileTrue(new Feed(tunnel, shooter, hood, indexer));
 
-    driver
-        .x()
-        .onTrue(
-            Commands.runOnce(
-                () -> {
-                  defenseMode = () -> !(defenseMode.getAsBoolean());
-                }));
+    // driver
+    //     .x()
+    //     .onTrue(
+    //         Commands.runOnce(
+    //             () -> {
+    //               defenseMode = () -> !(defenseMode.getAsBoolean());
+    //             }));
 
     driver.povLeft().whileTrue(new Release(tunnel, shooter, indexer));
     driver
