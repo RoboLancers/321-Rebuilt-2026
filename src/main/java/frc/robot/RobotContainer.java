@@ -6,8 +6,6 @@ import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
-import java.util.function.BooleanSupplier;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.epilogue.Logged;
@@ -51,6 +49,7 @@ import frc.robot.subsystems.tunnel.Tunnel;
 import frc.robot.subsystems.tunnel.tunnelCommands.RunAtVelocity;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.util.RebuiltUtil;
+import java.util.function.BooleanSupplier;
 
 @Logged
 public class RobotContainer {
@@ -81,7 +80,7 @@ public class RobotContainer {
   private SendableChooser<Command> autoChooser;
 
   public Trigger slowMode = driver.b();
-  public BooleanSupplier defenseMode = ()->false;
+  public BooleanSupplier defenseMode = () -> false;
 
   @Logged(name = "driverForwardValue")
   public double getDriverForward() {
@@ -252,7 +251,8 @@ public class RobotContainer {
     shooter.setDefaultCommand(new ShooterDefaultBehavior(shooter, drivetrain::getPose));
 
     drivetrain.setDefaultCommand(
-        drivetrain.teleopDrive(this::getDriverForward, this::getDriverStrafe, this::getDriverTurn));
+        drivetrain.defenseDrive(
+            this::getDriverForward, this::getDriverStrafe, this::getDriverTurn));
 
     driver
         .leftBumper()
@@ -302,15 +302,22 @@ public class RobotContainer {
     driver.a().whileTrue(new StaticShoot(tunnel, shooter, indexer));
     driver.b().whileTrue(new Feed(tunnel, shooter, hood, indexer));
 
-    driver.x().onTrue(Commands.runOnce(
-      ()->{defenseMode = ()->!(defenseMode.getAsBoolean());}
-    ));
+    driver
+        .x()
+        .onTrue(
+            Commands.runOnce(
+                () -> {
+                  defenseMode = () -> !(defenseMode.getAsBoolean());
+                }));
 
     driver.povLeft().whileTrue(new Release(tunnel, shooter, indexer));
-    driver.povRight().whileTrue(new SetIntakeVelocity(
+    driver
+        .povRight()
+        .whileTrue(
+            new SetIntakeVelocity(
                     intakeRollers, intakePivot, () -> IntakeRollerConstants.kReleaseVelocity)
                 .alongWith(
-                    new SetIndexerVelocity(indexer, () -> IndexerConstants.kReleaseVelocity)) );
+                    new SetIndexerVelocity(indexer, () -> IndexerConstants.kReleaseVelocity)));
   }
 
   @Logged(name = "autonomousCommand")
