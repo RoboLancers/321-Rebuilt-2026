@@ -302,9 +302,9 @@ public class RobotContainer {
     driver.a().whileTrue(new StaticShoot(tunnel, shooter, indexer));
     driver.b().whileTrue(new Feed(tunnel, shooter, hood, indexer));
 
-    driver.x().whileTrue(Commands.runOnce(
+    driver.x().onTrue(Commands.runOnce(
       ()->{defenseMode = ()->!(defenseMode.getAsBoolean());}
-    ).andThen(drivetrain.defenseDrive(this::getForwardVelocity, this::getStrafeVelocity, this::getTurnVelocity)));
+    ));
 
     driver.povLeft().whileTrue(new Release(tunnel, shooter, indexer));
     driver.povRight().whileTrue(new SetIntakeVelocity(
