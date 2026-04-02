@@ -442,9 +442,14 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
   }
 
   public Command defenseDrive(
-      DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier rotation, BooleanSupplier defenseMode) {
+      DoubleSupplier translationX,
+      DoubleSupplier translationY,
+      DoubleSupplier rotation,
+      BooleanSupplier defenseMode) {
     return run(
-        (RebuiltUtil.inAllianceZone(getPose()) && !RebuiltUtil.inDefenseZone(getPose()) && defenseMode.getAsBoolean())
+        (RebuiltUtil.inAllianceZone(getPose())
+                && !RebuiltUtil.inDefenseZone(getPose())
+                && defenseMode.getAsBoolean())
             ? () -> {
               driveFixedHeading(
                   translationX.getAsDouble(), translationY.getAsDouble(), Rotation2d.kZero);
