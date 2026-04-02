@@ -79,7 +79,7 @@ public class RobotContainer {
   private SendableChooser<Command> autoChooser;
 
   public Trigger slowMode = driver.b();
-  public Trigger defenseMode = driver.povUp();
+  public Trigger defenseMode = driver.x();
 
   @Logged(name = "driverForwardValue")
   public double getDriverForward() {
