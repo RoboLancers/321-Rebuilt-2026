@@ -49,6 +49,7 @@ import frc.robot.util.RebuiltUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -441,9 +442,9 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
   }
 
   public Command defenseDrive(
-      DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier rotation) {
+      DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier rotation, BooleanSupplier defenseMode) {
     return run(
-        (RebuiltUtil.inAllianceZone(getPose()) && !RebuiltUtil.inDefenseZone(getPose()))
+        (RebuiltUtil.inAllianceZone(getPose()) && !RebuiltUtil.inDefenseZone(getPose()) && defenseMode.getAsBoolean())
             ? () -> {
               driveFixedHeading(
                   translationX.getAsDouble(), translationY.getAsDouble(), Rotation2d.kZero);
