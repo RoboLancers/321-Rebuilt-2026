@@ -79,7 +79,16 @@ public class RobotContainer {
   private SendableChooser<Command> autoChooser;
 
   public Trigger slowMode = driver.b();
-  public Trigger defenseMode = driver.x();
+  private boolean defenseMode = false;
+
+  @Logged
+  public boolean getDefenseMode() {
+    return defenseMode;
+  }
+
+  public void toggleDefenseMode() {
+    defenseMode = !defenseMode;
+  }
 
   @Logged(name = "driverForwardValue")
   public double getDriverForward() {
@@ -120,7 +129,7 @@ public class RobotContainer {
   @Logged(name = "forwardVelocityValue")
   public double getForwardVelocity() {
     double forwardVelocity =
-        (defenseMode.getAsBoolean() && !RebuiltUtil.inDefenseZone(drivetrain.getPose()))
+        (getDefenseMode() && !RebuiltUtil.inDefenseZone(drivetrain.getPose()))
             ? MathUtil.clamp(
                 getDriverForward(), 0, DrivetrainConstants.kMaxLinearVelocity.in(MetersPerSecond))
             : getDriverForward();
@@ -250,8 +259,8 @@ public class RobotContainer {
     shooter.setDefaultCommand(new ShooterDefaultBehavior(shooter, drivetrain::getPose));
 
     drivetrain.setDefaultCommand(
-        drivetrain.defenseDrive(
-            this::getForwardVelocity, this::getStrafeVelocity, this::getTurnVelocity, defenseMode));
+        drivetrain.teleopDrive(
+            this::getForwardVelocity, this::getStrafeVelocity, this::getTurnVelocity));
 
     driver
         .leftBumper()
@@ -301,13 +310,13 @@ public class RobotContainer {
     driver.a().whileTrue(new StaticShoot(tunnel, shooter, indexer));
     driver.b().whileTrue(new Feed(tunnel, shooter, hood, indexer));
 
-    // driver
-    //     .x()
-    //     .onTrue(
-    //         Commands.runOnce(
-    //             () -> {
-    //               defenseMode = () -> !(defenseMode.getAsBoolean());
-    //             }));
+    driver
+        .x()
+        .onTrue(
+            Commands.runOnce(
+                () -> {
+                  toggleDefenseMode();
+                }));
 
     driver.povLeft().whileTrue(new Release(tunnel, shooter, indexer));
     driver
