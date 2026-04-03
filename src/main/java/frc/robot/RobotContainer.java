@@ -79,6 +79,16 @@ public class RobotContainer {
   private SendableChooser<Command> autoChooser;
 
   public Trigger slowMode = driver.b();
+  private boolean defenseMode = false;
+
+  @Logged
+  public boolean getDefenseMode() {
+    return defenseMode;
+  }
+
+  public void toggleDefenseMode() {
+    defenseMode = !defenseMode;
+  }
 
   @Logged(name = "driverForwardValue")
   public double getDriverForward() {
@@ -114,6 +124,26 @@ public class RobotContainer {
         -MathUtil.applyDeadband(driver.getRightX(), DrivetrainConstants.kRotationDeadband)
             * DrivetrainConstants.kMaxAngularVelocity.in(RadiansPerSecond);
     return rawJoystick;
+  }
+
+  @Logged(name = "forwardVelocityValue")
+  public double getForwardVelocity() {
+    double forwardVelocity =
+        (getDefenseMode() && !RebuiltUtil.inDefenseZone(drivetrain.getPose()))
+            ? MathUtil.clamp(
+                getDriverForward(), 0, DrivetrainConstants.kMaxLinearVelocity.in(MetersPerSecond))
+            : getDriverForward();
+    return forwardVelocity;
+  }
+
+  @Logged(name = "strafeVelocityValue")
+  public double getStrafeVelocity() {
+    return getDriverStrafe();
+  }
+
+  @Logged(name = "turnVelocityValue")
+  public double getTurnVelocity() {
+    return getDriverTurn();
   }
 
   @Logged(name = "calculatedHubHeading")
@@ -168,7 +198,7 @@ public class RobotContainer {
 
   @Logged(name = "robotInAllianceZone")
   public boolean inAllianceZone() {
-    return RebuiltUtil.InAllianceZone(drivetrain.getPose());
+    return RebuiltUtil.inAllianceZone(drivetrain.getPose());
   }
 
   public RobotContainer() {
@@ -231,7 +261,11 @@ public class RobotContainer {
     shooter.setDefaultCommand(new ShooterDefaultBehavior(shooter, drivetrain::getPose));
 
     drivetrain.setDefaultCommand(
-        drivetrain.teleopDrive(this::getDriverForward, this::getDriverStrafe, this::getDriverTurn));
+        drivetrain.defenseDrive(
+            this::getForwardVelocity,
+            this::getStrafeVelocity,
+            this::getTurnVelocity,
+            this::getDefenseMode));
 
     driver
         .leftBumper()
@@ -278,16 +312,26 @@ public class RobotContainer {
             Align.faceAllianceZone(drivetrain, this::getDriverForward, this::getDriverStrafe)
                 .alongWith(new Feed(tunnel, shooter, hood, indexer)));
 
-    driver.a().whileTrue(new StaticShoot(tunnel, shooter, indexer));
+    driver.a().whileTrue(new StaticShoot(tunnel, shooter, indexer, hood));
     driver.b().whileTrue(new Feed(tunnel, shooter, hood, indexer));
+
     driver
         .x()
+        .onTrue(
+            Commands.runOnce(
+                () -> {
+                  toggleDefenseMode();
+                }));
+
+    driver.povLeft().whileTrue(new Release(tunnel, shooter, indexer));
+    driver
+        .povRight()
         .whileTrue(
             new SetIntakeVelocity(
                     intakeRollers, intakePivot, () -> IntakeRollerConstants.kReleaseVelocity)
                 .alongWith(
                     new SetIndexerVelocity(indexer, () -> IndexerConstants.kReleaseVelocity)));
-    driver.povLeft().whileTrue(new Release(tunnel, shooter, indexer));
+    driver.povUp().onTrue(Commands.runOnce(() -> drivetrain.getPigeon2().setYaw(0)));
   }
 
   @Logged(name = "autonomousCommand")

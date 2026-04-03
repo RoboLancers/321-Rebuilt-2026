@@ -25,7 +25,7 @@ public class ShooterDefaultBehavior extends Command {
   @Override
   public void execute() {
     Pose2d robotPose = robotPoseSupplier.get();
-    if (RebuiltUtil.InAllianceZone(robotPose)) {
+    if (RebuiltUtil.inAllianceZone(robotPose)) {
       shooter.setTargetVelocity(OuttakeConstants.kAllianceZoneDefaultRPM);
       shooter.goToVelocity(OuttakeConstants.kAllianceZoneDefaultRPM);
     } else {
