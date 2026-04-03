@@ -26,6 +26,7 @@ public class IntakeConstants {
   public static final double kSensorToMechanismRatio = 72;
   public static final double kRelativeEncoderId = 0;
   public static final Angle kIntakePosition = Degrees.of(0);
+  public static final Angle kTravelPosition = Degrees.of(30);
   public static final Angle kStowedPosition = Degrees.of(120);
   public static final int kEncoderID = 0;
   public static final Angle kAngleTolerance = Degrees.of(0);

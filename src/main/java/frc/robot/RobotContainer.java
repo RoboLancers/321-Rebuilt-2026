@@ -182,6 +182,7 @@ public class RobotContainer {
     IntakeFuel intakeFuel = new IntakeFuel(intakeRollers, intakePivot);
     GoToAngle intakePivotStow = new GoToAngle(intakePivot, () -> IntakeConstants.kStowedPosition);
     GoToAngle intakePivotOut = new GoToAngle(intakePivot, () -> IntakeConstants.kIntakePosition);
+    GoToAngle intakePivotTravel = new GoToAngle(intakePivot, () -> IntakeConstants.kTravelPosition);
     ParallelRaceGroup intakeInAuto = new ParallelRaceGroup(intakeFuel, intakePivotOut);
     Command align =
         Align.rotateToHub(drivetrain, () -> 0, () -> 0, this::getHubHeading, drivetrain::getPose);
@@ -192,6 +193,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("IntakePivotStow", intakePivotStow);
     NamedCommands.registerCommand("IntakeFuel", intakeInAuto);
     NamedCommands.registerCommand("IntakePivotOut", intakePivotOut);
+    NamedCommands.registerCommand("IntakePivotOut", intakePivotOut);
+    NamedCommands.registerCommand("IntakePivotTravel", intakePivotTravel);
     NamedCommands.registerCommand("ShootFuel", shootInAuto);
     NamedCommands.registerCommand("Align", alignInAuto);
   }
