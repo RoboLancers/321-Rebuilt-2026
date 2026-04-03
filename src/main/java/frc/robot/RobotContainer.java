@@ -306,6 +306,8 @@ public class RobotContainer {
                 this::getHubHeading,
                 drivetrain::getPose));
 
+    driver.povDown().whileTrue(new Release(tunnel, shooter, indexer));
+
     driver
         .rightBumper()
         .whileTrue(
