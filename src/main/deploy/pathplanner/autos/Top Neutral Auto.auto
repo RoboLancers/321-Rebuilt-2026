@@ -11,6 +11,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "IntakePivotTravel"
+          }
+        },
+        {
           "type": "race",
           "data": {
             "commands": [
@@ -36,7 +42,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 1.0
+                  "waitTime": 1.5
                 }
               },
               {
