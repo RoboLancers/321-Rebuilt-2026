@@ -11,12 +11,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "IntakePivotTravel"
-          }
-        },
-        {
           "type": "race",
           "data": {
             "commands": [
