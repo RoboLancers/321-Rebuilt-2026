@@ -307,7 +307,7 @@ public class RobotContainer {
             Align.faceAllianceZone(drivetrain, this::getDriverForward, this::getDriverStrafe)
                 .alongWith(new Feed(tunnel, shooter, hood, indexer)));
 
-    driver.a().whileTrue(new StaticShoot(tunnel, shooter, indexer));
+    driver.a().whileTrue(new StaticShoot(tunnel, shooter, indexer, hood));
     driver.b().whileTrue(new Feed(tunnel, shooter, hood, indexer));
 
     driver
