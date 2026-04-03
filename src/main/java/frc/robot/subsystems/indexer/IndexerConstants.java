@@ -19,7 +19,7 @@ public class IndexerConstants {
 
   public static AngularVelocity kMaxVelocity = RPM.of(2400);
 
-  public static AngularAcceleration kMaxAcceleration = RotationsPerSecondPerSecond.of(18);
+  public static AngularAcceleration kMaxAcceleration = RotationsPerSecondPerSecond.of(70);
 
   public static AngularVelocity kIndexVelocity = RPM.of(2000);
 
