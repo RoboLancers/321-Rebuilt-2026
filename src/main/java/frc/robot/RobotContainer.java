@@ -259,8 +259,8 @@ public class RobotContainer {
     shooter.setDefaultCommand(new ShooterDefaultBehavior(shooter, drivetrain::getPose));
 
     drivetrain.setDefaultCommand(
-        drivetrain.teleopDrive(
-            this::getForwardVelocity, this::getStrafeVelocity, this::getTurnVelocity));
+        drivetrain.defenseDrive(
+            this::getForwardVelocity, this::getStrafeVelocity, this::getTurnVelocity, this::getDefenseMode));
 
     driver
         .leftBumper()
@@ -326,6 +326,7 @@ public class RobotContainer {
                     intakeRollers, intakePivot, () -> IntakeRollerConstants.kReleaseVelocity)
                 .alongWith(
                     new SetIndexerVelocity(indexer, () -> IndexerConstants.kReleaseVelocity)));
+    driver.povUp().onTrue(Commands.runOnce(() -> drivetrain.getPigeon2().setYaw(0)));
   }
 
   @Logged(name = "autonomousCommand")
