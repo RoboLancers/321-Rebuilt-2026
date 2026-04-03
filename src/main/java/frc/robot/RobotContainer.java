@@ -193,7 +193,6 @@ public class RobotContainer {
     NamedCommands.registerCommand("IntakePivotStow", intakePivotStow);
     NamedCommands.registerCommand("IntakeFuel", intakeInAuto);
     NamedCommands.registerCommand("IntakePivotOut", intakePivotOut);
-    NamedCommands.registerCommand("IntakePivotOut", intakePivotOut);
     NamedCommands.registerCommand("IntakePivotTravel", intakePivotTravel);
     NamedCommands.registerCommand("ShootFuel", shootInAuto);
     NamedCommands.registerCommand("Align", alignInAuto);
