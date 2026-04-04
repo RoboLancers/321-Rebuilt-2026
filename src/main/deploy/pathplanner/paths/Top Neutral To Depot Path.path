@@ -32,16 +32,16 @@
     },
     {
       "anchor": {
-        "x": 0.6096746987951804,
-        "y": 5.925493975903614
+        "x": 0.3189561091340457,
+        "y": 5.98
       },
       "prevControl": {
-        "x": 0.9254537645571039,
-        "y": 5.903638554216868
+        "x": 0.6347351748959692,
+        "y": 5.958144578313254
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "centerDepotPath"
     }
   ],
   "rotationTargets": [
