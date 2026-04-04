@@ -31,9 +31,9 @@ public class IntakeConstants {
   public static final int kEncoderID = 0;
   public static final Angle kAngleTolerance = Degrees.of(0);
   public static final Voltage kHomingVoltage = Volts.of(-2.0);
-  public static final AngularVelocity kMaxVelocity = RadiansPerSecond.of(Math.PI / 2);
+  public static final AngularVelocity kMaxVelocity = RadiansPerSecond.of(Math.PI);
   public static final AngularAcceleration kMaxAcceleration =
-      RadiansPerSecondPerSecond.of(2 * (Math.PI));
+      RadiansPerSecondPerSecond.of(Math.PI);
   public static final Constraints kMaxPivotConstraints =
       new Constraints(
           kMaxVelocity.in(RadiansPerSecond), kMaxAcceleration.in(RadiansPerSecondPerSecond));
