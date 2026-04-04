@@ -267,10 +267,7 @@ public class RobotContainer {
             this::getTurnVelocity,
             this::getDefenseMode));
 
-    driver
-        .leftBumper()
-        .whileTrue(
-            new IntakeFuel(intakeRollers, intakePivot));
+    driver.leftBumper().whileTrue(new IntakeFuel(intakeRollers, intakePivot));
 
     driver.y().toggleOnTrue(new GoToAngle(intakePivot, () -> IntakeConstants.kIntakePosition));
 
