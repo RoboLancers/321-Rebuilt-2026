@@ -37,7 +37,7 @@ import frc.robot.subsystems.indexer.IndexerConstants;
 import frc.robot.subsystems.indexer.indexerCommands.SetIndexerVelocity;
 import frc.robot.subsystems.intakePivot.IntakeConstants;
 import frc.robot.subsystems.intakePivot.IntakePivot;
-import frc.robot.subsystems.intakePivot.intakePivotCommands.GoToAngle;
+import frc.robot.subsystems.intakePivot.intakePivotCommands.GoToAnglePersist;
 import frc.robot.subsystems.intakePivot.intakePivotCommands.Tune;
 import frc.robot.subsystems.intakerollers.IntakeRollerConstants;
 import frc.robot.subsystems.intakerollers.IntakeRollers;
@@ -210,9 +210,9 @@ public class RobotContainer {
 
   private void configureNamedAutoCommands() {
     IntakeFuel intakeFuel = new IntakeFuel(intakeRollers, intakePivot);
-    GoToAngle intakePivotStow = new GoToAngle(intakePivot, () -> IntakeConstants.kStowedPosition);
-    GoToAngle intakePivotOut = new GoToAngle(intakePivot, () -> IntakeConstants.kIntakePosition);
-    GoToAngle intakePivotTravel = new GoToAngle(intakePivot, () -> IntakeConstants.kTravelPosition);
+    GoToAnglePersist intakePivotStow = new GoToAnglePersist(intakePivot, () -> IntakeConstants.kStowedPosition);
+    GoToAnglePersist intakePivotOut = new GoToAnglePersist(intakePivot, () -> IntakeConstants.kIntakePosition);
+    GoToAnglePersist intakePivotTravel = new GoToAnglePersist(intakePivot, () -> IntakeConstants.kTravelPosition);
     ParallelRaceGroup intakeInAuto = new ParallelRaceGroup(intakeFuel, intakePivotOut);
     Command align =
         Align.rotateToHub(drivetrain, () -> 0, () -> 0, this::getHubHeading, drivetrain::getPose);
@@ -255,7 +255,7 @@ public class RobotContainer {
         Commands.run(() -> intakeRollers.setVoltage(Volts.of(0)), intakeRollers));
     indexer.setDefaultCommand(new SetIndexerVelocity(indexer, () -> RPM.of(0)));
     intakePivot.setDefaultCommand(
-        new GoToAngle(intakePivot, () -> IntakeConstants.kStowedPosition));
+        new GoToAnglePersist(intakePivot, () -> IntakeConstants.kStowedPosition));
     hood.setDefaultCommand(Commands.run(() -> hood.runVolts(Volts.of(0)), hood));
     // shooter.setDefaultCommand(new SetShooterVelocity(shooter, () -> RPM.of(0)));
     shooter.setDefaultCommand(new ShooterDefaultBehavior(shooter, drivetrain::getPose));
@@ -270,12 +270,12 @@ public class RobotContainer {
     driver
         .leftBumper()
         .whileTrue(
-            new GoToAngle(intakePivot, () -> IntakeConstants.kIntakePosition)
+            new GoToAnglePersist(intakePivot, () -> IntakeConstants.kIntakePosition)
                 .alongWith(
                     new // TODO: change to and then once end criteria is reimplemented
                     IntakeFuel(intakeRollers, intakePivot)));
 
-    driver.y().toggleOnTrue(new GoToAngle(intakePivot, () -> IntakeConstants.kIntakePosition));
+    driver.y().toggleOnTrue(new GoToAnglePersist(intakePivot, () -> IntakeConstants.kIntakePosition));
 
     driver
         .rightTrigger()
