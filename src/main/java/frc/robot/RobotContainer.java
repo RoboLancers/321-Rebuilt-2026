@@ -37,6 +37,7 @@ import frc.robot.subsystems.indexer.IndexerConstants;
 import frc.robot.subsystems.indexer.indexerCommands.SetIndexerVelocity;
 import frc.robot.subsystems.intakePivot.IntakeConstants;
 import frc.robot.subsystems.intakePivot.IntakePivot;
+import frc.robot.subsystems.intakePivot.intakePivotCommands.GoToAngle;
 import frc.robot.subsystems.intakePivot.intakePivotCommands.GoToAnglePersist;
 import frc.robot.subsystems.intakePivot.intakePivotCommands.Tune;
 import frc.robot.subsystems.intakerollers.IntakeRollerConstants;
@@ -211,7 +212,7 @@ public class RobotContainer {
   private void configureNamedAutoCommands() {
     IntakeFuel intakeFuel = new IntakeFuel(intakeRollers, intakePivot);
     GoToAnglePersist intakePivotStow = new GoToAnglePersist(intakePivot, () -> IntakeConstants.kStowedPosition);
-    GoToAnglePersist intakePivotOut = new GoToAnglePersist(intakePivot, () -> IntakeConstants.kIntakePosition);
+    GoToAngle intakePivotOut = new GoToAngle(intakePivot, () -> IntakeConstants.kIntakePosition);
     GoToAnglePersist intakePivotTravel = new GoToAnglePersist(intakePivot, () -> IntakeConstants.kTravelPosition);
     ParallelRaceGroup intakeInAuto = new ParallelRaceGroup(intakeFuel, intakePivotOut);
     Command align =
