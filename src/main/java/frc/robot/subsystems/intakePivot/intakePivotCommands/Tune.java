@@ -13,10 +13,10 @@ import frc.robot.util.TunableConstant;
 public class Tune extends Command {
 
   IntakePivot intakePivot;
-  TunableConstant kP = new TunableConstant("/IntakePivot/kP", 0);
-  TunableConstant kI = new TunableConstant("/IntakePivot/kI", 0);
-  TunableConstant kD = new TunableConstant("/IntakePivot/kD", 0);
-  TunableConstant kG = new TunableConstant("/IntakePivot/kG", 0);
+  TunableConstant kP = new TunableConstant("/IntakePivot/kP", IntakeConstants.kP);
+  TunableConstant kI = new TunableConstant("/IntakePivot/kI", IntakeConstants.kI);
+  TunableConstant kD = new TunableConstant("/IntakePivot/kD", IntakeConstants.kD);
+  TunableConstant kG = new TunableConstant("/IntakePivot/kG", IntakeConstants.kG);
   TunableConstant angle = new TunableConstant("/IntakePivot/angle", 0);
   TunableConstant acceleration =
       new TunableConstant(

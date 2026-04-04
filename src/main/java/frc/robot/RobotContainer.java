@@ -202,8 +202,8 @@ public class RobotContainer {
   }
 
   public RobotContainer() {
-    configureBindings();
-    // configureTuningBindings();
+    // configureBindings();
+    configureTuningBindings();
     configureNamedAutoCommands();
     configureAutoChooser();
   }
