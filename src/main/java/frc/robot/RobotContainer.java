@@ -276,7 +276,9 @@ public class RobotContainer {
                     new // TODO: change to and then once end criteria is reimplemented
                     IntakeFuel(intakeRollers, intakePivot)));
 
-    driver.y().toggleOnTrue(new GoToAnglePersist(intakePivot, () -> IntakeConstants.kIntakePosition));
+    driver
+        .y()
+        .toggleOnTrue(new GoToAnglePersist(intakePivot, () -> IntakeConstants.kIntakePosition));
 
     driver
         .rightTrigger()
