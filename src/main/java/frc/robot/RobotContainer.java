@@ -211,9 +211,9 @@ public class RobotContainer {
 
   private void configureNamedAutoCommands() {
     IntakeFuel intakeFuel = new IntakeFuel(intakeRollers, intakePivot);
-    GoToAngle intakePivotStow = new GoToAngle(intakePivot, () -> IntakeConstants.kStowedPosition);
-    GoToAngle intakePivotOut = new GoToAngle(intakePivot, () -> IntakeConstants.kIntakePosition);
-    GoToAngle intakePivotTravel = new GoToAngle(intakePivot, () -> IntakeConstants.kTravelPosition);
+    Command intakePivotStow = new GoToAngle(intakePivot, () -> IntakeConstants.kStowedPosition).withTimeout(2);
+    Command intakePivotOut = new GoToAngle(intakePivot, () -> IntakeConstants.kIntakePosition).withTimeout(2);
+    Command intakePivotTravel = new GoToAngle(intakePivot, () -> IntakeConstants.kTravelPosition).withTimeout(2);
     ParallelRaceGroup intakeInAuto = new ParallelRaceGroup(intakeFuel, intakePivotOut);
     Command align =
         Align.rotateToHub(drivetrain, () -> 0, () -> 0, this::getHubHeading, drivetrain::getPose);
