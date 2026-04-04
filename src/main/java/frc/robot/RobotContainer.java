@@ -271,13 +271,7 @@ public class RobotContainer {
             this::getTurnVelocity,
             this::getDefenseMode));
 
-    driver
-        .leftBumper()
-        .whileTrue(
-            new GoToAnglePersist(intakePivot, () -> IntakeConstants.kIntakePosition)
-                .alongWith(
-                    new // TODO: change to and then once end criteria is reimplemented
-                    IntakeFuel(intakeRollers, intakePivot)));
+    driver.leftBumper().whileTrue(new IntakeFuel(intakeRollers, intakePivot));
 
     driver
         .y()
