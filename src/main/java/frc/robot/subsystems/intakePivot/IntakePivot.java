@@ -103,7 +103,7 @@ public class IntakePivot extends SubsystemBase {
 
   public boolean atAngle(Angle angle) {
     return Math.abs(getAngle().in(Degrees) - angle.in(Degrees))
-        < RobotConstants.kAngleTolerance.in(Degrees);
+        < IntakeConstants.kAngleTolerance.in(Degrees);
   }
 
   public void setPID(double kP, double kI, double kD, double kG) {
