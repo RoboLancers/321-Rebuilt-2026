@@ -273,8 +273,7 @@ public class RobotContainer {
     intakeRollers.setDefaultCommand(
         Commands.run(() -> intakeRollers.setVoltage(Volts.of(0)), intakeRollers));
     indexer.setDefaultCommand(new SetIndexerVelocity(indexer, () -> RPM.of(0)));
-    intakePivot.setDefaultCommand(
-        new GoToAnglePersist(intakePivot, () -> IntakeConstants.kStowedPosition));
+    intakePivot.setDefaultCommand(Commands.run(()->intakePivot.setVoltage(Volts.of(0)), intakePivot));
     hood.setDefaultCommand(Commands.run(() -> hood.runVolts(Volts.of(0)), hood));
     // shooter.setDefaultCommand(new SetShooterVelocity(shooter, () -> RPM.of(0)));
     shooter.setDefaultCommand(new SetShooterVelocity(shooter, () -> RPM.of(0)));
