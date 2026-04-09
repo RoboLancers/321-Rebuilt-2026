@@ -127,6 +127,18 @@ public class RobotContainer {
     return rawJoystick;
   }
 
+  public double getDemoForward(){
+    return 0.25 * getDriverForward();
+  }
+
+  public double getDemoStrafe(){
+    return 0.25 * getDriverStrafe();
+  }
+
+  public double getDemoTurn(){
+    return 0.4 * getDriverTurn();
+  }
+
   @Logged(name = "forwardVelocityValue")
   public double getForwardVelocity() {
     double forwardVelocity =
@@ -251,6 +263,10 @@ public class RobotContainer {
 
     //   driver.rightTrigger().whileTrue(new Release(tunnel, shooter, indexer));
 
+  }
+
+  private void configureDemoBindings(){
+    
   }
 
   private void configureBindings() {
