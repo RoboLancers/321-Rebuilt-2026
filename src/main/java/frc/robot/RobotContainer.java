@@ -311,10 +311,6 @@ public class RobotContainer {
     driver.leftBumper().whileTrue(new IntakeFuel(intakeRollers, intakePivot));
 
     driver
-        .y()
-        .toggleOnTrue(new GoToAnglePersist(intakePivot, () -> IntakeConstants.kIntakePosition));
-
-    driver
         .rightTrigger()
         .whileTrue(
             (Align.rotateToHub(
