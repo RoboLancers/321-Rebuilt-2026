@@ -45,6 +45,7 @@ import frc.robot.subsystems.intakerollers.IntakeRollers;
 import frc.robot.subsystems.intakerollers.rolllercommands.IntakeFuel;
 import frc.robot.subsystems.intakerollers.rolllercommands.SetIntakeVelocity;
 import frc.robot.subsystems.outtake.Shooter;
+import frc.robot.subsystems.outtake.commands.SetShooterVelocity;
 import frc.robot.subsystems.outtake.commands.ShooterDefaultBehavior;
 import frc.robot.subsystems.tunnel.Tunnel;
 import frc.robot.subsystems.tunnel.tunnelCommands.RunAtVelocity;
@@ -266,7 +267,17 @@ public class RobotContainer {
   }
 
   private void configureDemoBindings(){
-    
+        tunnel.setDefaultCommand(new RunAtVelocity(tunnel, () -> RPM.of(0)));
+    intakeRollers.setDefaultCommand(
+        Commands.run(() -> intakeRollers.setVoltage(Volts.of(0)), intakeRollers));
+    indexer.setDefaultCommand(new SetIndexerVelocity(indexer, () -> RPM.of(0)));
+    intakePivot.setDefaultCommand(
+        new GoToAnglePersist(intakePivot, () -> IntakeConstants.kStowedPosition));
+    hood.setDefaultCommand(Commands.run(() -> hood.runVolts(Volts.of(0)), hood));
+    // shooter.setDefaultCommand(new SetShooterVelocity(shooter, () -> RPM.of(0)));
+    shooter.setDefaultCommand(new SetShooterVelocity(shooter, ()->RPM.of(0)));
+    drivetrain.setDefaultCommand(drivetrain.teleopDrive(this::getDemoForward, this::getDemoStrafe, this::getDemoTurn));
+
   }
 
   private void configureBindings() {
