@@ -129,15 +129,15 @@ public class RobotContainer {
     return rawJoystick;
   }
 
-  public double getDemoForward(){
+  public double getDemoForward() {
     return 0.25 * getDriverForward();
   }
 
-  public double getDemoStrafe(){
+  public double getDemoStrafe() {
     return 0.25 * getDriverStrafe();
   }
 
-  public double getDemoTurn(){
+  public double getDemoTurn() {
     return 0.4 * getDriverTurn();
   }
 
@@ -217,8 +217,9 @@ public class RobotContainer {
   }
 
   public RobotContainer() {
-    configureBindings();
+    // configureBindings();
     // configureTuningBindings();
+    configureDemoBindings();
     configureNamedAutoCommands();
     configureAutoChooser();
   }
@@ -267,8 +268,8 @@ public class RobotContainer {
 
   }
 
-  private void configureDemoBindings(){
-        tunnel.setDefaultCommand(new RunAtVelocity(tunnel, () -> RPM.of(0)));
+  private void configureDemoBindings() {
+    tunnel.setDefaultCommand(new RunAtVelocity(tunnel, () -> RPM.of(0)));
     intakeRollers.setDefaultCommand(
         Commands.run(() -> intakeRollers.setVoltage(Volts.of(0)), intakeRollers));
     indexer.setDefaultCommand(new SetIndexerVelocity(indexer, () -> RPM.of(0)));
@@ -276,8 +277,9 @@ public class RobotContainer {
         new GoToAnglePersist(intakePivot, () -> IntakeConstants.kStowedPosition));
     hood.setDefaultCommand(Commands.run(() -> hood.runVolts(Volts.of(0)), hood));
     // shooter.setDefaultCommand(new SetShooterVelocity(shooter, () -> RPM.of(0)));
-    shooter.setDefaultCommand(new SetShooterVelocity(shooter, ()->RPM.of(0)));
-    drivetrain.setDefaultCommand(drivetrain.teleopDrive(this::getDemoForward, this::getDemoStrafe, this::getDemoTurn));
+    shooter.setDefaultCommand(new SetShooterVelocity(shooter, () -> RPM.of(0)));
+    drivetrain.setDefaultCommand(
+        drivetrain.teleopDrive(this::getDemoForward, this::getDemoStrafe, this::getDemoTurn));
 
     driver.rightTrigger().whileTrue(new DemoShoot(tunnel, shooter, indexer));
 
@@ -286,8 +288,6 @@ public class RobotContainer {
         .toggleOnTrue(new GoToAnglePersist(intakePivot, () -> IntakeConstants.kIntakePosition));
 
     driver.leftBumper().whileTrue(new IntakeFuel(intakeRollers, intakePivot));
-
-
   }
 
   private void configureBindings() {

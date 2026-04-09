@@ -1,3 +1,4 @@
+/* (C) RoboLancers 2026 */
 package frc.robot.commands;
 
 import static edu.wpi.first.units.Units.RPM;
@@ -11,8 +12,8 @@ import frc.robot.subsystems.outtake.Shooter;
 import frc.robot.subsystems.tunnel.Tunnel;
 import frc.robot.subsystems.tunnel.TunnelConstants;
 
-public class DemoShoot extends Command{
-    
+public class DemoShoot extends Command {
+
   Tunnel tunnel;
   Shooter shooter;
   Indexer indexer;
