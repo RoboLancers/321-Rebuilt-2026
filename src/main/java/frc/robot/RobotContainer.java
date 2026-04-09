@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Align;
+import frc.robot.commands.DemoShoot;
 import frc.robot.commands.Feed;
 import frc.robot.commands.Release;
 import frc.robot.commands.ShootAndIndex;
@@ -277,6 +278,15 @@ public class RobotContainer {
     // shooter.setDefaultCommand(new SetShooterVelocity(shooter, () -> RPM.of(0)));
     shooter.setDefaultCommand(new SetShooterVelocity(shooter, ()->RPM.of(0)));
     drivetrain.setDefaultCommand(drivetrain.teleopDrive(this::getDemoForward, this::getDemoStrafe, this::getDemoTurn));
+
+    driver.rightTrigger().whileTrue(new DemoShoot(tunnel, shooter, indexer));
+
+    driver
+        .y()
+        .toggleOnTrue(new GoToAnglePersist(intakePivot, () -> IntakeConstants.kIntakePosition));
+
+    driver.leftBumper().whileTrue(new IntakeFuel(intakeRollers, intakePivot));
+
 
   }
 
