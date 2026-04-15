@@ -39,6 +39,7 @@ import frc.robot.subsystems.intakePivot.IntakeConstants;
 import frc.robot.subsystems.intakePivot.IntakePivot;
 import frc.robot.subsystems.intakePivot.intakePivotCommands.GoToAngle;
 import frc.robot.subsystems.intakePivot.intakePivotCommands.GoToAnglePersist;
+import frc.robot.subsystems.intakePivot.intakePivotCommands.HomeIntakePivot;
 import frc.robot.subsystems.intakePivot.intakePivotCommands.Tune;
 import frc.robot.subsystems.intakerollers.IntakeRollerConstants;
 import frc.robot.subsystems.intakerollers.IntakeRollers;
@@ -332,6 +333,7 @@ public class RobotContainer {
                 .alongWith(
                     new SetIndexerVelocity(indexer, () -> IndexerConstants.kReleaseVelocity)));
     driver.povUp().onTrue(Commands.runOnce(() -> drivetrain.getPigeon2().setYaw(0)));
+    driver.povDown().whileTrue(new HomeIntakePivot(intakePivot));
   }
 
   @Logged(name = "autonomousCommand")

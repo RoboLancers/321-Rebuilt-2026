@@ -3,6 +3,7 @@ package frc.robot.subsystems.intakePivot;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Volts;
@@ -36,4 +37,6 @@ public class IntakeConstants {
   public static final Constraints kMaxPivotConstraints =
       new Constraints(
           kMaxVelocity.in(RadiansPerSecond), kMaxAcceleration.in(RadiansPerSecondPerSecond));
+  public static final AngularVelocity kHomingVelocity = RPM.of(10);
+  public static final Current kHomingCurrent = Amps.of(40);
 }

@@ -3,6 +3,7 @@ package frc.robot.subsystems.intakePivot;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Volts;
 
@@ -105,6 +106,11 @@ public class IntakePivot extends SubsystemBase {
         < IntakeConstants.kAngleTolerance.in(Degrees);
   }
 
+  public boolean atHomedPosition() {
+    return getVelocity() <= IntakeConstants.kHomingVelocity.in(RPM)
+        && getCurrent().in(Amps) >= IntakeConstants.kHomingCurrent.in(Amps);
+  }
+
   public void setPID(double kP, double kI, double kD, double kG) {
     pivotController.setP(kP);
     pivotController.setI(kI);
@@ -142,7 +148,7 @@ public class IntakePivot extends SubsystemBase {
 
   @Logged(name = "intakePivotVelocity")
   public double getVelocity() {
-    return intakePivotMotor.getVelocity().getValueAsDouble();
+    return intakePivotMotor.getVelocity().getValue().in(RPM);
   }
 
   @Logged(name = "intakePivotCurrent")
