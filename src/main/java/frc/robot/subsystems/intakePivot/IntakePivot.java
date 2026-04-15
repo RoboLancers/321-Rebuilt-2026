@@ -107,9 +107,9 @@ public class IntakePivot extends SubsystemBase {
         < RobotConstants.kAngleTolerance.in(Degrees);
   }
 
-  public boolean isHomed(){
-    return getVelocity() <= IntakeConstants.kHomingVelocity.in(RPM) &&
-    getCurrent().in(Amps) >= IntakeConstants.kHomingCurrent.in(Amps);
+  public boolean atHomedPosition() {
+    return getVelocity() <= IntakeConstants.kHomingVelocity.in(RPM)
+        && getCurrent().in(Amps) >= IntakeConstants.kHomingCurrent.in(Amps);
   }
 
   public void setPID(double kP, double kI, double kD, double kG) {
