@@ -27,13 +27,13 @@ public class IntakeConstants {
   public static final double kSensorToMechanismRatio = 72;
   public static final double kRelativeEncoderId = 0;
   public static final Angle kIntakePosition = Degrees.of(0);
+  public static final Angle kTravelPosition = Degrees.of(30);
   public static final Angle kStowedPosition = Degrees.of(120);
   public static final int kEncoderID = 0;
-  public static final Angle kAngleTolerance = Degrees.of(0);
   public static final Voltage kHomingVoltage = Volts.of(-2.0);
-  public static final AngularVelocity kMaxVelocity = RadiansPerSecond.of(Math.PI / 2);
-  public static final AngularAcceleration kMaxAcceleration =
-      RadiansPerSecondPerSecond.of(2 * (Math.PI));
+  public static final Angle kAngleTolerance = Degrees.of(1.5);
+  public static final AngularVelocity kMaxVelocity = RadiansPerSecond.of(Math.PI);
+  public static final AngularAcceleration kMaxAcceleration = RadiansPerSecondPerSecond.of(Math.PI);
   public static final Constraints kMaxPivotConstraints =
       new Constraints(
           kMaxVelocity.in(RadiansPerSecond), kMaxAcceleration.in(RadiansPerSecondPerSecond));

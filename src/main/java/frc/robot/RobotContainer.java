@@ -38,6 +38,7 @@ import frc.robot.subsystems.indexer.indexerCommands.SetIndexerVelocity;
 import frc.robot.subsystems.intakePivot.IntakeConstants;
 import frc.robot.subsystems.intakePivot.IntakePivot;
 import frc.robot.subsystems.intakePivot.intakePivotCommands.GoToAngle;
+import frc.robot.subsystems.intakePivot.intakePivotCommands.GoToAnglePersist;
 import frc.robot.subsystems.intakePivot.intakePivotCommands.Tune;
 import frc.robot.subsystems.intakerollers.IntakeRollerConstants;
 import frc.robot.subsystems.intakerollers.IntakeRollers;
@@ -79,6 +80,16 @@ public class RobotContainer {
   private SendableChooser<Command> autoChooser;
 
   public Trigger slowMode = driver.b();
+  private boolean defenseMode = false;
+
+  @Logged
+  public boolean getDefenseMode() {
+    return defenseMode;
+  }
+
+  public void toggleDefenseMode() {
+    defenseMode = !defenseMode;
+  }
 
   @Logged(name = "driverForwardValue")
   public double getDriverForward() {
@@ -114,6 +125,26 @@ public class RobotContainer {
         -MathUtil.applyDeadband(driver.getRightX(), DrivetrainConstants.kRotationDeadband)
             * DrivetrainConstants.kMaxAngularVelocity.in(RadiansPerSecond);
     return rawJoystick;
+  }
+
+  @Logged(name = "forwardVelocityValue")
+  public double getForwardVelocity() {
+    double forwardVelocity =
+        (getDefenseMode() && !RebuiltUtil.inDefenseZone(drivetrain.getPose()))
+            ? MathUtil.clamp(
+                getDriverForward(), 0, DrivetrainConstants.kMaxLinearVelocity.in(MetersPerSecond))
+            : getDriverForward();
+    return forwardVelocity;
+  }
+
+  @Logged(name = "strafeVelocityValue")
+  public double getStrafeVelocity() {
+    return getDriverStrafe();
+  }
+
+  @Logged(name = "turnVelocityValue")
+  public double getTurnVelocity() {
+    return getDriverTurn();
   }
 
   @Logged(name = "calculatedHubHeading")
@@ -168,7 +199,7 @@ public class RobotContainer {
 
   @Logged(name = "robotInAllianceZone")
   public boolean inAllianceZone() {
-    return RebuiltUtil.InAllianceZone(drivetrain.getPose());
+    return RebuiltUtil.inAllianceZone(drivetrain.getPose());
   }
 
   public RobotContainer() {
@@ -180,8 +211,12 @@ public class RobotContainer {
 
   private void configureNamedAutoCommands() {
     IntakeFuel intakeFuel = new IntakeFuel(intakeRollers, intakePivot);
-    GoToAngle intakePivotStow = new GoToAngle(intakePivot, () -> IntakeConstants.kStowedPosition);
-    GoToAngle intakePivotOut = new GoToAngle(intakePivot, () -> IntakeConstants.kIntakePosition);
+    Command intakePivotStow =
+        new GoToAngle(intakePivot, () -> IntakeConstants.kStowedPosition).withTimeout(2);
+    Command intakePivotOut =
+        new GoToAngle(intakePivot, () -> IntakeConstants.kIntakePosition).withTimeout(2);
+    Command intakePivotTravel =
+        new GoToAngle(intakePivot, () -> IntakeConstants.kTravelPosition).withTimeout(2);
     ParallelRaceGroup intakeInAuto = new ParallelRaceGroup(intakeFuel, intakePivotOut);
     Command align =
         Align.rotateToHub(drivetrain, () -> 0, () -> 0, this::getHubHeading, drivetrain::getPose);
@@ -192,6 +227,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("IntakePivotStow", intakePivotStow);
     NamedCommands.registerCommand("IntakeFuel", intakeInAuto);
     NamedCommands.registerCommand("IntakePivotOut", intakePivotOut);
+    NamedCommands.registerCommand("IntakePivotTravel", intakePivotTravel);
     NamedCommands.registerCommand("ShootFuel", shootInAuto);
     NamedCommands.registerCommand("Align", alignInAuto);
   }
@@ -223,23 +259,23 @@ public class RobotContainer {
         Commands.run(() -> intakeRollers.setVoltage(Volts.of(0)), intakeRollers));
     indexer.setDefaultCommand(new SetIndexerVelocity(indexer, () -> RPM.of(0)));
     intakePivot.setDefaultCommand(
-        new GoToAngle(intakePivot, () -> IntakeConstants.kStowedPosition));
+        new GoToAnglePersist(intakePivot, () -> IntakeConstants.kStowedPosition));
     hood.setDefaultCommand(Commands.run(() -> hood.runVolts(Volts.of(0)), hood));
     // shooter.setDefaultCommand(new SetShooterVelocity(shooter, () -> RPM.of(0)));
     shooter.setDefaultCommand(new ShooterDefaultBehavior(shooter, drivetrain::getPose));
 
     drivetrain.setDefaultCommand(
-        drivetrain.teleopDrive(this::getDriverForward, this::getDriverStrafe, this::getDriverTurn));
+        drivetrain.defenseDrive(
+            this::getForwardVelocity,
+            this::getStrafeVelocity,
+            this::getTurnVelocity,
+            this::getDefenseMode));
+
+    driver.leftBumper().whileTrue(new IntakeFuel(intakeRollers, intakePivot));
 
     driver
-        .leftBumper()
-        .whileTrue(
-            new GoToAngle(intakePivot, () -> IntakeConstants.kIntakePosition)
-                .alongWith(
-                    new // TODO: change to and then once end criteria is reimplemented
-                    IntakeFuel(intakeRollers, intakePivot)));
-
-    driver.y().toggleOnTrue(new GoToAngle(intakePivot, () -> IntakeConstants.kIntakePosition));
+        .y()
+        .toggleOnTrue(new GoToAnglePersist(intakePivot, () -> IntakeConstants.kIntakePosition));
 
     driver
         .rightTrigger()
@@ -276,16 +312,26 @@ public class RobotContainer {
             Align.faceAllianceZone(drivetrain, this::getDriverForward, this::getDriverStrafe)
                 .alongWith(new Feed(tunnel, shooter, hood, indexer)));
 
-    driver.a().whileTrue(new StaticShoot(tunnel, shooter, indexer));
+    driver.a().whileTrue(new StaticShoot(tunnel, shooter, indexer, hood));
     driver.b().whileTrue(new Feed(tunnel, shooter, hood, indexer));
+
     driver
         .x()
+        .onTrue(
+            Commands.runOnce(
+                () -> {
+                  toggleDefenseMode();
+                }));
+
+    driver.povLeft().whileTrue(new Release(tunnel, shooter, indexer));
+    driver
+        .povRight()
         .whileTrue(
             new SetIntakeVelocity(
                     intakeRollers, intakePivot, () -> IntakeRollerConstants.kReleaseVelocity)
                 .alongWith(
                     new SetIndexerVelocity(indexer, () -> IndexerConstants.kReleaseVelocity)));
-    driver.povLeft().whileTrue(new Release(tunnel, shooter, indexer));
+    driver.povUp().onTrue(Commands.runOnce(() -> drivetrain.getPigeon2().setYaw(0)));
   }
 
   @Logged(name = "autonomousCommand")

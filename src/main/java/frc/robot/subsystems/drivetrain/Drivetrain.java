@@ -49,6 +49,7 @@ import frc.robot.util.RebuiltUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -438,6 +439,36 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
 
   public void setAlignmentSetpoint(AlignmentSetpoint setpoint) {
     alignmentSetpoint = setpoint;
+  }
+
+  public Command defenseDrive(
+      DoubleSupplier translationX,
+      DoubleSupplier translationY,
+      DoubleSupplier rotation,
+      BooleanSupplier defenseMode) {
+    return run(
+        (RebuiltUtil.inAllianceZone(getPose())
+                && !RebuiltUtil.inDefenseZone(getPose())
+                && defenseMode.getAsBoolean())
+            ? () -> {
+              driveFixedHeading(
+                  translationX.getAsDouble(), translationY.getAsDouble(), Rotation2d.kZero);
+            }
+            : () -> {
+              var speeds =
+                  ChassisSpeeds.discretize(
+                      translationX.getAsDouble(),
+                      translationY.getAsDouble(),
+                      rotation.getAsDouble(),
+                      RobotConstants.kRobotLoopPeriod.in(Seconds));
+
+              setControl(
+                  fieldCentricRequest
+                      .withVelocityX(speeds.vxMetersPerSecond)
+                      .withVelocityY(speeds.vyMetersPerSecond)
+                      .withRotationalRate(speeds.omegaRadiansPerSecond)
+                      .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective));
+            });
   }
 
   public boolean atPoseSetpoint(Distance tranTol, Angle rotTol, Supplier<Pose2d> currentPose) {
