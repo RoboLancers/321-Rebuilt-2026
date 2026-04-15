@@ -108,7 +108,8 @@ public class IntakePivot extends SubsystemBase {
   }
 
   public boolean isHomed(){
-    getVelocity() <= IntakeConstants.kHomingVelocity.in(RPM);
+    return getVelocity() <= IntakeConstants.kHomingVelocity.in(RPM) &&
+    getCurrent().in(Amps) >= IntakeConstants.kHomingCurrent.in(Amps);
   }
 
   public void setPID(double kP, double kI, double kD, double kG) {

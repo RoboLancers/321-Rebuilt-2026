@@ -38,4 +38,5 @@ public class IntakeConstants {
       new Constraints(
           kMaxVelocity.in(RadiansPerSecond), kMaxAcceleration.in(RadiansPerSecondPerSecond));
   public static final AngularVelocity kHomingVelocity = RPM.of(10);
+  public static final Current kHomingCurrent = Amps.of(40);
 }
