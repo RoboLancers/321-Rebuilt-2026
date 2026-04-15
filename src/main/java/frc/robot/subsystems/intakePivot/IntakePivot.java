@@ -23,7 +23,6 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotConstants;
 
 public class IntakePivot extends SubsystemBase {
 
@@ -103,7 +102,7 @@ public class IntakePivot extends SubsystemBase {
 
   public boolean atAngle(Angle angle) {
     return Math.abs(getAngle().in(Degrees) - angle.in(Degrees))
-        < RobotConstants.kAngleTolerance.in(Degrees);
+        < IntakeConstants.kAngleTolerance.in(Degrees);
   }
 
   public void setPID(double kP, double kI, double kD, double kG) {

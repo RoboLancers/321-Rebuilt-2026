@@ -35,6 +35,11 @@ public class RebuiltUtil {
   public static final Rectangle2d blueAllianceZone =
       new Rectangle2d(new Translation2d(0, 0), new Translation2d(4, 8));
 
+  public static final Rectangle2d redDefenseZone =
+      new Rectangle2d(new Translation2d(16.5, 0), new Translation2d(13, 8));
+  public static final Rectangle2d blueDefenseZone =
+      new Rectangle2d(new Translation2d(0, 0), new Translation2d(3.5, 8));
+
   public static final int redClimbTagID = 15;
   public static final int blueClimbTagID = 31;
 
@@ -49,8 +54,16 @@ public class RebuiltUtil {
     return MyAlliance.isRed() ? redAllianceZone : blueAllianceZone;
   }
 
-  public static boolean InAllianceZone(Pose2d pose) {
+  public static Rectangle2d getDefenseZone() {
+    return MyAlliance.isRed() ? blueDefenseZone : redDefenseZone;
+  }
+
+  public static boolean inAllianceZone(Pose2d pose) {
     return getAllianceZone().contains(pose.getTranslation());
+  }
+
+  public static boolean inDefenseZone(Pose2d pose) {
+    return getDefenseZone().contains(pose.getTranslation());
   }
 
   public static TunableConstant xTransform = new TunableConstant("X Transform", 0);

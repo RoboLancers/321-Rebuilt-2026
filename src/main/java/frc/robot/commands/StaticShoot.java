@@ -1,10 +1,12 @@
 /* (C) RoboLancers 2026 */
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.outtake.OuttakeConstants;
 import frc.robot.subsystems.outtake.Shooter;
@@ -13,11 +15,13 @@ import frc.robot.subsystems.tunnel.TunnelConstants;
 
 public class StaticShoot extends Command {
 
+  Hood hood;
   Tunnel tunnel;
   Shooter shooter;
   Indexer indexer;
 
-  public StaticShoot(Tunnel tunnel, Shooter shooter, Indexer indexer) {
+  public StaticShoot(Tunnel tunnel, Shooter shooter, Indexer indexer, Hood hood) {
+    this.hood = hood;
     this.tunnel = tunnel;
     this.shooter = shooter;
     this.indexer = indexer;
@@ -30,6 +34,7 @@ public class StaticShoot extends Command {
 
     shooter.goToVelocity(OuttakeConstants.kStaticScoreRPM);
     shooter.setTargetVelocity(OuttakeConstants.kStaticScoreRPM);
+    hood.goToAngle(Degrees.of(0));
 
     if (Math.abs(shooter.getTopVelocity().in(RPM) - OuttakeConstants.kStaticScoreRPM.in(RPM))
         < 25) {

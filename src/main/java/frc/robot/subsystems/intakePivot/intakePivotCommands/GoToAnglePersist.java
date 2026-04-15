@@ -8,12 +8,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.intakePivot.IntakePivot;
 import java.util.function.Supplier;
 
-public class GoToAngle extends Command {
+public class GoToAnglePersist extends Command {
 
   IntakePivot intakePivot;
   Supplier<Angle> angleSupplier;
 
-  public GoToAngle(IntakePivot intakePivot, Supplier<Angle> angleSupplier) {
+  public GoToAnglePersist(IntakePivot intakePivot, Supplier<Angle> angleSupplier) {
     this.intakePivot = intakePivot;
     this.angleSupplier = angleSupplier;
     addRequirements(intakePivot);
@@ -32,7 +32,8 @@ public class GoToAngle extends Command {
 
   @Override
   public boolean isFinished() {
-    return intakePivot.atAngle(angleSupplier.get());
+    //   return intakePivot.atAngle(angleSupplier.get());
+    return false; // TODO: reimplement end condition with braking stage
   }
 
   @Override
