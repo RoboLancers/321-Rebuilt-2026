@@ -1,6 +1,7 @@
 /* (C) RoboLancers 2026 */
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
@@ -57,6 +58,7 @@ import frc.robot.util.RebuiltUtil;
 public class RobotContainer {
 
   private final CommandXboxController driver = new CommandXboxController(0);
+  private final CommandXboxController operator = new CommandXboxController(1);
 
   @Logged(name = "driverController")
   public XboxController getDriverController() {
@@ -281,13 +283,21 @@ public class RobotContainer {
     drivetrain.setDefaultCommand(
         drivetrain.teleopDrive(this::getDemoForward, this::getDemoStrafe, this::getDemoTurn));
 
-    driver.rightTrigger().whileTrue(new DemoShoot(tunnel, shooter, indexer));
+    operator.rightTrigger().whileTrue(new DemoShoot(tunnel, shooter, indexer));
+    
+    operator.rightBumper().whileTrue(new DemoShoot(tunnel, shooter, indexer));
 
-    driver
+
+    operator
         .y()
         .toggleOnTrue(new GoToAnglePersist(intakePivot, () -> IntakeConstants.kIntakePosition));
 
-    driver.leftBumper().whileTrue(new IntakeFuel(intakeRollers, intakePivot));
+    operator.leftTrigger().whileTrue(new IntakeFuel(intakeRollers, intakePivot));
+
+    operator.leftBumper().whileTrue(new IntakeFuel(intakeRollers, intakePivot));
+
+    driver.povDown().onTrue(Commands.run(() -> drivetrain.getPigeon2().reset()));
+
   }
 
   private void configureBindings() {
