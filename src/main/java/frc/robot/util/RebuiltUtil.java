@@ -41,7 +41,11 @@ public class RebuiltUtil {
       new Rectangle2d(new Translation2d(0, 0), new Translation2d(3.5, 8));
 
   public static final Rectangle2d neutralZone = new Rectangle2d(new Translation2d(5.2,0), new Translation2d(11.4,8));
+  public static final Rectangle2d blueNeutralZone = new Rectangle2d(new Translation2d(5.2,0), new Translation2d(8.3,8));
+  public static final Rectangle2d redNeutralZone = new Rectangle2d(new Translation2d(8.3,0), new Translation2d(11.4,8));
   public static final Rectangle2d neutralDefenseZone = new Rectangle2d(new Translation2d(5.7,0), new Translation2d(10.9,8));
+  public static final Rectangle2d blueNeutralDefenseZone = new Rectangle2d(new Translation2d(5.7,0), new Translation2d(8.3,8));
+  public static final Rectangle2d redNeutralDefenseZone = new Rectangle2d(new Translation2d(8.3,0), new Translation2d(10.9,8));
 
   public static final int redClimbTagID = 15;
   public static final int blueClimbTagID = 31;
@@ -99,6 +103,22 @@ public class RebuiltUtil {
 
   public static boolean inNeutralDefenseZone(Pose2d pose) {
     return neutralDefenseZone.contains(pose.getTranslation());
+  }
+
+  public static boolean inRedNeutralDefenseZone(Pose2d pose) {
+    return redNeutralDefenseZone.contains(pose.getTranslation());
+  }
+
+  public static boolean inBlueNeutralDefenseZone(Pose2d pose) {
+    return blueNeutralDefenseZone.contains(pose.getTranslation());
+  }
+
+  public static boolean inBlueNeutralZone(Pose2d pose) {
+    return blueNeutralZone.contains(pose.getTranslation());
+  }
+
+  public static boolean inRedNeutralZone(Pose2d pose) {
+    return redNeutralZone.contains(pose.getTranslation());
   }
 
   public static TunableConstant xTransform = new TunableConstant("X Transform", 0);
