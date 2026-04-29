@@ -20,8 +20,8 @@ public class IntakeConstants {
   public static final Current kCurrentLimit = Amps.of(60);
   public static final boolean kCurrentLimitEnable = true;
   public static final boolean kInverted = true;
-  public static final double kG = 0.24;
-  public static final double kP = 4.8;
+  public static final double kG = 0;
+  public static final double kP = 0;
   public static final double kI = 0;
   public static final double kD = 0;
   public static final double kSensorToMechanismRatio = 72;
@@ -29,7 +29,7 @@ public class IntakeConstants {
   public static final Angle kIntakePosition = Degrees.of(0);
   public static final Angle kTravelPosition = Degrees.of(30);
   public static final Angle kStowedPosition = Degrees.of(120);
-  public static final int kEncoderID = 0;
+  public static final int kEncoderID = 12;
   public static final Voltage kHomingVoltage = Volts.of(-2.0);
   public static final Angle kAngleTolerance = Degrees.of(1.5);
   public static final AngularVelocity kMaxVelocity = RadiansPerSecond.of(Math.PI);

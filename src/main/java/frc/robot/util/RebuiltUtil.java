@@ -35,10 +35,13 @@ public class RebuiltUtil {
   public static final Rectangle2d blueAllianceZone =
       new Rectangle2d(new Translation2d(0, 0), new Translation2d(4, 8));
 
-  public static final Rectangle2d redDefenseZone =
+  public static final Rectangle2d redAllianceDefenseZone =
       new Rectangle2d(new Translation2d(16.5, 0), new Translation2d(13, 8));
-  public static final Rectangle2d blueDefenseZone =
+  public static final Rectangle2d blueAllianceDefenseZone =
       new Rectangle2d(new Translation2d(0, 0), new Translation2d(3.5, 8));
+
+  public static final Rectangle2d neutralZone = new Rectangle2d(new Translation2d(5.2,0), new Translation2d(11.4,8));
+  public static final Rectangle2d neutralDefenseZone = new Rectangle2d(new Translation2d(5.7,0), new Translation2d(10.9,8));
 
   public static final int redClimbTagID = 15;
   public static final int blueClimbTagID = 31;
@@ -54,16 +57,48 @@ public class RebuiltUtil {
     return MyAlliance.isRed() ? redAllianceZone : blueAllianceZone;
   }
 
-  public static Rectangle2d getDefenseZone() {
-    return MyAlliance.isRed() ? blueDefenseZone : redDefenseZone;
+  public static Rectangle2d getOppositeAllianceZone(){
+    return MyAlliance.isRed() ? blueAllianceZone : redAllianceZone;
+  }
+
+  public static Rectangle2d getOppositeAllianceDefenseZone() {
+    return MyAlliance.isRed() ? blueAllianceDefenseZone : redAllianceDefenseZone;
   }
 
   public static boolean inAllianceZone(Pose2d pose) {
     return getAllianceZone().contains(pose.getTranslation());
   }
 
-  public static boolean inDefenseZone(Pose2d pose) {
-    return getDefenseZone().contains(pose.getTranslation());
+  public static boolean inOppositeAllianceZone(Pose2d pose){
+    return getOppositeAllianceZone().contains(pose.getTranslation());
+  }
+
+  public static boolean inRedAllianceZone(Pose2d pose) {
+    return redAllianceZone.contains(pose.getTranslation());
+  }
+
+  public static boolean inBlueAllianceZone(Pose2d pose) {
+    return blueAllianceZone.contains(pose.getTranslation());
+  }
+
+  public static boolean inBlueDefenseZone(Pose2d pose) {
+    return blueAllianceDefenseZone.contains(pose.getTranslation());
+  }
+
+  public static boolean inRedDefenseZone(Pose2d pose) {
+    return redAllianceDefenseZone.contains(pose.getTranslation());
+  }
+
+  public static boolean inOppositeAllianceDefenseZone(Pose2d pose) {
+    return getOppositeAllianceDefenseZone().contains(pose.getTranslation());
+  }
+
+  public static boolean inNeutralZone(Pose2d pose) {
+    return neutralZone.contains(pose.getTranslation());
+  }
+
+  public static boolean inNeutralDefenseZone(Pose2d pose) {
+    return neutralDefenseZone.contains(pose.getTranslation());
   }
 
   public static TunableConstant xTransform = new TunableConstant("X Transform", 0);
