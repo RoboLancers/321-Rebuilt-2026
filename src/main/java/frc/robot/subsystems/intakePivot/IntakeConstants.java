@@ -29,7 +29,7 @@ public class IntakeConstants {
   public static final Angle kIntakePosition = Degrees.of(0);
   public static final Angle kTravelPosition = Degrees.of(30);
   public static final Angle kStowedPosition = Degrees.of(120);
-  public static final int kEncoderID = 12;
+  public static final int kEncoderID = 5;
   public static final Voltage kHomingVoltage = Volts.of(-2.0);
   public static final Angle kAngleTolerance = Degrees.of(1.5);
   public static final AngularVelocity kMaxVelocity = RadiansPerSecond.of(Math.PI);
