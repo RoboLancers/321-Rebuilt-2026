@@ -1,6 +1,10 @@
 package frc.robot.util;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import frc.robot.subsystems.drivetrain.DrivetrainConstants;
 
 public class DefenseMode {
     
@@ -36,7 +40,7 @@ public static boolean isBlueNeutralLine(Pose2d pose) {
     return RebuiltUtil.inBlueNeutralZone(pose) && !RebuiltUtil.inBlueNeutralDefenseZone(pose);
 }
 
-public static DefenseLine getDefenseMode(Pose2d pose) {
+public static DefenseLine getDefenseLine(Pose2d pose) {
     DefenseLine line = DefenseLine.None;
     if (isRedAllianceLine(pose)) {line = DefenseLine.RedAlliance;}
     else if(isBlueAllianceLine(pose)) {line = DefenseLine.BlueAlliance;}
@@ -48,17 +52,39 @@ public static DefenseLine getDefenseMode(Pose2d pose) {
 public static AllianceBasedLine getAllianceBasedLine(DefenseLine line){
     AllianceBasedLine allianceBasedLine = AllianceBasedLine.None;
     if (MyAlliance.isBlue()) {
-        line = (switch) 
-        case 
-    }
-
+        switch (line) {
+        case BlueAlliance: allianceBasedLine = AllianceBasedLine.Alliance;
+        case RedAlliance: allianceBasedLine = AllianceBasedLine.OppositeAlliance;
+        case BlueNeutral: allianceBasedLine = AllianceBasedLine.Neutral;
+        case RedNeutral: allianceBasedLine = AllianceBasedLine.OppositeNeutral;
+        case None: allianceBasedLine = AllianceBasedLine.None;
+        default: allianceBasedLine = AllianceBasedLine.None;
+        };
+    } else {
+        switch (line) {
+        case BlueAlliance: allianceBasedLine = AllianceBasedLine.OppositeAlliance;
+        case RedAlliance: allianceBasedLine = AllianceBasedLine.Alliance;
+        case BlueNeutral: allianceBasedLine = AllianceBasedLine.OppositeNeutral;
+        case RedNeutral: allianceBasedLine = AllianceBasedLine.Neutral;
+        case None: allianceBasedLine = AllianceBasedLine.None;
+        default: allianceBasedLine = AllianceBasedLine.None;
+    };
+}
+return allianceBasedLine;
 }
 
-public static double defenseClamp(double velocity, DefenseLine line) {
+public static double defenseLineClamp(double velocity, AllianceBasedLine line) {
     double processedVelocity = velocity;
-    if (line == DefenseLine.BlueAlliance || line == DefenseLine.RedNeutral) {
-        processedVelocity = MathUtil.clamp()
+    if (line == AllianceBasedLine.OppositeAlliance || line == AllianceBasedLine.Neutral) {
+        processedVelocity = MathUtil.clamp(processedVelocity, 0, DrivetrainConstants.kMaxLinearVelocity.in(MetersPerSecond));
+    } else if (line == AllianceBasedLine.Alliance || line == AllianceBasedLine.OppositeNeutral) {
+        processedVelocity = MathUtil.clamp(processedVelocity, -DrivetrainConstants.kMaxLinearVelocity.in(MetersPerSecond), 0);
     }
+    return processedVelocity;
+}
+
+public static double defenseClamp(double velocity, Pose2d pose) {
+    return defenseLineClamp(velocity, getAllianceBasedLine(getDefenseLine(pose)));
 }
 
 }
