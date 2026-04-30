@@ -448,11 +448,12 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
       DoubleSupplier rotation,
       BooleanSupplier defenseMode) {
     return run(
-        (DefenseMode.isDefenseLine(getPose())
-                && defenseMode.getAsBoolean())
+        (DefenseMode.isDefenseLine(getPose()) && defenseMode.getAsBoolean())
             ? () -> {
               driveFixedHeading(
-                  DefenseMode.defenseClamp(translationX.getAsDouble(), getPose()), translationY.getAsDouble(), Rotation2d.kZero);
+                  DefenseMode.defenseClamp(translationX.getAsDouble(), getPose()),
+                  translationY.getAsDouble(),
+                  Rotation2d.kZero);
             }
             : () -> {
               var speeds =

@@ -40,12 +40,18 @@ public class RebuiltUtil {
   public static final Rectangle2d blueAllianceDefenseZone =
       new Rectangle2d(new Translation2d(0, 0), new Translation2d(3.5, 8));
 
-  public static final Rectangle2d neutralZone = new Rectangle2d(new Translation2d(5.2,0), new Translation2d(11.4,8));
-  public static final Rectangle2d blueNeutralZone = new Rectangle2d(new Translation2d(5.2,0), new Translation2d(8.3,8));
-  public static final Rectangle2d redNeutralZone = new Rectangle2d(new Translation2d(8.3,0), new Translation2d(11.4,8));
-  public static final Rectangle2d neutralDefenseZone = new Rectangle2d(new Translation2d(5.7,0), new Translation2d(10.9,8));
-  public static final Rectangle2d blueNeutralDefenseZone = new Rectangle2d(new Translation2d(5.7,0), new Translation2d(8.3,8));
-  public static final Rectangle2d redNeutralDefenseZone = new Rectangle2d(new Translation2d(8.3,0), new Translation2d(10.9,8));
+  public static final Rectangle2d neutralZone =
+      new Rectangle2d(new Translation2d(5.2, 0), new Translation2d(11.4, 8));
+  public static final Rectangle2d blueNeutralZone =
+      new Rectangle2d(new Translation2d(5.2, 0), new Translation2d(8.3, 8));
+  public static final Rectangle2d redNeutralZone =
+      new Rectangle2d(new Translation2d(8.3, 0), new Translation2d(11.4, 8));
+  public static final Rectangle2d neutralDefenseZone =
+      new Rectangle2d(new Translation2d(5.7, 0), new Translation2d(10.9, 8));
+  public static final Rectangle2d blueNeutralDefenseZone =
+      new Rectangle2d(new Translation2d(5.7, 0), new Translation2d(8.3, 8));
+  public static final Rectangle2d redNeutralDefenseZone =
+      new Rectangle2d(new Translation2d(8.3, 0), new Translation2d(10.9, 8));
 
   public static final int redClimbTagID = 15;
   public static final int blueClimbTagID = 31;
@@ -61,7 +67,7 @@ public class RebuiltUtil {
     return MyAlliance.isRed() ? redAllianceZone : blueAllianceZone;
   }
 
-  public static Rectangle2d getOppositeAllianceZone(){
+  public static Rectangle2d getOppositeAllianceZone() {
     return MyAlliance.isRed() ? blueAllianceZone : redAllianceZone;
   }
 
@@ -73,7 +79,7 @@ public class RebuiltUtil {
     return getAllianceZone().contains(pose.getTranslation());
   }
 
-  public static boolean inOppositeAllianceZone(Pose2d pose){
+  public static boolean inOppositeAllianceZone(Pose2d pose) {
     return getOppositeAllianceZone().contains(pose.getTranslation());
   }
 
