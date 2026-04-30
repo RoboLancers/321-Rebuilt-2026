@@ -44,6 +44,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.RobotConstants;
 import frc.robot.subsystems.vision.VisionEstimate;
 import frc.robot.util.AprilTagUtil;
+import frc.robot.util.DefenseMode;
 import frc.robot.util.MyAlliance;
 import frc.robot.util.RebuiltUtil;
 import java.util.ArrayList;
@@ -447,12 +448,11 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
       DoubleSupplier rotation,
       BooleanSupplier defenseMode) {
     return run(
-        (RebuiltUtil.inAllianceZone(getPose())
-                && !RebuiltUtil.inDefenseZone(getPose())
+        (DefenseMode.isDefenseLine(getPose())
                 && defenseMode.getAsBoolean())
             ? () -> {
               driveFixedHeading(
-                  translationX.getAsDouble(), translationY.getAsDouble(), Rotation2d.kZero);
+                  DefenseMode.defenseClamp(translationX.getAsDouble(), getPose()), translationY.getAsDouble(), Rotation2d.kZero);
             }
             : () -> {
               var speeds =

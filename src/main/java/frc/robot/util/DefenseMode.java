@@ -49,6 +49,10 @@ public static DefenseLine getDefenseLine(Pose2d pose) {
     return line;
 }
 
+public static boolean isDefenseLine(Pose2d pose) {
+    return getDefenseLine(pose) != DefenseLine.None;
+}
+
 public static AllianceBasedLine getAllianceBasedLine(DefenseLine line){
     AllianceBasedLine allianceBasedLine = AllianceBasedLine.None;
     if (MyAlliance.isBlue()) {

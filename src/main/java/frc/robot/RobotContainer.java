@@ -128,26 +128,6 @@ public class RobotContainer {
     return rawJoystick;
   }
 
-  @Logged(name = "forwardVelocityValue")
-  public double getForwardVelocity() {
-    double forwardVelocity =
-        (getDefenseMode() && !RebuiltUtil.inDefenseZone(drivetrain.getPose()))
-            ? MathUtil.clamp(
-                getDriverForward(), 0, DrivetrainConstants.kMaxLinearVelocity.in(MetersPerSecond))
-            : getDriverForward();
-    return forwardVelocity;
-  }
-
-  @Logged(name = "strafeVelocityValue")
-  public double getStrafeVelocity() {
-    return getDriverStrafe();
-  }
-
-  @Logged(name = "turnVelocityValue")
-  public double getTurnVelocity() {
-    return getDriverTurn();
-  }
-
   @Logged(name = "calculatedHubHeading")
   public Rotation2d getHubHeading() {
     return RebuiltUtil.getHubHeading(drivetrain::getPose);
@@ -267,9 +247,9 @@ public class RobotContainer {
 
     drivetrain.setDefaultCommand(
         drivetrain.defenseDrive(
-            this::getForwardVelocity,
-            this::getStrafeVelocity,
-            this::getTurnVelocity,
+            this::getDriverForward,
+            this::getDriverStrafe,
+            this::getDriverTurn,
             this::getDefenseMode));
 
     driver.leftBumper().whileTrue(new IntakeFuel(intakeRollers, intakePivot));
