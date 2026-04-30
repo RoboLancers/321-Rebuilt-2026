@@ -7,14 +7,19 @@ import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Volts;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.CustomParamsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
+
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -27,8 +32,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakePivot extends SubsystemBase {
 
-  @Logged private TalonFX intakePivotMotor = new TalonFX(IntakeConstants.kPivotMotorId);
-  @Logged private CANcoder intakeEncoder = new CANcoder(IntakeConstants.kEncoderID);
+  @Logged private TalonFX intakePivotMotor = new TalonFX(IntakeConstants.kPivotMotorId, IntakeConstants.kPivotCanbus);
+  @Logged private CANcoder intakeEncoder = new CANcoder(IntakeConstants.kEncoderID, IntakeConstants.kPivotEncoderCanbus);
 
   private MotorOutputConfigs motorConfigs = new MotorOutputConfigs();
   private FeedbackConfigs feedbackConfigs = new FeedbackConfigs();
@@ -60,6 +65,8 @@ public class IntakePivot extends SubsystemBase {
     intakePivotMotor.getConfigurator().apply(currentLimitsConfigs);
     intakePivotMotor.getConfigurator().apply(feedbackConfigs);
     intakePivotMotor.getConfigurator().apply(motionMagicConfigs);
+
+    intakeEncoder.getConfigurator().apply(new CANcoderConfiguration().withMagnetSensor(new MagnetSensorConfigs().withSensorDirection(SensorDirectionValue.Clockwise_Positive)));
   }
 
   public ProfiledPIDController pivotController =
