@@ -83,7 +83,7 @@ public class RobotContainer {
   public Trigger slowMode = driver.b();
   private boolean defenseMode = false;
 
-  @Logged (name = "Defense Mode")
+  @Logged(name = "Defense Mode")
   public boolean getDefenseMode() {
     return driver.leftTrigger().getAsBoolean();
   }

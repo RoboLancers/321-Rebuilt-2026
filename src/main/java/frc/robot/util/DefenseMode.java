@@ -43,6 +43,10 @@ public class DefenseMode {
 
   public static DefenseLine getDefenseLine(Pose2d pose) {
     DefenseLine line = DefenseLine.None;
+    // is red alliance
+    // get red lines
+    // flip logic for blue
+    // default None enum
     if (isRedAllianceLine(pose)) {
       line = DefenseLine.RedAlliance;
     } else if (isBlueAllianceLine(pose)) {
@@ -51,7 +55,6 @@ public class DefenseMode {
       line = DefenseLine.RedNeutral;
     } else if (isBlueNeutralLine(pose)) {
       line = DefenseLine.BlueNeutral;
-      
     }
     return line;
   }
@@ -61,58 +64,57 @@ public class DefenseMode {
   }
 
   public static AllianceBasedLine getAllianceBasedLine(DefenseLine line) {
-    AllianceBasedLine allianceBasedLine = AllianceBasedLine.None;
+
     if (MyAlliance.isBlue()) {
       switch (line) {
         case BlueAlliance:
-          allianceBasedLine = AllianceBasedLine.Alliance;
+          return AllianceBasedLine.Alliance;
         case RedAlliance:
-          allianceBasedLine = AllianceBasedLine.OppositeAlliance;
+          return AllianceBasedLine.OppositeAlliance;
         case BlueNeutral:
-          allianceBasedLine = AllianceBasedLine.Neutral;
+          return AllianceBasedLine.Neutral;
         case RedNeutral:
-          allianceBasedLine = AllianceBasedLine.OppositeNeutral;
+          return AllianceBasedLine.OppositeNeutral;
         case None:
-          allianceBasedLine = AllianceBasedLine.None;
         default:
-          allianceBasedLine = AllianceBasedLine.None;
+          return AllianceBasedLine.None;
       }
-      ;
     } else {
       switch (line) {
         case BlueAlliance:
-          allianceBasedLine = AllianceBasedLine.OppositeAlliance;
+          return AllianceBasedLine.OppositeAlliance;
         case RedAlliance:
-          allianceBasedLine = AllianceBasedLine.Alliance;
+          return AllianceBasedLine.Alliance;
         case BlueNeutral:
-          allianceBasedLine = AllianceBasedLine.OppositeNeutral;
+          return AllianceBasedLine.OppositeNeutral;
         case RedNeutral:
-          allianceBasedLine = AllianceBasedLine.Neutral;
+          return AllianceBasedLine.Neutral;
         case None:
-          allianceBasedLine = AllianceBasedLine.None;
         default:
-          allianceBasedLine = AllianceBasedLine.None;
+          return AllianceBasedLine.None;
       }
-      ;
     }
-    return allianceBasedLine;
   }
 
   public static double defenseLineClamp(double velocity, AllianceBasedLine line) {
     double processedVelocity = velocity;
+
+    // Cant go backwards if on opposite alliance line or our neutral line
     if (line == AllianceBasedLine.OppositeAlliance || line == AllianceBasedLine.Neutral) {
       processedVelocity =
           MathUtil.clamp(
               processedVelocity, 0, DrivetrainConstants.kMaxLinearVelocity.in(MetersPerSecond));
     } else if (line == AllianceBasedLine.Alliance || line == AllianceBasedLine.OppositeNeutral) {
+      // cant go forwardds if on our alliance line or the opposing sides neutral line
       processedVelocity =
           MathUtil.clamp(
               processedVelocity, -DrivetrainConstants.kMaxLinearVelocity.in(MetersPerSecond), 0);
     }
+    // otherwise you are just good
     return processedVelocity;
   }
 
-  public static double defenseClamp(double velocity, Pose2d pose) {
+  public static double defenseClampVelocity(double velocity, Pose2d pose) {
     return defenseLineClamp(velocity, getAllianceBasedLine(getDefenseLine(pose)));
   }
 }

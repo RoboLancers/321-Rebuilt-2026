@@ -442,32 +442,73 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
     alignmentSetpoint = setpoint;
   }
 
+  @Logged(name = "Is defense line")
+  public boolean isDefenseLine() {
+    return DefenseMode.isDefenseLine(getPose());
+  }
+
+  double clampedVelocity = 0;
+
+  @Logged(name = "Clamped velocity")
+  public double clampedVelocity() {
+    return clampedVelocity;
+  }
+
+  @Logged(name = "Is red alliance line")
+  public boolean isRedAllianceLine() {
+    return DefenseMode.isRedAllianceLine(getPose());
+  }
+
+  @Logged(name = "Is blue alliance line")
+  public boolean isBlueAllianceLine() {
+    return DefenseMode.isBlueAllianceLine(getPose());
+  }
+
+  @Logged(name = "Is red neutral line")
+  public boolean isRedNeutralLine() {
+    return DefenseMode.isRedNeutralLine(getPose());
+  }
+
+  @Logged(name = "Is blue neutral line")
+  public boolean isBlueNeutralLine() {
+    return DefenseMode.isBlueNeutralLine(getPose());
+  }
+
+  @Logged(name = "Alliance Based Line Type")
+  public String AllianceBasedLineType() {
+    return DefenseMode.getAllianceBasedLine(DefenseMode.getDefenseLine(getPose())).toString();
+  }
+
   public Command defenseDrive(
       DoubleSupplier translationX,
       DoubleSupplier translationY,
       DoubleSupplier rotation,
       BooleanSupplier defenseMode) {
     return run(
-          () -> {
-               if (DefenseMode.isDefenseLine(getPose()) && defenseMode.getAsBoolean()) {
-                driveFixedHeading(
-                  DefenseMode.defenseClamp(translationX.getAsDouble(), getPose()),
-                  translationY.getAsDouble(),
-                  Rotation2d.kZero);
-            }else {var speeds =
-                  ChassisSpeeds.discretize(
-                      translationX.getAsDouble(),
-                      translationY.getAsDouble(),
-                      rotation.getAsDouble(),
-                      RobotConstants.kRobotLoopPeriod.in(Seconds));
+        () -> {
+          if (DefenseMode.isDefenseLine(getPose()) && defenseMode.getAsBoolean()) {
+            driveFixedHeading(
+                DefenseMode.defenseClampVelocity(translationX.getAsDouble(), getPose()),
+                translationY.getAsDouble(),
+                Rotation2d.kZero);
+            clampedVelocity =
+                DefenseMode.defenseClampVelocity(translationX.getAsDouble(), getPose());
+          } else {
+            var speeds =
+                ChassisSpeeds.discretize(
+                    translationX.getAsDouble(),
+                    translationY.getAsDouble(),
+                    rotation.getAsDouble(),
+                    RobotConstants.kRobotLoopPeriod.in(Seconds));
 
-              setControl(
-                  fieldCentricRequest
-                      .withVelocityX(speeds.vxMetersPerSecond)
-                      .withVelocityY(speeds.vyMetersPerSecond)
-                      .withRotationalRate(speeds.omegaRadiansPerSecond)
-                      .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective));}})
-          ;
+            setControl(
+                fieldCentricRequest
+                    .withVelocityX(speeds.vxMetersPerSecond)
+                    .withVelocityY(speeds.vyMetersPerSecond)
+                    .withRotationalRate(speeds.omegaRadiansPerSecond)
+                    .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective));
+          }
+        });
   }
 
   public boolean atPoseSetpoint(Distance tranTol, Angle rotTol, Supplier<Pose2d> currentPose) {
