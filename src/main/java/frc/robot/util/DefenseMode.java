@@ -51,6 +51,7 @@ public class DefenseMode {
       line = DefenseLine.RedNeutral;
     } else if (isBlueNeutralLine(pose)) {
       line = DefenseLine.BlueNeutral;
+      
     }
     return line;
   }

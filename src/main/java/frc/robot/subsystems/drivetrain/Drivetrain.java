@@ -448,15 +448,13 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
       DoubleSupplier rotation,
       BooleanSupplier defenseMode) {
     return run(
-        (DefenseMode.isDefenseLine(getPose()) && defenseMode.getAsBoolean())
-            ? () -> {
-              driveFixedHeading(
+          () -> {
+               if (DefenseMode.isDefenseLine(getPose()) && defenseMode.getAsBoolean()) {
+                driveFixedHeading(
                   DefenseMode.defenseClamp(translationX.getAsDouble(), getPose()),
                   translationY.getAsDouble(),
                   Rotation2d.kZero);
-            }
-            : () -> {
-              var speeds =
+            }else {var speeds =
                   ChassisSpeeds.discretize(
                       translationX.getAsDouble(),
                       translationY.getAsDouble(),
@@ -468,8 +466,8 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
                       .withVelocityX(speeds.vxMetersPerSecond)
                       .withVelocityY(speeds.vyMetersPerSecond)
                       .withRotationalRate(speeds.omegaRadiansPerSecond)
-                      .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective));
-            });
+                      .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective));}})
+          ;
   }
 
   public boolean atPoseSetpoint(Distance tranTol, Angle rotTol, Supplier<Pose2d> currentPose) {

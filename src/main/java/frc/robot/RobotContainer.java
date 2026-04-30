@@ -83,9 +83,9 @@ public class RobotContainer {
   public Trigger slowMode = driver.b();
   private boolean defenseMode = false;
 
-  @Logged
+  @Logged (name = "Defense Mode")
   public boolean getDefenseMode() {
-    return defenseMode;
+    return driver.leftTrigger().getAsBoolean();
   }
 
   public void toggleDefenseMode() {
@@ -278,16 +278,6 @@ public class RobotContainer {
                                 drivetrain::getPose))));
 
     driver
-        .leftTrigger()
-        .whileTrue(
-            Align.lockOnHub(
-                drivetrain,
-                this::getDriverForward,
-                this::getDriverStrafe,
-                this::getHubHeading,
-                drivetrain::getPose));
-
-    driver
         .rightBumper()
         .whileTrue(
             Align.faceAllianceZone(drivetrain, this::getDriverForward, this::getDriverStrafe)
@@ -296,13 +286,13 @@ public class RobotContainer {
     driver.a().whileTrue(new StaticShoot(tunnel, shooter, indexer, hood));
     driver.b().whileTrue(new Feed(tunnel, shooter, hood, indexer));
 
-    driver
-        .x()
-        .onTrue(
-            Commands.runOnce(
-                () -> {
-                  toggleDefenseMode();
-                }));
+    // driver
+    //     .x()
+    //     .onTrue(
+    //         Commands.runOnce(
+    //             () -> {
+    //               toggleDefenseMode();
+    //             }));
 
     driver.povLeft().whileTrue(new Release(tunnel, shooter, indexer));
     driver
