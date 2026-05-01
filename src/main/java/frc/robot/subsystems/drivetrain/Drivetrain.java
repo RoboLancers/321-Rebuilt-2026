@@ -511,6 +511,30 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
         });
   }
 
+  // public Command defenseDrive(
+  //     DoubleSupplier translationX,
+  //     DoubleSupplier translationY,
+  //     DoubleSupplier rotation,
+  //     BooleanSupplier defenseMode) {
+  //   return run(
+  //       () -> {
+  //           var speeds =
+  //               ChassisSpeeds.discretize(
+  //                   translationX.getAsDouble(),
+  //                   translationY.getAsDouble(),
+  //                   rotation.getAsDouble(),
+  //                   RobotConstants.kRobotLoopPeriod.in(Seconds));
+
+  //           setControl(
+  //               fieldCentricRequest
+  //                   .withVelocityX(speeds.vxMetersPerSecond)
+  //                   .withVelocityY(speeds.vyMetersPerSecond)
+  //                   .withRotationalRate(speeds.omegaRadiansPerSecond)
+  //                   .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective));}
+  //   );
+  //       }
+  
+
   public boolean atPoseSetpoint(Distance tranTol, Angle rotTol, Supplier<Pose2d> currentPose) {
     return currentPose.get().getTranslation().getDistance(alignmentSetpoint.pose().getTranslation())
             < tranTol.in(Meters)

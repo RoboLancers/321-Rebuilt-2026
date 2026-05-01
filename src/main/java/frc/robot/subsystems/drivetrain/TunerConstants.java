@@ -57,7 +57,7 @@ public class TunerConstants {
 
   // The stator current at which the wheels start to slip;
   // This needs to be tuned to your individual robot
-  private static final Current kSlipCurrent = Amps.of(50);
+  private static final Current kSlipCurrent = Amps.of(100);
   private static final double kClosedLoopDriveRampRate = 0.01;
   private static final double kClosedLoopSteerRampRate = 0.01;
 
@@ -67,7 +67,7 @@ public class TunerConstants {
       new TalonFXConfiguration()
           .withCurrentLimits(
               new CurrentLimitsConfigs()
-                  .withStatorCurrentLimit(Amps.of(50))
+                  .withStatorCurrentLimit(Amps.of(100))
                   .withStatorCurrentLimitEnable(true)
                   .withSupplyCurrentLimit(Amps.of(40))
                   .withSupplyCurrentLimitEnable(true))
@@ -167,7 +167,7 @@ public class TunerConstants {
   private static final int kFrontRightDriveMotorId = 6;
   private static final int kFrontRightSteerMotorId = 8;
   private static final int kFrontRightEncoderId = 3;
-  private static final Angle kFrontRightEncoderOffset = Rotations.of(0.147216796875);
+  private static final Angle kFrontRightEncoderOffset = Rotations.of(-0.043212890625);
   private static final boolean kFrontRightSteerMotorInverted = false;
   private static final boolean kFrontRightEncoderInverted = false;
 
