@@ -3,32 +3,53 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 16.5,
-        "y": 0.0
+        "x": 7.647120481927709,
+        "y": 4.450253012048193
       },
       "prevControl": null,
       "nextControl": {
-        "x": 17.5,
-        "y": 0.0
+        "x": 8.64712048192771,
+        "y": 4.450253012048193
+      },
+      "isLocked": false,
+      "linkedName": "Center Depot to Center Path 4"
+    },
+    {
+      "anchor": {
+        "x": 4.532722891566265,
+        "y": 5.466530120481927
+      },
+      "prevControl": {
+        "x": 6.319460843373493,
+        "y": 5.291686746987951
+      },
+      "nextControl": {
+        "x": 2.745984939759037,
+        "y": 5.6413734939759035
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 13.0,
-        "y": 8.0
+        "x": 2.500168674698795,
+        "y": 5.149626506024097
       },
       "prevControl": {
-        "x": 12.0,
-        "y": 8.0
+        "x": 1.500168674698795,
+        "y": 5.149626506024097
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": 0.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -48,7 +69,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 170.61448173995697
   },
   "useDefaultConstraints": true
 }

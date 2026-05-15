@@ -11,22 +11,9 @@
           }
         },
         {
-          "type": "deadline",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 1.0
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "IntakeFuel"
-                }
-              }
-            ]
+            "name": "IntakePivotOut"
           }
         },
         {

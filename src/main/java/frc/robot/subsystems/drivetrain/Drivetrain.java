@@ -533,7 +533,6 @@ public class Drivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> imp
   //                   .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective));}
   //   );
   //       }
-  
 
   public boolean atPoseSetpoint(Distance tranTol, Angle rotTol, Supplier<Pose2d> currentPose) {
     return currentPose.get().getTranslation().getDistance(alignmentSetpoint.pose().getTranslation())
