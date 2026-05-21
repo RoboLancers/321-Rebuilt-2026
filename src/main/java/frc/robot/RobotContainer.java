@@ -44,6 +44,7 @@ import frc.robot.subsystems.intakePivot.intakePivotCommands.Tune;
 import frc.robot.subsystems.intakerollers.IntakeRollerConstants;
 import frc.robot.subsystems.intakerollers.IntakeRollers;
 import frc.robot.subsystems.intakerollers.rolllercommands.IntakeFuel;
+import frc.robot.subsystems.intakerollers.rolllercommands.IntakeFuelAlt;
 import frc.robot.subsystems.intakerollers.rolllercommands.SetIntakeVelocity;
 import frc.robot.subsystems.outtake.Shooter;
 import frc.robot.subsystems.outtake.commands.ShooterDefaultBehavior;
@@ -83,9 +84,9 @@ public class RobotContainer {
   public Trigger slowMode = driver.b();
   private boolean defenseMode = false;
 
-  @Logged
+  @Logged(name = "Defense Mode")
   public boolean getDefenseMode() {
-    return defenseMode;
+    return driver.leftTrigger().getAsBoolean();
   }
 
   public void toggleDefenseMode() {
@@ -126,26 +127,6 @@ public class RobotContainer {
         -MathUtil.applyDeadband(driver.getRightX(), DrivetrainConstants.kRotationDeadband)
             * DrivetrainConstants.kMaxAngularVelocity.in(RadiansPerSecond);
     return rawJoystick;
-  }
-
-  @Logged(name = "forwardVelocityValue")
-  public double getForwardVelocity() {
-    double forwardVelocity =
-        (getDefenseMode() && !RebuiltUtil.inDefenseZone(drivetrain.getPose()))
-            ? MathUtil.clamp(
-                getDriverForward(), 0, DrivetrainConstants.kMaxLinearVelocity.in(MetersPerSecond))
-            : getDriverForward();
-    return forwardVelocity;
-  }
-
-  @Logged(name = "strafeVelocityValue")
-  public double getStrafeVelocity() {
-    return getDriverStrafe();
-  }
-
-  @Logged(name = "turnVelocityValue")
-  public double getTurnVelocity() {
-    return getDriverTurn();
   }
 
   @Logged(name = "calculatedHubHeading")
@@ -211,7 +192,8 @@ public class RobotContainer {
   }
 
   private void configureNamedAutoCommands() {
-    IntakeFuel intakeFuel = new IntakeFuel(intakeRollers, intakePivot);
+    // IntakeFuel intakeFuel = new IntakeFuel(intakeRollers, intakePivot);
+    IntakeFuelAlt intakeFuel = new IntakeFuelAlt(intakeRollers, () -> intakePivot.getAngle());
     Command intakePivotStow =
         new GoToAngle(intakePivot, () -> IntakeConstants.kStowedPosition).withTimeout(2);
     Command intakePivotOut =
@@ -224,6 +206,7 @@ public class RobotContainer {
     ParallelRaceGroup alignInAuto = new ParallelRaceGroup(align);
     ShootAndIndex shootInAuto =
         new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance);
+    // ParallelRaceGroup runRollers = new ParallelRaceGroup(intakeFuel);
 
     NamedCommands.registerCommand("IntakePivotStow", intakePivotStow);
     NamedCommands.registerCommand("IntakeFuel", intakeInAuto);
@@ -231,6 +214,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("IntakePivotTravel", intakePivotTravel);
     NamedCommands.registerCommand("ShootFuel", shootInAuto);
     NamedCommands.registerCommand("Align", alignInAuto);
+    NamedCommands.registerCommand("RunRollers", intakeFuel);
   }
 
   private void configureAutoChooser() {
@@ -267,9 +251,9 @@ public class RobotContainer {
 
     drivetrain.setDefaultCommand(
         drivetrain.defenseDrive(
-            this::getForwardVelocity,
-            this::getStrafeVelocity,
-            this::getTurnVelocity,
+            this::getDriverForward,
+            this::getDriverStrafe,
+            this::getDriverTurn,
             this::getDefenseMode));
 
     driver.leftBumper().whileTrue(new IntakeFuel(intakeRollers, intakePivot));
@@ -298,16 +282,6 @@ public class RobotContainer {
                                 drivetrain::getPose))));
 
     driver
-        .leftTrigger()
-        .whileTrue(
-            Align.lockOnHub(
-                drivetrain,
-                this::getDriverForward,
-                this::getDriverStrafe,
-                this::getHubHeading,
-                drivetrain::getPose));
-
-    driver
         .rightBumper()
         .whileTrue(
             Align.faceAllianceZone(drivetrain, this::getDriverForward, this::getDriverStrafe)
@@ -316,13 +290,13 @@ public class RobotContainer {
     driver.a().whileTrue(new StaticShoot(tunnel, shooter, indexer, hood));
     driver.b().whileTrue(new Feed(tunnel, shooter, hood, indexer));
 
-    driver
-        .x()
-        .onTrue(
-            Commands.runOnce(
-                () -> {
-                  toggleDefenseMode();
-                }));
+    // driver
+    //     .x()
+    //     .onTrue(
+    //         Commands.runOnce(
+    //             () -> {
+    //               toggleDefenseMode();
+    //             }));
 
     driver.povLeft().whileTrue(new Release(tunnel, shooter, indexer));
     driver

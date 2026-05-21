@@ -3,47 +3,33 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.67,
-        "y": 5.95
+        "x": 7.17722891566265,
+        "y": 7.105686746987953
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6699999999999986,
-        "y": 5.95
+        "x": 8.17722891566265,
+        "y": 7.105686746987953
       },
       "isLocked": false,
-      "linkedName": "centerDepotPath"
+      "linkedName": "Center Depot to Center Path 3"
     },
     {
       "anchor": {
-        "x": 2.2986476868327412,
-        "y": 6.0081455064194005
+        "x": 7.647120481927709,
+        "y": 4.450253012048193
       },
       "prevControl": {
-        "x": 1.2986476868327412,
-        "y": 6.0081455064194005
+        "x": 7.701759036144578,
+        "y": 4.810867469879518
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Center Depot to Center Path 4"
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [
-    {
-      "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.0,
-      "maxWaypointRelativePos": 0,
-      "constraints": {
-        "maxVelocity": 5.0,
-        "maxAcceleration": 4.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0,
-        "nominalVoltage": 12.0,
-        "unlimited": false
-      }
-    }
-  ],
+  "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -56,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 170.61448173995697
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -65.05609473657542
   },
   "useDefaultConstraints": true
 }

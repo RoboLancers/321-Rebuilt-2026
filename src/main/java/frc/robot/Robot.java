@@ -7,6 +7,7 @@ import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -17,6 +18,8 @@ public class Robot extends TimedRobot {
   @NotLogged private Command m_autonomousCommand;
 
   private final RobotContainer m_robotContainer;
+
+  public Timer timer = new Timer();
 
   public Robot() {
     m_robotContainer = new RobotContainer();
@@ -38,6 +41,8 @@ public class Robot extends TimedRobot {
     m_robotContainer.latestPoseField.setRobotPose(
         m_robotContainer.getLatestCameraPose().toPose2d());
     SmartDashboard.putData("latest 2d pose", m_robotContainer.latestPoseField);
+
+    SmartDashboard.putNumber("timer", DriverStation.getMatchTime());
   }
 
   @Override
