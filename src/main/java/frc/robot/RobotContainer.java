@@ -193,7 +193,7 @@ public class RobotContainer {
 
   private void configureNamedAutoCommands() {
     // IntakeFuel intakeFuel = new IntakeFuel(intakeRollers, intakePivot);
-    IntakeFuelAlt intakeFuel = new IntakeFuelAlt(intakeRollers, ()->intakePivot.getAngle());
+    IntakeFuelAlt intakeFuel = new IntakeFuelAlt(intakeRollers, () -> intakePivot.getAngle());
     Command intakePivotStow =
         new GoToAngle(intakePivot, () -> IntakeConstants.kStowedPosition).withTimeout(2);
     Command intakePivotOut =
@@ -206,7 +206,7 @@ public class RobotContainer {
     ParallelRaceGroup alignInAuto = new ParallelRaceGroup(align);
     ShootAndIndex shootInAuto =
         new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance);
-        //ParallelRaceGroup runRollers = new ParallelRaceGroup(intakeFuel);
+    // ParallelRaceGroup runRollers = new ParallelRaceGroup(intakeFuel);
 
     NamedCommands.registerCommand("IntakePivotStow", intakePivotStow);
     NamedCommands.registerCommand("IntakeFuel", intakeInAuto);
