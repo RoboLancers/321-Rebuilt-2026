@@ -46,6 +46,8 @@ public class OuttakeConstants {
 
   public static final AngularVelocity kReleaseRPM = RPM.of(180);
 
+  public static final AngularVelocity kDemoShootVelocity = RPM.of(500);
+
   public static final AngularVelocity kMaxVelocity = RPM.of(2000);
 
   public static final AngularVelocity kStaticScoreRPM = RPM.of(700);
