@@ -44,7 +44,11 @@ public class QuestNavSubsystem {
 
     questNav.setVersionCheckEnabled(QuestNavConstants.kQuestVersionCheck);
 
-    // later add more indepth logging features here
+    questNav.onConnected(()-> System.out.println("Quest Connected"));
+    questNav.onDisconnected(()-> DriverStation.reportWarning("Quest Disconnected", false));
+    questNav.onTrackingAcquired(()-> System.out.println("Quest Tracking Acquired"));
+    questNav.onTrackingLost(()-> DriverStation.reportWarning("Quest Tracking Lost", false));
+
   }
 
   public void periodic() {
