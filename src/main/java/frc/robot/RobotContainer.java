@@ -47,6 +47,7 @@ import frc.robot.subsystems.intakerollers.rolllercommands.IntakeFuel;
 import frc.robot.subsystems.intakerollers.rolllercommands.SetIntakeVelocity;
 import frc.robot.subsystems.outtake.Shooter;
 import frc.robot.subsystems.outtake.commands.ShooterDefaultBehavior;
+import frc.robot.subsystems.questNav.QuestNavSubsystem;
 import frc.robot.subsystems.tunnel.Tunnel;
 import frc.robot.subsystems.tunnel.tunnelCommands.RunAtVelocity;
 import frc.robot.subsystems.vision.Vision;
@@ -70,6 +71,7 @@ public class RobotContainer {
   public Shooter shooter = new Shooter();
   public Drivetrain drivetrain = Drivetrain.create();
   public Vision vision = Vision.create(drivetrain::addVisionMeasurement, null);
+  public QuestNavSubsystem questNavSubsystem = new QuestNavSubsystem(drivetrain);
 
   public Field2d latestPoseField = new Field2d();
 

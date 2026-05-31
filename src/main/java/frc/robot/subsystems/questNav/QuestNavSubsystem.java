@@ -5,11 +5,15 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotConstants;
 import frc.robot.subsystems.drivetrain.Drivetrain;
+import gg.questnav.questnav.PoseFrame;
 import gg.questnav.questnav.QuestNav;
+import java.util.ArrayList;
+import java.util.List;
 
 public class QuestNavSubsystem {
 
@@ -22,7 +26,7 @@ public class QuestNavSubsystem {
   private final StructArrayPublisher<Pose3d> allPublishedPoses;
   private final StructArrayPublisher<Pose3d> acceptedPoses;
   private final StructArrayPublisher<Pose3d> rejectedPoses;
-  private final StructArrayPublisher<Pose3d> latestPose;
+  private final StructPublisher<Pose3d> latestPose;
 
   private double lastPoseTimestamp = -1;
 
@@ -36,7 +40,7 @@ public class QuestNavSubsystem {
         networkTables.getStructArrayTopic("QuestNav/rejectedPoses", Pose3d.struct).publish();
     rejectedPoses =
         networkTables.getStructArrayTopic("QuestNav/acceptedPoses", Pose3d.struct).publish();
-    latestPose = networkTables.getStructArrayTopic("QuestNav/latestPose", Pose3d.struct).publish();
+    latestPose = networkTables.getStructTopic("QuestNav/latestPose", Pose3d.struct).publish();
 
     questNav.setVersionCheckEnabled(QuestNavConstants.kQuestVersionCheck);
 
@@ -62,5 +66,54 @@ public class QuestNavSubsystem {
                 DriverStation.reportWarning("Quest battery critical: " + percent + "%", false);
               }
             });
+
+    questNav
+        .getTrackingLostCounter()
+        .ifPresent(
+            count -> {
+              SmartDashboard.putNumber("QuestNav/TrackingLostCount", count);
+            });
+
+    // Processes for reading unread pose frames
+
+    PoseFrame[] frames = questNav.getAllUnreadPoseFrames();
+    SmartDashboard.putNumber("QuestNav/UnreadPoseFrames", frames.length);
+
+    List<Pose3d> allPoses = new ArrayList<>();
+    List<Pose3d> acceptedPoses = new ArrayList<>();
+    List<Pose3d> rejectedPoses = new ArrayList<>();
+
+    for (PoseFrame frame : frames) {
+      Pose3d questPose = frame.questPose3d();
+      Pose3d robotPose = questPose.transformBy(QuestNavConstants.kRobotToQuest.inverse());
+
+      allPoses.add(robotPose);
+
+      questNav.setPose(robotPose);
+
+      if (rejectPose(robotPose)) {
+        rejectedPoses.add(robotPose);
+        continue;
+      }
+
+      acceptedPoses.add(robotPose);
+
+      if (frame.isTracking()) {
+        drivetrain.addVisionMeasurement(
+            robotPose.toPose2d(), frame.dataTimestamp(), QuestNavConstants.kQuestStdDev);
+      }
+    }
+  }
+
+  public boolean rejectPose(Pose3d pose) {
+    return pose.getX() < 0
+        || pose.getX() > RobotConstants.kAprilTagLayout.getFieldLength()
+        || pose.getY() < 0
+        || pose.getY() > RobotConstants.kAprilTagLayout.getFieldWidth();
+  }
+
+  public void resetQuestPose(Pose3d robotPose) {
+    Pose3d questPose = robotPose.transformBy(QuestNavConstants.kRobotToQuest);
+    questNav.setPose(questPose);
   }
 }
