@@ -14,5 +14,6 @@ public class QuestNavConstants {
   public static final Transform3d kRobotToQuest =
       new Transform3d(new Translation3d(), new Rotation3d());
   public static final Matrix<N3, N1> kQuestStdDev = VecBuilder.fill(0.1, 0.1, 0.1);
-  public static final boolean questVersionCheck = false;
+  public static final boolean kQuestVersionCheck = false;
+  public static final double kQuestCriticalPercent = 10;
 }
