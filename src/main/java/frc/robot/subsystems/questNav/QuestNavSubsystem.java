@@ -1,12 +1,12 @@
 /* (C) RoboLancers 2026 */
 package frc.robot.subsystems.questNav;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotConstants;
 import frc.robot.subsystems.drivetrain.Drivetrain;
@@ -20,13 +20,11 @@ public class QuestNavSubsystem {
   private QuestNav questNav = new QuestNav();
   private Drivetrain drivetrain;
 
-  private static final AprilTagFieldLayout AprilTagLayout = RobotConstants.kAprilTagLayout;
-
   // publishers for advantagescope
-  private final StructArrayPublisher<Pose3d> allPublishedPoses;
-  private final StructArrayPublisher<Pose3d> acceptedPoses;
-  private final StructArrayPublisher<Pose3d> rejectedPoses;
-  private final StructPublisher<Pose3d> latestPose;
+  private final StructArrayPublisher<Pose3d> allPublishedPosesPub;
+  private final StructArrayPublisher<Pose3d> acceptedPosesPub;
+  private final StructArrayPublisher<Pose3d> rejectedPosesPub;
+  private final StructPublisher<Pose3d> latestPosePub;
 
   private double lastPoseTimestamp = -1;
 
@@ -34,13 +32,13 @@ public class QuestNavSubsystem {
     this.drivetrain = drivetrain;
 
     var networkTables = NetworkTableInstance.getDefault();
-    allPublishedPoses =
+    allPublishedPosesPub =
         networkTables.getStructArrayTopic("QuestNav/robotPoses", Pose3d.struct).publish();
-    acceptedPoses =
+    acceptedPosesPub =
         networkTables.getStructArrayTopic("QuestNav/rejectedPoses", Pose3d.struct).publish();
-    rejectedPoses =
+    rejectedPosesPub =
         networkTables.getStructArrayTopic("QuestNav/acceptedPoses", Pose3d.struct).publish();
-    latestPose = networkTables.getStructTopic("QuestNav/latestPose", Pose3d.struct).publish();
+    latestPosePub = networkTables.getStructTopic("QuestNav/latestPose", Pose3d.struct).publish();
 
     questNav.setVersionCheckEnabled(QuestNavConstants.kQuestVersionCheck);
 
@@ -105,6 +103,22 @@ public class QuestNavSubsystem {
         drivetrain.addVisionMeasurement(
             robotPose.toPose2d(), frame.dataTimestamp(), QuestNavConstants.kQuestStdDev);
       }
+
+      lastPoseTimestamp = frame.dataTimestamp();
+    }
+
+    // published pose arrays for advantagescope
+    allPublishedPosesPub.set(allPoses.toArray(Pose3d[]::new));
+    acceptedPosesPub.set(acceptedPoses.toArray(Pose3d[]::new));
+    rejectedPosesPub.set(rejectedPoses.toArray(Pose3d[]::new));
+
+    if (!allPoses.isEmpty()) {
+      latestPosePub.set(allPoses.get(allPoses.size() - 1));
+    }
+
+    if (lastPoseTimestamp > 0) {
+      SmartDashboard.putNumber(
+          "QuestNav/TimeSinceLastPose", Timer.getTimestamp() - lastPoseTimestamp);
     }
   }
 
