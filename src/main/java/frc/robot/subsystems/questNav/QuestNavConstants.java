@@ -12,11 +12,11 @@ import edu.wpi.first.math.numbers.N3;
 public class QuestNavConstants {
 
   public static final Transform3d kRobotToQuest =
-      new Transform3d(new Translation3d(0,0,0), new Rotation3d(0,0,0));
+      new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0));
 
   public static final Matrix<N3, N1> kQuestStdDev = VecBuilder.fill(0.1, 0.1, 0.1);
 
-  //Switch to "true" during competitions
+  // Switch to "true" during competitions
   public static final boolean kQuestVersionCheck = false;
 
   public static final double kQuestCriticalPercent = 10;
