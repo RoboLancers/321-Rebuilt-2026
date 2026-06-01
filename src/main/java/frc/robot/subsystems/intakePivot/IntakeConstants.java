@@ -42,4 +42,5 @@ public class IntakeConstants {
           kMaxVelocity.in(RadiansPerSecond), kMaxAcceleration.in(RadiansPerSecondPerSecond));
   public static final AngularVelocity kHomingVelocity = RPM.of(10);
   public static final Current kHomingCurrent = Amps.of(40);
+  public static final double kMagnetOffset = 0.45556640625;
 }

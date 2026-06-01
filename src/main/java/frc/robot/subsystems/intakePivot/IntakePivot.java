@@ -71,7 +71,7 @@ public class IntakePivot extends SubsystemBase {
                 .withMagnetSensor(
                     new MagnetSensorConfigs()
                         .withSensorDirection(SensorDirectionValue.Clockwise_Positive)
-                        .withMagnetOffset(-0.47705)));
+                        .withMagnetOffset(IntakeConstants.kMagnetOffset)));
     intakePivotMotor.getConfigurator().apply(motorConfigs);
     intakePivotMotor.getConfigurator().apply(currentLimitsConfigs);
     intakePivotMotor.getConfigurator().apply(feedbackConfigs);
