@@ -1,6 +1,7 @@
 /* (C) RoboLancers 2026 */
 package frc.robot.subsystems.questNav;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
@@ -48,7 +49,7 @@ public class QuestNavSubsystem {
     questNav.onTrackingLost(() -> DriverStation.reportWarning("Quest Tracking Lost", false));
   }
 
-  public void periodic() {
+  public void questPeriodic() {
     questNav.commandPeriodic();
 
     boolean questConnected = questNav.isConnected();
@@ -56,7 +57,7 @@ public class QuestNavSubsystem {
 
     SmartDashboard.putBoolean("QuestNav/Connected", questConnected);
     SmartDashboard.putBoolean("QuestNav/IsTracking", questIsTracking);
-    SmartDashboard.putNumber("QuestNav/Latenyc", questNav.getLatency());
+    SmartDashboard.putNumber("QuestNav/Latency", questNav.getLatency());
 
     questNav
         .getBatteryPercent()
@@ -129,8 +130,12 @@ public class QuestNavSubsystem {
         || pose.getY() > RobotConstants.kAprilTagLayout.getFieldWidth();
   }
 
-  public void resetQuestPose(Pose3d robotPose) {
+  public void resetQuestPose3d(Pose3d robotPose) {
     Pose3d questPose = robotPose.transformBy(QuestNavConstants.kRobotToQuest);
     questNav.setPose(questPose);
+  }
+
+  public void resetQuestPose2d(Pose2d robotPose) {
+    resetQuestPose3d(new Pose3d(robotPose));
   }
 }

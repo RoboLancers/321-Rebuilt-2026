@@ -10,13 +10,19 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.hood.hoodCommands.HomeHood;
+import frc.robot.subsystems.questNav.QuestNavSubsystem;
 
 @Logged
 public class Robot extends TimedRobot {
   @NotLogged private Command m_autonomousCommand;
 
   private final RobotContainer m_robotContainer;
+
+  private final Drivetrain drivetrain = Drivetrain.create();
+
+  private final QuestNavSubsystem questNavSubsystem = new QuestNavSubsystem(drivetrain);
 
   public Robot() {
     m_robotContainer = new RobotContainer();
@@ -38,6 +44,8 @@ public class Robot extends TimedRobot {
     m_robotContainer.latestPoseField.setRobotPose(
         m_robotContainer.getLatestCameraPose().toPose2d());
     SmartDashboard.putData("latest 2d pose", m_robotContainer.latestPoseField);
+
+    questNavSubsystem.questPeriodic();
   }
 
   @Override
@@ -57,6 +65,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       CommandScheduler.getInstance().schedule(m_autonomousCommand);
     }
+
+    questNavSubsystem.resetQuestPose2d(drivetrain.getPose());
   }
 
   @Override
