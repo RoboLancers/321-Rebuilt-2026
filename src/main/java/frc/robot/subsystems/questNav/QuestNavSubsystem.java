@@ -15,11 +15,14 @@ import gg.questnav.questnav.PoseFrame;
 import gg.questnav.questnav.QuestNav;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class QuestNavSubsystem {
 
   private QuestNav questNav = new QuestNav();
   private Drivetrain drivetrain;
+
+  public Pose3d latestQuestPose;
 
   // publishers for advantagescope
   private final StructArrayPublisher<Pose3d> allPublishedPosesPub;
@@ -35,9 +38,9 @@ public class QuestNavSubsystem {
     var networkTables = NetworkTableInstance.getDefault();
     allPublishedPosesPub =
         networkTables.getStructArrayTopic("QuestNav/robotPoses", Pose3d.struct).publish();
-    acceptedPosesPub =
-        networkTables.getStructArrayTopic("QuestNav/rejectedPoses", Pose3d.struct).publish();
     rejectedPosesPub =
+        networkTables.getStructArrayTopic("QuestNav/rejectedPoses", Pose3d.struct).publish();
+    acceptedPosesPub =
         networkTables.getStructArrayTopic("QuestNav/acceptedPoses", Pose3d.struct).publish();
     latestPosePub = networkTables.getStructTopic("QuestNav/latestPose", Pose3d.struct).publish();
 
@@ -115,6 +118,7 @@ public class QuestNavSubsystem {
 
     if (!allPoses.isEmpty()) {
       latestPosePub.set(allPoses.get(allPoses.size() - 1));
+      latestQuestPose = allPoses.get(allPoses.size() - 1);
     }
 
     if (lastPoseTimestamp > 0) {
@@ -137,5 +141,13 @@ public class QuestNavSubsystem {
 
   public void resetQuestPose2d(Pose2d robotPose) {
     resetQuestPose3d(new Pose3d(robotPose));
+  }
+
+  public Pose3d getPoseFromSupplier(Supplier<Pose3d> bestPose) {
+    return bestPose.get();
+  }
+
+  public Pose3d getLatestQuestPose() {
+    return getPoseFromSupplier(() -> latestQuestPose);
   }
 }

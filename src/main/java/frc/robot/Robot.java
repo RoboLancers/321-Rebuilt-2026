@@ -42,10 +42,11 @@ public class Robot extends TimedRobot {
     }
 
     m_robotContainer.latestPoseField.setRobotPose(
-        m_robotContainer.getLatestCameraPose().toPose2d());
+        questNavSubsystem.getLatestQuestPose().toPose2d());
     SmartDashboard.putData("latest 2d pose", m_robotContainer.latestPoseField);
 
     questNavSubsystem.questPeriodic();
+    questNavSubsystem.resetQuestPose3d(m_robotContainer.getLatestCameraPose());
   }
 
   @Override

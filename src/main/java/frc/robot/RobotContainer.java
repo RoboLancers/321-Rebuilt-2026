@@ -80,6 +80,10 @@ public class RobotContainer {
     return vision.getLatestBestPose();
   }
 
+  // public Pose3d getLatestQuestNavPose() {
+  //   return questNavSubsystem.getLatestQuestPose();
+  // }
+
   private SendableChooser<Command> autoChooser;
 
   public Trigger slowMode = driver.b();
