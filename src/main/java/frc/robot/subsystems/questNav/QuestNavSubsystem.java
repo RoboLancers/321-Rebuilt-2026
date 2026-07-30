@@ -94,8 +94,6 @@ public class QuestNavSubsystem {
 
       allPoses.add(robotPose);
 
-      questNav.setPose(robotPose);
-
       if (rejectPose(robotPose)) {
         rejectedPoses.add(robotPose);
         continue;
@@ -103,12 +101,11 @@ public class QuestNavSubsystem {
 
       acceptedPoses.add(robotPose);
 
-      if (frame.isTracking()) {
+      if (frame.isTracking() && questNav.isConnected()) {
         drivetrain.addVisionMeasurement(
             robotPose.toPose2d(), frame.dataTimestamp(), QuestNavConstants.kQuestStdDev);
+        lastPoseTimestamp = frame.dataTimestamp();
       }
-
-      lastPoseTimestamp = frame.dataTimestamp();
     }
 
     // published pose arrays for advantagescope
@@ -124,6 +121,19 @@ public class QuestNavSubsystem {
     if (lastPoseTimestamp > 0) {
       SmartDashboard.putNumber(
           "QuestNav/TimeSinceLastPose", Timer.getTimestamp() - lastPoseTimestamp);
+    }
+
+    // Heading comparison: how far Quest disagrees with the current fused drivetrain heading.
+    // Should be near 0 when QuestNav is actively correcting. Spikes indicate drift or tracking loss.
+    if (latestQuestPose != null) {
+      double questHeadingDeg = latestQuestPose.getRotation().toRotation2d().getDegrees();
+      double drivetrainHeadingDeg = drivetrain.getPose().getRotation().getDegrees();
+      double headingErrorDeg = questHeadingDeg - drivetrainHeadingDeg;
+      // Normalize to [-180, 180]
+      headingErrorDeg = ((headingErrorDeg + 180) % 360 + 360) % 360 - 180;
+      SmartDashboard.putNumber("QuestNav/QuestHeadingDeg", questHeadingDeg);
+      SmartDashboard.putNumber("QuestNav/DrivetrainHeadingDeg", drivetrainHeadingDeg);
+      SmartDashboard.putNumber("QuestNav/HeadingErrorDeg", headingErrorDeg);
     }
   }
 
