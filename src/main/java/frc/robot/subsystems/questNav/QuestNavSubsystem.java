@@ -124,7 +124,8 @@ public class QuestNavSubsystem {
     }
 
     // Heading comparison: how far Quest disagrees with the current fused drivetrain heading.
-    // Should be near 0 when QuestNav is actively correcting. Spikes indicate drift or tracking loss.
+    // Should be near 0 when QuestNav is actively correcting. Spikes indicate drift or tracking
+    // loss.
     if (latestQuestPose != null) {
       double questHeadingDeg = latestQuestPose.getRotation().toRotation2d().getDegrees();
       double drivetrainHeadingDeg = drivetrain.getPose().getRotation().getDegrees();
