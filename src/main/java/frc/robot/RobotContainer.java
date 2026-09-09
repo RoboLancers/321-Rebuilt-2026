@@ -44,7 +44,6 @@ import frc.robot.subsystems.intakePivot.intakePivotCommands.Tune;
 import frc.robot.subsystems.intakerollers.IntakeRollerConstants;
 import frc.robot.subsystems.intakerollers.IntakeRollers;
 import frc.robot.subsystems.intakerollers.rolllercommands.IntakeFuel;
-import frc.robot.subsystems.intakerollers.rolllercommands.IntakeFuelAlt;
 import frc.robot.subsystems.intakerollers.rolllercommands.SetIntakeVelocity;
 import frc.robot.subsystems.outtake.Shooter;
 import frc.robot.subsystems.outtake.commands.ShooterDefaultBehavior;
@@ -191,7 +190,7 @@ public class RobotContainer {
     configureAutoChooser();
   }
 
-private void configureNamedAutoCommands() {
+  private void configureNamedAutoCommands() {
     IntakeFuel intakeFuel = new IntakeFuel(intakeRollers, intakePivot);
     Command intakePivotStow =
         new GoToAngle(intakePivot, () -> IntakeConstants.kStowedPosition).withTimeout(2);
