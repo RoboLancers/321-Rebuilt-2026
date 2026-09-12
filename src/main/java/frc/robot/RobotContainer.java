@@ -44,7 +44,6 @@ import frc.robot.subsystems.intakePivot.intakePivotCommands.Tune;
 import frc.robot.subsystems.intakerollers.IntakeRollerConstants;
 import frc.robot.subsystems.intakerollers.IntakeRollers;
 import frc.robot.subsystems.intakerollers.rolllercommands.IntakeFuel;
-import frc.robot.subsystems.intakerollers.rolllercommands.IntakeFuelAlt;
 import frc.robot.subsystems.intakerollers.rolllercommands.SetIntakeVelocity;
 import frc.robot.subsystems.outtake.Shooter;
 import frc.robot.subsystems.outtake.commands.ShooterDefaultBehavior;
@@ -192,8 +191,7 @@ public class RobotContainer {
   }
 
   private void configureNamedAutoCommands() {
-    // IntakeFuel intakeFuel = new IntakeFuel(intakeRollers, intakePivot);
-    IntakeFuelAlt intakeFuel = new IntakeFuelAlt(intakeRollers, () -> intakePivot.getAngle());
+    IntakeFuel intakeFuel = new IntakeFuel(intakeRollers, intakePivot);
     Command intakePivotStow =
         new GoToAngle(intakePivot, () -> IntakeConstants.kStowedPosition).withTimeout(2);
     Command intakePivotOut =
@@ -206,7 +204,6 @@ public class RobotContainer {
     ParallelRaceGroup alignInAuto = new ParallelRaceGroup(align);
     ShootAndIndex shootInAuto =
         new ShootAndIndex(tunnel, shooter, hood, indexer, this::getHubDistance);
-    // ParallelRaceGroup runRollers = new ParallelRaceGroup(intakeFuel);
 
     NamedCommands.registerCommand("IntakePivotStow", intakePivotStow);
     NamedCommands.registerCommand("IntakeFuel", intakeInAuto);
@@ -214,7 +211,6 @@ public class RobotContainer {
     NamedCommands.registerCommand("IntakePivotTravel", intakePivotTravel);
     NamedCommands.registerCommand("ShootFuel", shootInAuto);
     NamedCommands.registerCommand("Align", alignInAuto);
-    NamedCommands.registerCommand("RunRollers", intakeFuel);
   }
 
   private void configureAutoChooser() {
